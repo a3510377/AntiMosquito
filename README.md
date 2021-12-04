@@ -34,6 +34,11 @@
     <td align="center">高</td>
   </tr>
   <tr>
+    <td align="center">吸血對象</td>
+    <td align="center">除人血外，哺乳類動物如: 貓、狗也是吸血對象</td>
+    <td align="center">人血為主</td>
+  </tr>
+  <tr>
     <td align="center">吸血高峰</td>
     <td colspan="2" align="center"><code>早上9~11點</code> 和 <code>下午4~5 點</code></td>
   </tr>
