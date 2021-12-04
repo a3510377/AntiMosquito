@@ -24,17 +24,17 @@
     <td width="40%" align="center">埃及斑蚊</td>
   </tr>
   <tr>
-    <td>分布</td>
+    <td align="center">分布</td>
     <td align="center">分布於全台<br /><code>平地</code> 與 <code>1500m 以下山區</code></td>
     <td align="center">分布於<code>南部</code></td>
   </tr>
   <tr>
-    <td>警覺性</td>
+    <td align="center">警覺性</td>
     <td align="center">低</td>
     <td align="center">高</td>
   </tr>
   <tr>
-    <td>吸血高峰</td>
+    <td align="center">吸血高峰</td>
     <td colspan="2" align="center"><code>早上9~11點</code> 和 <code>下午4~5 點</code></td>
   </tr>
 </table>
