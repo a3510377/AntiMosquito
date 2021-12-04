@@ -15,9 +15,9 @@
 
 ---
 
-關於登革熱
+### 關於登革熱
 
-<table border="2" cellspacing="0" cellpadding="5" width="100%"> 
+<table border="2" align="center" cellspacing="0" cellpadding="5" width="100%"> 
   <tr>
     <td width="20%"></td>
     <td width="40%" align="center">白線斑蚊</td>
@@ -25,7 +25,7 @@
   </tr>
   <tr>
     <td>分布</td>
-    <td align="center">分布於全台<br /><code>平地</code><br /> 與 <br /><code>1500m 以下山區</code></td>
+    <td align="center">分布於全台<br /><code>平地</code> 與 <code>1500m 以下山區</code></td>
     <td align="center">分布於<code>南部</code></td>
   </tr>
   <tr>
