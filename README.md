@@ -19,9 +19,9 @@
 
 <table border="2" cellspacing="0" cellpadding="5">
   <tr>
-    <td>白線斑蚊</td>
-    <td>埃及斑蚊</td>
-    <td>埃及斑蚊</td>
+    <td></td>
+    <td width="50%" align="center">白線斑蚊</td>
+    <td width="50%" align="center">埃及斑蚊</td>
   </tr>
   <tr>
     <td>分布</td>
@@ -30,8 +30,8 @@
   </tr>
   <tr>
     <td>警覺性</td>
-    <td>低</td>
-    <td>高</td>
+    <td align="center">低</td>
+    <td align="center">高</td>
   </tr>
   <tr>
     <td>吸血高峰</td>
