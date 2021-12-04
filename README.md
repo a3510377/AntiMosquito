@@ -19,23 +19,23 @@
 
 <table border="2" cellspacing="0" cellpadding="5">
   <tr>
-    <td align="center">白線斑蚊</td>
-    <td align="center">埃及斑蚊</td>
-    <td align="center">埃及斑蚊</td>
+    <td>白線斑蚊</td>
+    <td>埃及斑蚊</td>
+    <td>埃及斑蚊</td>
   </tr>
   <tr>
-    <td align="center">分布</td>
-    <td align="center">分布於全台 `平地` 與 `1500m 以下山區`</td>
-    <td align="center">分布於南部</td>
+    <td>分布</td>
+    <td>分布於全台 <code>平地</code> 與 <code>1500m 以下山區</code></td>
+    <td>分布於南部</td>
   </tr>
   <tr>
-    <td align="center">警覺性</td>
-    <td align="center">低 ( 專門刷經驗 )</td>
-    <td align="center">高東吸吸西吸吸 ( 專門練身體 )</td>
+    <td>警覺性</td>
+    <td>低 ( 專門刷經驗 )</td>
+    <td>高東吸吸西吸吸 ( 專門練身體 )</td>
   </tr>
   <tr>
-    <td align="center">吸血高峰</td>
-    <td colspan="2" align="center">`早上 9~11 點` 和 `下午 4~5 點`</td>
+    <td>吸血高峰</td>
+    <td colspan="2" align="center">早上 <code>9~11 點</code> 和 <code>下午 4~5 點</code></td>
   </tr>
 </table>
 
