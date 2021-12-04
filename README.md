@@ -17,7 +17,7 @@
 
 關於登革熱
 
-<table border="2" cellspacing="0" cellpadding="5">
+<table border="2" cellspacing="0" cellpadding="5" width="100%"> 
   <tr>
     <td width="20%"></td>
     <td width="40%" align="center">白線斑蚊</td>
