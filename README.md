@@ -19,14 +19,14 @@
 
 <table border="2" cellspacing="0" cellpadding="5">
   <tr>
-    <td width="25%"></td>
-    <td width="35%" align="center">白線斑蚊</td>
-    <td width="35%" align="center">埃及斑蚊</td>
+    <td width="20%"></td>
+    <td width="40%" align="center">白線斑蚊</td>
+    <td width="40%" align="center">埃及斑蚊</td>
   </tr>
   <tr>
     <td>分布</td>
-    <td>分布於全台 <code>平地</code> 與 <code>1500m 以下山區</code></td>
-    <td>分布於<code>南部</code></td>
+    <td align="center">分布於全台 <code>平地</code> 與 <code>1500m 以下山區</code></td>
+    <td align="center">分布於<code>南部</code></td>
   </tr>
   <tr>
     <td>警覺性</td>
