@@ -19,9 +19,9 @@
 
 <table border="2" cellspacing="0" cellpadding="5">
   <tr>
-    <td></td>
-    <td width="50%" align="center">白線斑蚊</td>
-    <td width="50%" align="center">埃及斑蚊</td>
+    <td width="10%"></td>
+    <td width="40%" align="center">白線斑蚊</td>
+    <td width="40%" align="center">埃及斑蚊</td>
   </tr>
   <tr>
     <td>分布</td>
