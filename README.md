@@ -25,7 +25,7 @@
   </tr>
   <tr>
     <td>分布</td>
-    <td align="center">分布於全台 <code>平地</code> 與 <code>1500m 以下山區</code></td>
+    <td align="center">分布於全台<br /><code>平地</code><br /> 與 <br /><code>1500m 以下山區</code></td>
     <td align="center">分布於<code>南部</code></td>
   </tr>
   <tr>
