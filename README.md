@@ -26,7 +26,7 @@
   <tr>
     <td align="center">分布</td>
     <td align="center">分布於全台<br /><code>平地</code> 與 <code>1500m 以下山區</code></td>
-    <td align="center">分布於<code>南部</code></td>
+    <td align="center">分布於<code>嘉義布袋以南沿海鄉鎮</code></td>
   </tr>
   <tr>
     <td align="center">警覺性</td>
