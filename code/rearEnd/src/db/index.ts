@@ -1,16 +1,44 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, MongoClientOptions, ServerApiVersion } from "mongodb";
+import { MongoParseError } from "mongodb";
+import { config } from "dotenv";
+config();
 
-const uri = process.env["dbUri"];
-if (!uri) throw "";
+export default class db {
+  client: MongoClient;
+  link: boolean = false;
+  constructor(public uri?: string, config?: MongoClientOptions) {
+    let client: MongoClient;
 
-// const client = new MongoClient(uri, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+    uri ||= process.env["dbUri"];
+    this.client = client = new MongoClient(uri, {
+      monitorCommands: true,
+      ...config,
+    });
+    /* https://docs.mongodb.com/drivers/node/current/fundamentals/monitoring/cluster-monitoring/ */
+    // client.on("commandStarted", (event) => console.debug(event));
+    // client.on("commandSucceeded", (event) => console.debug(event));
+    // client.on("commandFailed", (event) => console.debug(event));
+  }
+  get db() {
+    return this.client;
+  }
 
-// client.connect((err) => {
-//   const collection = client.db("test").collection("devices");
-//   console.log(collection);
-//   client.close();
-// });
-export default () => {};
+  /* get 集合 */
+  collection(dbName: string, name: string) {
+    return this.db.db(dbName).collection(name);
+  }
+
+  async run() {
+    try {
+      await this.client.connect();
+      await this.db.db("admin").command({ ping: 1 });
+    } finally {
+      console.log("連結完成");
+    }
+  }
+  async init() {
+    let dbo = this.db.db("AntiMosquito");
+    dbo.createCollection("Mosquitos", (error) => console.log(error));
+  }
+}
+// db.run().catch(console.dir);

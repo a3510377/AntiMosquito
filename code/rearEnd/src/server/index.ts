@@ -5,7 +5,7 @@ import logger from "morgan";
 import path from "path";
 import { config } from "dotenv";
 
-import db from "../db";
+import serverDb from "../db";
 import { checkPort } from "../utils/server";
 import { ErrnoException } from "../http";
 
@@ -14,21 +14,21 @@ config();
 export const port = checkPort(process.env.port);
 const app = express();
 const server = http.createServer(app);
+const db = new serverDb();
 
 app
-  .set("db", db)
-  .set("port", port)
-  .use(require("cors")())
-  .set("view engine", "html")
-  .use(express.static(path.join(__dirname, "web")))
-  .use(logger("dev"))
-
   .use(express.json())
   .use(
     express.urlencoded({
       extended: false,
     })
   )
+  .set("db", db)
+  .set("port", port)
+  .use(require("cors")())
+  .set("view engine", "html")
+  .use(express.static(path.join(__dirname, "web")))
+  .use(logger("dev"))
   .use(function (req, res, next) {
     /* get 404 error */
     next(createError(404));
@@ -52,7 +52,13 @@ server.on("error", (error: ErrnoException) => {
       throw error;
   }
 });
-server.on("listening", () => {
+server.on("listening", async () => {
+  try {
+    await db.run();
+  } catch (e) {
+    console.error(`MongoDB Error:\n\t${e.name}: ${e.message}`);
+  }
+
   let addr = server.address();
   let bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr.port}`;
   console.log(`is ready ${bind}`);
