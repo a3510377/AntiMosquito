@@ -1,5 +1,5 @@
-import { MongoClient, MongoClientOptions, ServerApiVersion } from "mongodb";
-import { MongoParseError } from "mongodb";
+import { Db, MongoClient, MongoClientOptions, ServerApiVersion } from "mongodb";
+import { MongoServerError } from "mongodb";
 import { config } from "dotenv";
 config();
 
@@ -33,12 +33,32 @@ export default class db {
       await this.client.connect();
       await this.db.db("admin").command({ ping: 1 });
     } finally {
-      console.log("連結完成");
+      console.log("DB: 連結完成");
+      await this.init();
     }
   }
   async init() {
-    let dbo = this.db.db("AntiMosquito");
-    dbo.createCollection("Mosquitos", (error) => console.log(error));
+    [
+      {
+        db: "Mosquitos",
+        collection: "Mosquitos",
+      },
+      {
+        db: "data",
+        collection: "siteInfo",
+      },
+    ].forEach((value) => {
+      this.db
+        .db(value.db)
+        .createCollection(value.collection)
+        .catch((e) => {
+          if (
+            e instanceof MongoServerError &&
+            e.message.startsWith("Collection already exists.")
+          )
+            console.log("DB: 資料庫以存在不進行創建");
+        });
+    });
   }
 }
 // db.run().catch(console.dir);

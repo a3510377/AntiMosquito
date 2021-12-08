@@ -5,6 +5,7 @@ import logger from "morgan";
 import path from "path";
 import { config } from "dotenv";
 
+import routers from "./routers";
 import serverDb from "../db";
 import { checkPort } from "../utils/server";
 import { ErrnoException } from "../http";
@@ -29,9 +30,19 @@ app
   .set("view engine", "html")
   .use(express.static(path.join(__dirname, "web")))
   .use(logger("dev"))
+  .use(routers)
   .use(function (req, res, next) {
     /* get 404 error */
     next(createError(404));
+  })
+  .use(function (err, req, res, next) {
+    /* error handler */
+    res.locals.message = err.message;
+    res.locals.error = req.app.get("env") === "development" ? err : {};
+
+    res.status(err.status || 500);
+    console.log(err.status || 500);
+    res.render("error");
   });
 
 server.on("error", (error: ErrnoException) => {
