@@ -9,15 +9,12 @@ export default class db {
   constructor(public uri?: string, config?: MongoClientOptions) {
     let client: MongoClient;
 
-    uri ||= process.env["dbUri"];
+    uri ||= process.env.dbUri;
     this.client = client = new MongoClient(uri, {
       monitorCommands: true,
       ...config,
     });
     /* https://docs.mongodb.com/drivers/node/current/fundamentals/monitoring/cluster-monitoring/ */
-    // client.on("commandStarted", (event) => console.debug(event));
-    // client.on("commandSucceeded", (event) => console.debug(event));
-    // client.on("commandFailed", (event) => console.debug(event));
   }
   get db() {
     return this.client;
@@ -61,4 +58,3 @@ export default class db {
     });
   }
 }
-// db.run().catch(console.dir);

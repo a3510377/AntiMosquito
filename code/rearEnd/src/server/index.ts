@@ -16,21 +16,26 @@ export const port = checkPort(process.env.port);
 const app = express();
 const server = http.createServer(app);
 const db = new serverDb();
+console.log(path.join(__dirname, "/web"));
 
 app
+  .engine("html", require("ejs").renderFile)
+  .set("view engine", "html")
+  .set("views", path.join(__dirname, "../web"))
+  .set("db", db)
+  .set("port", port)
+  .use(require("cors")())
   .use(express.json())
   .use(
     express.urlencoded({
       extended: false,
     })
   )
-  .set("db", db)
-  .set("port", port)
-  .use(require("cors")())
-  .set("view engine", "html")
-  .use(express.static(path.join(__dirname, "web")))
   .use(logger("dev"))
+  // .use("/", express.static(path.join(__dirname, "/web")))
+
   .use(routers)
+
   .use(function (req, res, next) {
     /* get 404 error */
     next(createError(404));

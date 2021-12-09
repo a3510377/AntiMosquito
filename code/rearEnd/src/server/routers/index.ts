@@ -5,15 +5,11 @@ import API from "./API";
 
 const router = express.Router();
 
-router.use(API).get("/", (req, res) => {
-  try {
-    res
-      .status(200)
-      .set({ "Content-Type": "text/html" })
-      .end(fs.readFileSync(path.join(__dirname, "../web/index.html"), "utf-8"));
-  } catch (e) {
-    res.status(500).end(e.message);
-  }
+router.use("/api", API).get("/", (req, res) => {
+  res
+    // .status(200)
+    // .set({ "Content-Type": "text/html" })
+    .render("index");
 });
 
 export default router;
