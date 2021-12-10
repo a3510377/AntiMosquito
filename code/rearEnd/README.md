@@ -1,5 +1,12 @@
 # AntiMosquito 後端 + 前端 伺服器
 
+IDEA:
+
+> client 向 server 發送 token ( 含安全金鑰及 ID )
+> token 格式:
+> ${id.toString()}.${randomStr(4)}.${randomStr(20)}
+> ODYzNjc2ODQ3NzMxMzc2MTcw.AWAa.XaFWA54Fkp-FkaUOKjav
+
 #### mongodb 數據庫模型示例
 
 `_id` 由 `MongoDB` 自動生成
@@ -18,6 +25,8 @@ data
     +---siteInfo
         |---_id
         |---Location( 站點位置 )
+        |---Token
+        |---ID
     =-else-=
 ```
 
