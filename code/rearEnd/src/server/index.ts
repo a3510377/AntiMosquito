@@ -5,6 +5,7 @@ import logger from "morgan";
 import path from "path";
 import { config } from "dotenv";
 
+import { mainData } from "../utils/main";
 import routers from "./routers";
 import serverDb from "../db";
 import { checkPort } from "../utils/server";
@@ -16,13 +17,14 @@ export let port: number = checkPort(process.env.port);
 const app = express();
 const server = http.createServer(app);
 const db = new serverDb();
+const data = new mainData();
 
 app
   .engine("html", require("ejs").renderFile)
   .set("view engine", "html")
   .set("db", db)
   .set("port", port)
-  .set("IDIndex", 0)
+  .set("data", data)
   .use(require("cors")())
   .use(express.json())
   .use(

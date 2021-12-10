@@ -1,6 +1,6 @@
 import { reverse } from "./main";
 
-/** 生成唯一ID
+/**生成唯一ID
  * @param index 安全碼
  */
 export function makeId(index: number) {
@@ -12,7 +12,10 @@ export function makeId(index: number) {
   return parseInt(time + id, 2);
 }
 
-/** 隨機生成 string */
+/**隨機生成文字
+ * @param length 生成指定長度的文字
+ * @param notIs  是否確認相同
+ */
 export function randomString(length: number, notIs?: string): string {
   let str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
     result = "";
