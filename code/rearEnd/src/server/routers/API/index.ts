@@ -6,9 +6,7 @@ import { GeolocationAPIData } from "../../../types/axios.data";
 const router = express.Router();
 
 router
-  .get("/", (req, res) => {
-    // res.status(200).json();
-  })
+  .get("/", (req, res) => {})
   // .get("/info", (req, res) => res.json({ version, description, author }))
   .get("/setup", async (req, res) => {
     // url ex: /setup?ip=1.1.1.1

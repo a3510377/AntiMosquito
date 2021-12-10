@@ -22,6 +22,7 @@ app
   .set("view engine", "html")
   .set("db", db)
   .set("port", port)
+  .set("IDIndex", 0)
   .use(require("cors")())
   .use(express.json())
   .use(
