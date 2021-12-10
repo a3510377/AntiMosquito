@@ -12,7 +12,7 @@ import { ErrnoException } from "../http";
 
 config();
 
-export const port = checkPort(process.env.port);
+export let port: number = checkPort(process.env.port);
 const app = express();
 const server = http.createServer(app);
 const db = new serverDb();
@@ -37,15 +37,6 @@ app
   .use(function (req, res, next) {
     /* get 404 error */
     next(createError(404));
-  })
-  .use(function (err, req, res, next) {
-    /* error handler */
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
-
-    res.status(err.status || 500);
-    console.log(err.status || 500);
-    res.render("error");
   });
 
 server.on("error", (error: ErrnoException) => {
@@ -60,7 +51,7 @@ server.on("error", (error: ErrnoException) => {
       break;
     case "EADDRINUSE":
       console.error(`${bind} 已使用`);
-      process.exit(1);
+      server.listen(++port);
       break;
     default:
       throw error;

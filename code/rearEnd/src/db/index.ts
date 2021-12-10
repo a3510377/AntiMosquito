@@ -7,10 +7,8 @@ export default class db {
   client: MongoClient;
   link: boolean = false;
   constructor(public uri?: string, config?: MongoClientOptions) {
-    let client: MongoClient;
-
     uri ||= process.env.dbUri;
-    this.client = client = new MongoClient(uri, {
+    this.client = new MongoClient(uri, {
       monitorCommands: true,
       ...config,
     });

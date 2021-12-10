@@ -3,11 +3,19 @@
     "target": "es6",
     "module": "commonjs",
     "esModuleInterop": true,
+    "allowJs": false,
     "moduleResolution": "node",
     "sourceMap": true,
     "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
     "outDir": "dist",
-    "baseUrl": "./src"
+    "rootDir": "src",
+    "paths": {
+      "@": [
+        "src"
+      ]
+    }
   },
   "lib": [
     "ES2018"
@@ -17,7 +25,6 @@
     "src/**/*.d.ts",
   ],
   "exclude": [
-    "./tools",
-    "./web"
+    "tools/**/*.*"
   ]
 }

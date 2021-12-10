@@ -1,5 +1,6 @@
 dist/
 
+package-lock.json
 logs
 _.log
 npm-debug.log_

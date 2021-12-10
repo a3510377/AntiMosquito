@@ -2,14 +2,15 @@
   "name": "rearend",
   "version": "1.0.0",
   "description": "",
-  "main": "dict",
+  "main": "dict/index.js",
   "scripts": {
-    "start": "rimraf dist/* && tsc && ts-node tools/copyAssets && node dist"
+    "start": "rimraf dist/* && tsc && ts-node tools/copy && node dist/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/shelljs": "^0.8.9",
+    "axios": "^0.24.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
