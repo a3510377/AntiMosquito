@@ -1,4 +1,6 @@
 import { reverse } from "./main";
+
+/**元時間 */
 export const EPOCH = 1639195200000;
 
 /**10進制轉2進制
@@ -61,12 +63,3 @@ export function idData(id: string) {
     },
   };
 }
-
-// /**
-//  * token
-//  * id
-//  * id -> {
-//  *  42 to 4: time,
-//  *  1 to 4: 隨機數
-//  * }
-//  */

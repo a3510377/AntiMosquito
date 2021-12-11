@@ -11,10 +11,14 @@
     "baseUrl": "./src",
     "outDir": "dist",
     "rootDir": "src",
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "paths": {
-      "@": [
-        "src"
-      ]
+      // "@/*": [
+      //   "./*"
+      // ]
     }
   },
   "lib": [

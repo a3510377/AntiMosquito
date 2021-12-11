@@ -1,6 +1,5 @@
 {
   "name": "rearend",
-  "version": "1.0.0",
   "description": "",
   "main": "dict/index.js",
   "scripts": {

@@ -5,10 +5,10 @@ import logger from "morgan";
 import path from "path";
 import { config } from "dotenv";
 
-import { mainData } from "../utils/main";
 import routers from "./routers";
 import serverDb from "../db";
 import { checkPort } from "../utils/server";
+import { mainData } from "../utils/main";
 import { ErrnoException } from "../http";
 
 config();

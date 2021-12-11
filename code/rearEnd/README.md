@@ -14,20 +14,20 @@ IDEA:
 ```
 // use MongoDB
 Mosquitos
-    +---站點1 (外來鍵: data->siteInfo->_id)
-        |---_id
-        |---Time( 時間 ( t1 ~ t2) )
-        |---humidity( 濕度 )
-        |---Mosquitos( 蚊子數量 )
-        |---Temperature( 溫度 )
-    =-copy-=
+  +---站點1 (外來鍵: data->siteInfo->_id)
+    |---_id
+    |---Time( 時間 ( t1 ~ t2) )
+    |---humidity( 濕度 )
+    |---Mosquitos( 蚊子數量 )
+    |---Temperature( 溫度 )
+  =-copy-=
 data
-    +---siteInfo
-        |---_id
-        |---Location( 站點位置 )
-        |---Token
-        |---ID
-    =-else-=
+  +---siteInfo
+    |---_id
+    |---Location( 站點位置 )
+    |---Token
+    |---ID
+  =-else-=
 ```
 
 #### 設定
@@ -42,4 +42,13 @@ npm i -g yarn
 yarn
 yarn add @types/express @types/http-errors @types/morgan @types/shelljs
 yarn start
+```
+
+#### docs
+
+```
+id -> {
+  42 to 4: time,
+  1 to 4: 隨機數
+}
 ```
