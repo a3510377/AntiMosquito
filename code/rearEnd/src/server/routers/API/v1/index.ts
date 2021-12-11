@@ -1,5 +1,5 @@
 import express from "express";
-import { getIp } from "../../../../utils/axios";
+import { getIp } from "@/utils/axios";
 
 const router = express.Router();
 

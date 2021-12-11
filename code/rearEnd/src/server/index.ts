@@ -6,10 +6,10 @@ import path from "path";
 import { config } from "dotenv";
 
 import routers from "./routers";
-import serverDb from "../db";
-import { checkPort } from "../utils/server";
-import { mainData } from "../utils/main";
-import { ErrnoException } from "../http";
+import serverDb from "@/db";
+import { checkPort } from "@/utils/server";
+import { mainData } from "@/utils/main";
+import { ErrnoException } from "@/http";
 
 config();
 

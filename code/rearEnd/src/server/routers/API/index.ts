@@ -1,5 +1,5 @@
 import express from "express";
-import config from "../../../config";
+import config from "@/config";
 import v1 from "./v1";
 
 const router = express.Router();
