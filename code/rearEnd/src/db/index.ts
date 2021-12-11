@@ -1,6 +1,7 @@
-import { Db, MongoClient, MongoClientOptions, ServerApiVersion } from "mongodb";
-import { MongoServerError } from "mongodb";
+import { MongoClient, MongoClientOptions, MongoServerError } from "mongodb";
 import { config } from "dotenv";
+import { getTokenData } from "@/utils/uuid";
+import { siteInfo } from "@/types/db.data";
 config();
 
 export default class db {
@@ -17,12 +18,22 @@ export default class db {
   get db() {
     return this.client;
   }
-
-  /* get 集合 */
-  collection(dbName: string, name: string) {
-    return this.db.db(dbName).collection(name);
+  /**collection siteInfo */
+  get siteInfo() {
+    return this.db.db("data").collection("siteInfo");
   }
-
+  /**db Mosquitos */
+  get Mosquitos() {
+    return this.db.db("Mosquitos");
+  }
+  /**確認Token是否無誤 */
+  async checkToken(token: string): Promise<boolean> {
+    let tokenData = getTokenData(token);
+    if (!tokenData) return false;
+    let data = await this.siteInfo.findOne({ ID: tokenData.id.$10.toString() });
+    return data?.Token === token;
+  }
+  /**開始連線 */
   async run() {
     try {
       await this.client.connect();
@@ -32,12 +43,9 @@ export default class db {
       await this.init();
     }
   }
+  /**始初化 */
   async init() {
     [
-      {
-        db: "Mosquitos",
-        collection: "Mosquitos",
-      },
       {
         db: "data",
         collection: "siteInfo",
