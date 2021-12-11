@@ -1,4 +1,5 @@
 import { reverse } from "./main";
+export const EPOCH = 1639195200000;
 
 /**10進制轉2進制
  * @param num 要轉化的數
@@ -23,7 +24,7 @@ export function idToBinary(num: string): string {
  * @param index 安全碼
  */
 export function makeId(index: number) {
-  let time = (+new Date()).toString(2).padStart(42, "0"),
+  let time = (+new Date() - EPOCH).toString(2).padStart(42, "0"),
     id = (+reverse(index.toString()).substring(1, -1))
       .toString(2)
       .padStart(4, "0");
@@ -52,7 +53,7 @@ export function idData(id: string) {
     $2 = idToBinary($10.toString()).padStart(42 + 4, "0");
 
   return {
-    timestamp: parseInt($2.substring(42, -1), 2),
+    timestamp: parseInt($2.substring(42, -1), 2) + EPOCH,
     randomId: parseInt($2.substring(42), 2),
     binary: $2,
     get date() {
@@ -69,13 +70,3 @@ export function idData(id: string) {
 //  *  1 to 4: 隨機數
 //  * }
 //  */
-// let $10 = makeId(99);
-// let $2 = $10.toString(2).padStart(42 + 4, "0");
-// let time = $2.substring(42, -1);
-
-// console.log($2);
-// console.log($2.substring(42), "\n");
-// console.log(time);
-// console.log($10);
-// // 1234567
-// console.log($10 >> 4);
