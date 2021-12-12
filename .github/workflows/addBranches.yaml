@@ -12,23 +12,20 @@ jobs:
       - name: git-checkout
         uses: actions/checkout@v2
 
-      - name: cd
-        run: cd code/rearEnd/web
-
       - name: Setup Node.js v14.x
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
 
-      - name: Install
-        run: npm install
-
-      - name: Build
-        run: npm run build:pro
+      - name: run
+        run: cd code/rearEnd/web
+          npm install
+          npm run build:pro
 
       # use https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-enable-built-in-jekyll-enable_jekyll
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
+        run: cd code/rearEnd/web
         with:
           publish_dir: ./dist
           github_token: ${{ secrets.GITHUB_TOKEN }}
