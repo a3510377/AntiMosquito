@@ -30,6 +30,10 @@ app
   )
   .use(logger("dev"))
   .use("/", express.static(path.join(__dirname, "../web")))
+  .get("/uptimerobot", (req, res) => {
+    res.status(200).send();
+    console.info("uptimerobot check");
+  })
 
   .use(routers);
 
