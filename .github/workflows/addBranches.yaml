@@ -6,20 +6,17 @@ on:
 
 jobs:
   deploy:
-    name: 創建/更新 分支
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: copy
+      - name: git-checkout
+        uses: actions/checkout@v2
+
+      - name: Push
+        uses: s0/git-publish-subdir-action@develop
         env:
-          SRC_FOLDER_PATH: "code/rearEnd"
-          TARGET_BRANCH: "rearEnd"
-        run: |
-          files=$(find $SRC_FOLDER_PATH -type f)
-          git config --global user.email "a102009102009@gmail.com"
-          git fetch
-          git checkout $TARGET_BRANCH
-          git checkout ${GITHUB_REF##*/} -- $files
-          git add -A
-          git diff-index --quiet HEAD ||  git commit -am "deploy files"
-          git push origin $TARGET_BRANCH # push to remote branch
+          REPO: self
+          BRANCH: build # The branch name where you want to push the assets
+          FOLDER: build # The directory where your assets are generated
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
+          MESSAGE: "Build: ({sha}) {msg}" # The commit message
