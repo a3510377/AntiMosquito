@@ -21,13 +21,13 @@ jobs:
         run: cd code/rearEnd/web && npm install
 
       - name: build
-        run: npm run build:pro
+        run: cd code/rearEnd/web && npm run build:pro
 
       # use https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-enable-built-in-jekyll-enable_jekyll
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          publish_dir: ./code/rearEnd/web/dist
+          publish_dir: code/rearEnd/web/dist
           github_token: ${{ secrets.GITHUB_TOKEN }}
           user_email: a102009102009@gmail.com
           commit_message: build${{ github.event.head_commit.message }}
