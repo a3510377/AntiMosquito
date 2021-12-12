@@ -18,7 +18,9 @@ jobs:
           node-version: "14.x"
 
       - name: run
-        run: cd code/rearEnd/web
+        run: cd code
+          cd rearEnd
+          cd web
           npm install
           npm run build:pro
 
