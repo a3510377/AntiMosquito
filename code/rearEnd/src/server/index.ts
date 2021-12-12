@@ -11,7 +11,7 @@ import { ErrnoException } from "@/http";
 
 config();
 
-export let port: number = checkPort(process.env.port);
+export let port: number = checkPort(process.env.PORT);
 const app = express();
 const server = http.createServer(app);
 const db = new serverDb();
@@ -45,7 +45,7 @@ server.on("error", (error: ErrnoException) => {
   switch (error.code) {
     case "EACCES":
       console.error(`${bind} 需要更高全縣`);
-      process.exit(1);
+      server.listen(++port);
       break;
     case "EADDRINUSE":
       console.error(`${bind} 已使用`);
