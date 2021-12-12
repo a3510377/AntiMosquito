@@ -1,7 +1,7 @@
 import { MongoClient, MongoClientOptions, MongoServerError } from "mongodb";
 import { config } from "dotenv";
 import { getTokenData } from "@/utils/uuid";
-import { siteInfo } from "@/types/db.data";
+
 config();
 
 export default class db {
