@@ -1,11 +1,11 @@
 dist/
 
-package-lock.json
 logs
 _.log
 npm-debug.log_
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 
 pids
 _.pid
