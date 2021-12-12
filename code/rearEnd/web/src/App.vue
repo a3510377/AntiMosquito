@@ -1,13 +1,18 @@
-<template></template>
+<template>
+  <templateMain />
+</template>
 
 <script lang="ts">
+import templateMain from "@/views/template/main.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  data() {
-    return {};
+  components: {
+    templateMain,
   },
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+@import url(@/assets/scss/main.scss);
+</style>

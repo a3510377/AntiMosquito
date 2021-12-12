@@ -1,11 +1,14 @@
-<template></template>
+<template>
+  <HeaderMain />
+</template>
 
 <script lang="ts">
+import HeaderMain from "@/components/main/headers/index.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  data() {
-    return {};
+  components: {
+    HeaderMain,
   },
 });
 </script>
