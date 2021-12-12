@@ -1,0 +1,16 @@
+name: deploy
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    name: 創建/更新 分支
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.7
+        with:
+          branch: rearEnd
+          folder: code/rearEnd
