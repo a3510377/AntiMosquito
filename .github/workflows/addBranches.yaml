@@ -19,4 +19,4 @@ jobs:
           BRANCH: rearEnd # The branch name where you want to push the assets
           FOLDER: code/rearEnd # The directory where your assets are generated
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
-          MESSAGE: msg # The commit message
+          MESSAGE: "upData:{msg}" # The commit message
