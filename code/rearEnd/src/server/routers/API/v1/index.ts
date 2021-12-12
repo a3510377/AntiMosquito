@@ -12,7 +12,8 @@ router
     const ip: string = req.query.ip as string;
     let data = await getIp(ip);
     if (!data) return res.status(400).send("無 ip 參數");
-    res.send();
+    // req.app.get("db")
+    res.json(data);
   });
 
 export default router;

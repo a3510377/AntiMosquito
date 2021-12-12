@@ -88,4 +88,3 @@ export function getTokenData(token: string) {
     id: getIdData(tokenData[1]),
   };
 }
-console.log(getTokenData(makeToken(makeId(9))));

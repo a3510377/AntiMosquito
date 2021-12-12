@@ -1,5 +1,4 @@
 import http from "http";
-import createError from "http-errors";
 import express from "express";
 import logger from "morgan";
 import path from "path";
@@ -35,12 +34,7 @@ app
   .use(logger("dev"))
   .use("/", express.static(path.join(__dirname, "../web")))
 
-  .use(routers)
-
-  .use(function (req, res, next) {
-    /* get 404 error */
-    next(createError(404));
-  });
+  .use(routers);
 
 server.on("error", (error: ErrnoException) => {
   if (error.syscall !== "listen") throw error;

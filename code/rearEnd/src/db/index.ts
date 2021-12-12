@@ -1,13 +1,21 @@
-import { MongoClient, MongoClientOptions, MongoServerError } from "mongodb";
+import {
+  MongoClient,
+  MongoClientOptions,
+  MongoServerError,
+  ObjectId,
+} from "mongodb";
 import { config } from "dotenv";
-import { getTokenData } from "@/utils/uuid";
+import { getTokenData, makeId, makeToken } from "@/utils/uuid";
+import { EventEmitter } from "events";
 
 config();
 
-export default class db {
+export default class db extends EventEmitter {
   client: MongoClient;
-  link: boolean = false;
+  protected link: boolean = false;
+  protected _idIndex: number = 0;
   constructor(public uri?: string, config?: MongoClientOptions) {
+    super();
     uri ||= process.env.dbUri;
     this.client = new MongoClient(uri, {
       monitorCommands: true,
@@ -26,6 +34,20 @@ export default class db {
   get Mosquitos() {
     return this.db.db("Mosquitos");
   }
+  /**添加站點 */
+  async makeSite(Location: string) {
+    this._idIndex = this._idIndex > 9 ? this._idIndex + 1 : 0;
+    let data = {
+      _id: makeId(this._idIndex) as unknown as ObjectId,
+      Location,
+      get Token() {
+        return makeToken(this._id);
+      },
+    };
+    await this.siteInfo.insertOne(data);
+    await this.Mosquitos.createCollection(data._id.toString());
+    return data;
+  }
   /**確認Token是否無誤 */
   async checkToken(token: string): Promise<boolean> {
     let tokenData = getTokenData(token);
@@ -39,6 +61,7 @@ export default class db {
       await this.client.connect();
       await this.db.db("admin").command({ ping: 1 });
     } finally {
+      this.emit("ready", this);
       console.log("DB: 連結完成");
       await this.init();
     }

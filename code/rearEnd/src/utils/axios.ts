@@ -1,5 +1,7 @@
 import axios from "axios";
 import { GeolocationAPIData } from "@/types/axios.data";
+import { config } from "dotenv";
+config();
 
 /**查看IP資料
  * @param IP 須查詢的IP
@@ -15,8 +17,8 @@ export const getIp = async (
     return false;
   return (
     await axios({
-      url: `https://api.ipgeolocation.io/ipgeo?ip=${IP}`,
+      url: `http://api.ipstack.com/${IP}?access_key=${process.env.ipApiToken}&format=1`,
       method: "GET",
     })
-  ).data() as GeolocationAPIData;
+  ).data as GeolocationAPIData;
 };
