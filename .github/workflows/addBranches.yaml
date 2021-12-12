@@ -17,26 +17,24 @@ jobs:
         with:
           node-version: "14.x"
 
-      - name: install
+      - name: install web package
         run: cd code/rearEnd/web && npm install
 
-      - name: build
+      - name: build web
         run: cd code/rearEnd/web && npm run build:pro
 
       # use https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-enable-built-in-jekyll-enable_jekyll
-      - name: Deploy
+      - name: Deploy web
         uses: peaceiris/actions-gh-pages@v3
         with:
           publish_dir: code/rearEnd/web/dist
           github_token: ${{ secrets.GITHUB_TOKEN }}
           user_email: a102009102009@gmail.com
+          user_name: a3510377
           commit_message: build${{ github.event.head_commit.message }}
           allow_empty_commit: false
 
       ################################################################
-
-      - name: cd
-        run: cd ..
 
       - name: Push
         uses: s0/git-publish-subdir-action@develop
