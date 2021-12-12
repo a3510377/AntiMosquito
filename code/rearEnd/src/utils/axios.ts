@@ -8,7 +8,7 @@ config();
  */
 export const getIp = async (
   IP: string
-): Promise<GeolocationAPIData | boolean> => {
+): Promise<GeolocationAPIData | false> => {
   if (
     !/^((25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)\.){3}(25[0-5]|2[0-4]\d|1\d{2}|[1-9]\d|\d)$/.test(
       IP

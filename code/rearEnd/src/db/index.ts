@@ -7,10 +7,12 @@ import {
 import { config } from "dotenv";
 import { getTokenData, makeId, makeToken } from "@/utils/uuid";
 import { EventEmitter } from "events";
+import { catchData } from "@/types/db.data";
 
 config();
 
 export default class db extends EventEmitter {
+  catch: catchData = { api: { checks: {} } };
   client: MongoClient;
   protected link: boolean = false;
   protected _idIndex: number = 0;
@@ -34,12 +36,13 @@ export default class db extends EventEmitter {
   get Mosquitos() {
     return this.db.db("Mosquitos");
   }
-  /**添加站點 */
-  async makeSite(Location: string) {
+  /**添加站點 (經度, 緯度)*/
+  async addSite(longitude: float, latitude: float, Ip: string) {
     this._idIndex = this._idIndex > 9 ? this._idIndex + 1 : 0;
     let data = {
       _id: makeId(this._idIndex) as unknown as ObjectId,
-      Location,
+      Location: { longitude, latitude },
+      Ip,
       get Token() {
         return makeToken(this._id);
       },

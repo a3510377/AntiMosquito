@@ -1,1 +1,1 @@
-export type float = number;
+declare type float = number;

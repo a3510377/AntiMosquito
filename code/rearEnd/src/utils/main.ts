@@ -5,11 +5,6 @@ export function reverse(str: string): string {
   return str.split("").reverse().join("");
 }
 
-export class mainData {
-  protected _makeIdIndex: number = 0;
-  constructor() {}
-  get makeIdIndex() {
-    return (this._makeIdIndex =
-      ++this._makeIdIndex > 10 ? 0 : this._makeIdIndex);
-  }
+export function random(max: number, min: number = 1): number {
+  return Math.floor(Math.random() * max) + min;
 }
