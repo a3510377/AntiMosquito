@@ -25,7 +25,7 @@ jobs:
 
       - name: copy web to server
         run: |
-          cp "code/rearEnd/web/dist/." "code/rearEnd/src/web"
+          cp -r "code/rearEnd/web/dist/." "code/rearEnd/src/web"
 
       # use https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-enable-built-in-jekyll-enable_jekyll
       - name: Deploy web
