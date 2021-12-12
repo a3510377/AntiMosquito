@@ -17,12 +17,11 @@ jobs:
         with:
           node-version: "14.x"
 
-      - name: run
-        run: cd code
-          cd rearEnd
-          cd web
-          npm install
-          npm run build:pro
+      - name: install
+        run: cd code/rearEnd/web && npm install
+
+      - name: build
+        run: npm run build:pro
 
       # use https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-enable-built-in-jekyll-enable_jekyll
       - name: Deploy
