@@ -9,8 +9,17 @@ jobs:
     name: 創建/更新 分支
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.7
-        with:
-          branch: rearEnd
-          folder: ../code/rearEnd
+      - uses: actions/checkout@v2
+      - name: copy
+        env:
+          SRC_FOLDER_PATH: "code/rearEnd"
+          TARGET_BRANCH: "dest"
+        run: |
+          files=$(find $SRC_FOLDER_PATH -type f)
+          git config --global user.email "a102009102009@gmail.com"
+          git fetch
+          git checkout $TARGET_BRANCH
+          git checkout ${GITHUB_REF##*/} -- $files
+          git add -A
+          git diff-index --quiet HEAD ||  git commit -am "deploy files"
+          git push origin $TARGET_BRANCH # push to remote branch
