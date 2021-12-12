@@ -23,6 +23,9 @@ jobs:
       - name: build web
         run: cd code/rearEnd/web && npm run build:pro
 
+      - name: copy web to server
+        run: cp "code/rearEnd/web/dist" "code/rearEnd/src/web"
+
       # use https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-enable-built-in-jekyll-enable_jekyll
       - name: Deploy web
         uses: peaceiris/actions-gh-pages@v3
