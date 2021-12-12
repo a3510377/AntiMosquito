@@ -5,12 +5,40 @@ on:
     branches: [master]
 
 jobs:
-  deploy:
-    name: Deploy
+  DeployRearEnd:
+    name: DeployRearEnd
     runs-on: ubuntu-latest
     steps:
       - name: git-checkout
         uses: actions/checkout@v2
+
+      - name: cd
+        run: cd code/rearEnd/web
+
+      - name: Setup Node.js v14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+
+      - name: Install
+        run: npm install
+
+      - name: Build
+        run: npm run build:pro
+
+      # use https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-enable-built-in-jekyll-enable_jekyll
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_dir: ./dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          user_email: a102009102009@gmail.com
+          commit_message: build${{ github.event.head_commit.message }}
+
+      ################################################################
+
+      - name: cd
+        run: cd ..
 
       - name: Push
         uses: s0/git-publish-subdir-action@develop

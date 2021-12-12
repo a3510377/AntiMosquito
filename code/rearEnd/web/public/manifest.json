@@ -1,0 +1,14 @@
+{
+    "name": "Vue",
+    "short_name": "Vue",
+    "scope": ".",
+    "start_url": ".",
+    "lang": "zh-TW",
+    "display": "standalone",
+    "background_color": "#fff",
+    "theme_color": "#0175C2",
+    "description": "Vue",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "related_applications": []
+}
