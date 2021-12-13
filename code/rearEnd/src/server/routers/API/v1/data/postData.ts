@@ -29,9 +29,24 @@ router.post("/postData", async (req, res) => {
       });
     else return res.status(400).json({});
   });
+  console.log(data);
 
-  db.Mosquitos.collection(userInfo._id).insertMany(data);
+  db.Mosquitos.collection(`${userInfo._id}`).insertMany(data);
   res.json(data);
 });
 
 export default router;
+
+// let t = async () => {
+//   let ip = "1.2.3.4";
+
+//   console.log(
+//     await fetch(
+//       `/api/v1/check?ip=${ip}&token=${
+//         (
+//           await fetch("/api/v1/setup?ip=" + ip)
+//         ).body
+//       }`
+//     )
+//   );
+// };
