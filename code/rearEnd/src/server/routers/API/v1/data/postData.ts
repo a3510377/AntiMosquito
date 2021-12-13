@@ -8,7 +8,7 @@ router.post("/postData", async (req, res) => {
   let body = req.body as { data: dataMosquitos[] };
   let Authorization = req.headers["Authorization"] as string;
 
-  if (Authorization || !Array.isArray(body)) return res.status(400).json({});
+  if (!Authorization || !Array.isArray(body)) return res.status(400).json({});
 
   let db = req.app.get("db") as dbType;
   /* TODO: 添加type */
@@ -31,7 +31,7 @@ router.post("/postData", async (req, res) => {
   });
   console.log(data);
   console.log(userInfo._id, userInfo);
-  
+
   db.Mosquitos.collection(`${userInfo._id}`).insertMany(data);
   res.json(data);
 });
