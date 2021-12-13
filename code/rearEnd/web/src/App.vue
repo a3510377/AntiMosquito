@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts">
-import templateMain from "@/views/template/main.vue";
+import templateMain from "@/views/main.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
