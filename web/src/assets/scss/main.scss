@@ -17,7 +17,6 @@ body {
 :root {
   --html-background-color: rgb(45, 43, 43);
   --main-color: black;
-  --link-color: #001aff;
   --html-margin-top: 40px;
   --header-background-color: rgb(85, 82, 82);
   --styleMode-color: #fff;
@@ -25,7 +24,7 @@ body {
 
 [href],
 [href]:visited {
-  color: var(--link-color);
+  color: #fff;
   text-decoration: none;
   &:hover {
     opacity: 0.8;

@@ -1,7 +1,7 @@
 <template>
   <header id="header" class="flex flex-item-center">
     <h1 class="title">蚊子</h1>
-    <Menu class="menu" />
+    <Menu />
   </header>
 </template>
 
@@ -31,15 +31,9 @@ export default defineComponent({
     margin: 0 5% 0 8%;
     width: 10%;
   }
-  .menu {
-    max-width: 80%;
-  }
   @media all and (max-width: 550px) {
     .title {
       width: auto;
-    }
-    .menu {
-      display: none;
     }
   }
 }
