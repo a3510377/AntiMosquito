@@ -8,14 +8,13 @@ router.post("/postData", async (req, res) => {
   let body = req.body as { data: dataMosquitos[] };
   let Authorization = req.headers["Authorization"] as string;
 
-  if (Authorization || !Array.isArray(body?.data))
-    return res.status(400).json({});
+  if (Authorization || !Array.isArray(body)) return res.status(400).json({});
 
   let db = req.app.get("db") as dbType;
   /* TODO: 添加type */
   let userInfo = (await db.checkToken(Authorization)) as any;
   let data: dataMosquitos[] = [];
-  body.data.forEach((value) => {
+  body.forEach((value) => {
     if (
       value?.Time &&
       value?.humidity &&
