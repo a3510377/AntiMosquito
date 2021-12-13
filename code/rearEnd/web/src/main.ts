@@ -1,6 +1,5 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import router from "./router";
 import plugins from "./plugins";
 
-createApp(App).use(router).use(plugins).mount("#app");
+createApp(App).use(plugins).mount("#app");
