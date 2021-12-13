@@ -6,14 +6,14 @@ const router = express.Router();
 
 router.post("/postData", async (req, res) => {
   let body = req.body as { data: dataMosquitos[] };
-  let Authorization = req.headers["Authorization"] as string;
+  let authorization = req.headers["authorization"] as string;
   console.log(req.headers);
 
-  if (!Authorization || !Array.isArray(body)) return res.status(400).json({});
+  if (!authorization || !Array.isArray(body)) return res.status(400).json({});
 
   let db = req.app.get("db") as dbType;
   /* TODO: 添加type */
-  let userInfo = (await db.checkToken(Authorization)) as any;
+  let userInfo = (await db.checkToken(authorization)) as any;
   let data: dataMosquitos[] = [];
   body.forEach((value) => {
     if (
