@@ -1,6 +1,6 @@
 <template>
   <header id="header" class="flex flex-item-center">
-    <h1 class="title">蚊子</h1>
+    <a href="/" class="title">蚊子</a>
     <Menu />
   </header>
 </template>
@@ -26,6 +26,7 @@ export default defineComponent({
   left: 0;
   right: 0;
   .title {
+    font-weight: 900;
     padding: 0;
     font-size: 20pt;
     margin: 0 5% 0 8%;

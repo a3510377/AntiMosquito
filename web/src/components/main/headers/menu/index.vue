@@ -2,7 +2,7 @@
   <div class="menu flex flex-item-center">
     <div class="list flex flex-center">
       <div>
-        <a href="/">文檔</a>
+        <router-link to="/">文檔</router-link>
       </div>
       <div>2</div>
       <div>3</div>
