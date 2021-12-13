@@ -84,7 +84,21 @@ export function makeToken(id: string): string {
 export function getTokenData(token: string) {
   if (tokenExp.test(token)) return false;
   let tokenData = token.split(".");
-  return {
-    id: getIdData(tokenData[1]),
-  };
+  let data:
+    | {
+        id: {
+          $2: string;
+          $10: number;
+          timestamp: number;
+          randomId: number;
+          readonly date: Date;
+        };
+      }
+    | false = false;
+  try {
+    data = {
+      id: getIdData(parseInt(tokenData[1], 36).toString()),
+    };
+  } catch {}
+  return data;
 }

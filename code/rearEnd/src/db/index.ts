@@ -43,20 +43,16 @@ export default class db extends EventEmitter {
       _id: makeId(this._idIndex) as unknown as ObjectId,
       Location: { longitude, latitude },
       Ip,
-      get Token() {
-        return makeToken(this._id);
-      },
     };
+    Object.assign(data, { Token: makeToken(data._id as unknown as string) });
     await this.siteInfo.insertOne(data);
     await this.Mosquitos.createCollection(data._id.toString());
     return data;
   }
   /**確認Token是否無誤 */
-  async checkToken(token: string): Promise<boolean> {
-    let tokenData = getTokenData(token);
-    if (!tokenData) return false;
-    let data = await this.siteInfo.findOne({ ID: tokenData.id.$10.toString() });
-    return data?.Token === token;
+  async checkToken(Token: string) {
+    if (!Token) return false;
+    return await this.siteInfo.findOne({ Token });
   }
   /**開始連線 */
   async run() {
