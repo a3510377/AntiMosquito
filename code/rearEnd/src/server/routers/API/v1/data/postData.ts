@@ -30,7 +30,8 @@ router.post("/postData", async (req, res) => {
     else return res.status(400).json({});
   });
   console.log(data);
-
+  console.log(userInfo._id, userInfo);
+  
   db.Mosquitos.collection(`${userInfo._id}`).insertMany(data);
   res.json(data);
 });
