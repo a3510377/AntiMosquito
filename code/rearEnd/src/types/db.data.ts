@@ -27,7 +27,7 @@ export interface siteInfo extends mainReturn {
 
 export interface dataMosquitos {
   Time: string; // 時間( timestamp1~timestamp2 )
-  humidity: number; // 濕度( % )
+  Humidity: number; // 濕度( % )
   Mosquitos: number; // 蚊子數量
   Temperature: number; // 溫度( 度 )
 }

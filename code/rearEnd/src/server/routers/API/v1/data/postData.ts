@@ -7,7 +7,6 @@ const router = express.Router();
 router.post("/postData", async (req, res) => {
   let body = req.body as { data: dataMosquitos[] };
   let authorization = req.headers["authorization"] as string;
-  console.log(req.headers);
 
   if (!authorization || !Array.isArray(body)) return res.status(400).json({});
 
@@ -18,20 +17,18 @@ router.post("/postData", async (req, res) => {
   body.forEach((value) => {
     if (
       value?.Time &&
-      value?.humidity &&
+      value?.Humidity &&
       value?.Mosquitos &&
       value?.Temperature
     )
       data.push({
         Time: value.Time,
-        humidity: value.humidity,
+        Humidity: value.Humidity,
         Mosquitos: value.Mosquitos,
         Temperature: value.Temperature,
       });
     else return res.status(400).json({});
   });
-  console.log(data);
-  console.log(userInfo._id, userInfo);
 
   db.Mosquitos.collection(`${userInfo._id}`).insertMany(data);
   res.json(data);
