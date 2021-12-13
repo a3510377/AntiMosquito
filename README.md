@@ -52,3 +52,17 @@ id -> {
   1 to 4: 隨機數
 }
 ```
+
+- 創建帳號
+  - `/api/v1/setup?ip=X.X.X.X`
+    - `method`: `GET`
+    - 回傳: $CREATE_TOKEN
+  - `/api/v1/check?ip=X.X.X.X&token=$CREATE_TOKEN`
+    - `method`: `GET`
+    - 回傳: `{ _id: # userID, Location: {}, Ip: "X.X.X.X", Token: $TOKEN # 以後需使用到的 token }`
+- post data
+  - `/api/v1/postData`
+    - `method`: `POST`
+    - `headers`: `{ Authorization: $TOKEN }`
+    - `data`: `[ { Time: ..., humidity: ..., Mosquitos: ..., Temperature: ..., } ]`
+    - 回傳: 存取的資料

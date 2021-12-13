@@ -5,17 +5,23 @@ import { dataMosquitos } from "@/types/db.data";
 const router = express.Router();
 
 router.post("/postData", async (req, res) => {
-  let body = req.body as { data: dataMosquitos[]; Authorization: string };
+  let body = req.body as { data: dataMosquitos[] };
+  let Authorization = req.headers["Authorization"] as string;
 
-  if (!body?.["Authorization"] || !Array.isArray(body?.data))
+  if (Authorization || !Array.isArray(body?.data))
     return res.status(400).json({});
 
   let db = req.app.get("db") as dbType;
   /* TODO: 添加type */
-  let userInfo = (await db.checkToken(body["Authorization"] as string)) as any;
+  let userInfo = (await db.checkToken(Authorization)) as any;
   let data: dataMosquitos[] = [];
   body.data.forEach((value) => {
-    if (value?.Time && value?.humidity && value?.Mosquitos && value?.Temperature)
+    if (
+      value?.Time &&
+      value?.humidity &&
+      value?.Mosquitos &&
+      value?.Temperature
+    )
       data.push({
         Time: value.Time,
         humidity: value.humidity,
