@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/postData", async (req, res) => {
   let body = req.body as { data: dataMosquitos[] };
   let Authorization = req.headers["Authorization"] as string;
+  console.log(req.headers);
 
   if (!Authorization || !Array.isArray(body)) return res.status(400).json({});
 
