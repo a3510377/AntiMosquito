@@ -5,6 +5,11 @@ export function reverse(str: string): string {
   return str.split("").reverse().join("");
 }
 
-export function random(max: number, min: number = 1): number {
-  return Math.floor(Math.random() * max) + min;
+export function random(
+  max: number,
+  min: number = 1,
+  floor: boolean = true
+): number {
+  if (floor) return Math.floor(Math.random() * max) + min;
+  return Math.random() * max + min;
 }

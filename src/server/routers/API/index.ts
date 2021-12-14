@@ -13,6 +13,11 @@ router
       __version__: config.version,
     });
   })
+  .get("/gateway", (req, res) =>
+    res.json({
+      url: "",
+    })
+  )
   .use("/v1", v1)
   .use(mainError({ notFound: "awa2" }));
 

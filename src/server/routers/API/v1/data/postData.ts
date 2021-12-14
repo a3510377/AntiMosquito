@@ -21,12 +21,19 @@ router.post("/postData", async (req, res) => {
       value?.Mosquitos &&
       value?.Temperature
     )
-      data.push({
-        Time: value.Time,
-        Humidity: value.Humidity,
-        Mosquitos: value.Mosquitos,
-        Temperature: value.Temperature,
-      });
+      try {
+        data.push({
+          Time: value.Time,
+          Humidity: +value.Humidity,
+          Mosquitos: +value.Mosquitos,
+          Temperature: +value.Temperature,
+        });
+      } catch {
+        return res.status(400).json({
+          messages: "data error",
+          code: 0,
+        });
+      }
     else return res.status(400).json({});
   });
 

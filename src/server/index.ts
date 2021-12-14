@@ -8,6 +8,8 @@ import routers from "./routers";
 import serverDb from "@/db";
 import { checkPort } from "@/utils/server";
 import { ErrnoException } from "@/http";
+import WebSocket from "ws";
+import ws from "./gateway";
 
 config();
 
@@ -15,6 +17,7 @@ export let port: number = checkPort(process.env.PORT);
 const app = express();
 const server = http.createServer(app);
 const db = new serverDb();
+const wss = new ws({ server });
 
 app
   .engine("html", require("ejs").renderFile)
