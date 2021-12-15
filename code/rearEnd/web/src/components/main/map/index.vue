@@ -25,7 +25,7 @@ export default defineComponent({
       layers: [
         new layerVector({
           source: new sourceVector({
-            url: "https://a3510377.github.io/AntiMosquito/data/Topology.json",
+            url: "https://kiang.github.io/taiwan_basecode/cunli/topo/20210324.json",
             format: new TopoJSON(),
           }),
           style: (data) => {
@@ -38,7 +38,11 @@ export default defineComponent({
                 fill: new Fill({ color: "#000" }),
               }),
             });
-            main.getText().setText(info.COUNTYNAME + info.TOWNNAME);
+            console.log(info);
+
+            main
+              .getText()
+              .setText(info.COUNTYNAME + info.TOWNNAME + info.VILLNAME);
             return main;
           },
           zIndex: 50,
@@ -55,7 +59,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .map {
-  width: 300px;
-  height: 300px;
+  width: 500px;
+  height: 500px;
 }
 </style>
