@@ -32,7 +32,7 @@ router
         code: 0,
       });
     else if (!authorization)
-      return res.status(401).json({ message: "token error or token error" });
+      return res.status(401).json({ message: "密鑰錯誤" });
 
     let db = req.app.get("db") as dbType;
     /* TODO: 添加type */
