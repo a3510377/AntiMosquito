@@ -26,7 +26,7 @@ export default defineComponent({
     geolocation.setTracking(true);
     geolocation.on("error", (error) => console.log(error.message));
     geolocation.on("change:position", function () {
-      var coordinates = geolocation.getPosition();
+      let coordinates = geolocation.getPosition();
       positionFeature.setGeometry(
         coordinates ? new Point(coordinates) : void 0
       );
