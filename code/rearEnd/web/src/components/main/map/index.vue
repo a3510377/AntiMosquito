@@ -39,48 +39,64 @@ export default defineComponent({
     let map = new Map({
       target: this.$refs.map as HTMLElement,
       layers: [
-        /* 鄉鎮 */
+        /* 里 */
         new layerVector({
           source: new sourceVector({
             url: "https://kiang.github.io/taiwan_basecode/cunli/topo/20210324.json",
             format: new TopoJSON(),
           }),
-          style: (data) => {
-            let info = data.getProperties();
-            let main = new Style({
-              stroke: new Stroke({ color: "#000", width: 1 }),
-              fill: new Fill({ color: "#ffffff" }),
-              text: new Text({
-                font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-                fill: new Fill({ color: "#000" }),
-              }),
-            });
-            main.getText().setText(`${info.TOWNNAME}${info.VILLNAME}`);
-            return main;
-          },
+          style: (feature, resolution) =>
+            resolution > 40
+              ? new Style({ fill: new Fill({ color: "#ffffff" }) })
+              : new Style({
+                  stroke: new Stroke({ color: "#000", width: 1 }),
+                  fill: new Fill({ color: "#ffffff" }),
+                  text: new Text({
+                    font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+                    fill: new Fill({ color: "#000" }),
+                    text: feature.get("VILLNAME"),
+                  }),
+                }),
           zIndex: 50,
         }),
-        /* 區 */
+        /* 鄉區 */
         new layerVector({
           source: new sourceVector({
             url: "https://kiang.github.io/taiwan_basecode/city/city.topo.json",
             format: new TopoJSON(),
           }),
-          style: new Style({
-            stroke: new Stroke({ color: "#ff0000", width: 1 }),
-            fill: new Fill({ color: "#ffffff00" }),
-          }),
+          style: (feature, resolution) =>
+            resolution > 40 && resolution < 180
+              ? new Style({
+                  stroke: new Stroke({ color: "#ff0000", width: 1 }),
+                  fill: new Fill({ color: "#ffffff00" }),
+                  text: new Text({
+                    font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+                    text: feature.get("TOWNNAME"),
+                  }),
+                })
+              : resolution <= 180
+              ? new Style({
+                  stroke: new Stroke({ color: "#ff0000", width: 1 }),
+                })
+              : void 0,
           zIndex: 100,
         }),
+        /* 縣市 */
         new layerVector({
           source: new sourceVector({
             url: "https://kiang.github.io/taiwan_basecode/county/topo/20200820.json",
             format: new TopoJSON(),
           }),
-          style: new Style({
-            stroke: new Stroke({ color: "#0000ff", width: 1 }),
-            fill: new Fill({ color: "#ffffff00" }),
-          }),
+          style: (feature, resolution) =>
+            new Style({
+              stroke: new Stroke({ color: "#0000ff", width: 1 }),
+              fill: new Fill({ color: "#ffffff00" }),
+              text: new Text({
+                font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+                text: resolution > 180 ? feature.get("COUNTYNAME") : void 0,
+              }),
+            }),
           zIndex: 100,
         }),
         /* 定位點 */
