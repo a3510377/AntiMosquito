@@ -16,17 +16,17 @@ router
     let body = req.body as { [IP: string]: dataMosquitos[] };
     let authorization = req.headers["authorization"] as string;
 
-    if (body.constructor === Object)
+    if (body.constructor !== Object)
       return res.status(400).json({
         messages: "參數錯誤",
         parametric: {
           data: {
             "IP: string": [
               {
-                Time: "時間: string | number",
-                Humidity: "濕度: number",
-                Mosquitos: "蚊子數量: number",
-                Temperature: "溫度: number",
+                time: "時間: string | number",
+                humidity: "濕度: number",
+                mosquitos: "蚊子數量: number",
+                temperature: "溫度: number",
               },
             ],
           },
