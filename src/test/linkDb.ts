@@ -11,25 +11,22 @@ console.log(new ObjectId().toString());
 let db = new MongoClient(process.env.dbUri, {
   monitorCommands: true,
 });
-let id = makeId(9),
-  token = makeToken(id);
-let data = {
-  _id: makeId(9) as unknown as ObjectId,
-  Location: "",
-  get Token() {
-    return makeToken(this._id);
-  },
-};
-console.log(data);
 
-// db.connect().then(() => {
-//   let siteInfo = db.db("data").collection("siteInfo");
-//   //
-//   siteInfo.insertOne(data).then((d) => console.log(d));
-// });
-//   siteInfo
-//     .findOne({
-//       ID: "455504617",
-//     })
-//     .then((d) => console.log(d));
-// });
+db.connect().then(async () => {
+  let Mosquitos = await db.db("Mosquitos").collections();
+  let data = {};
+  await Promise.all(
+    Mosquitos.map(async (site) =>
+      (
+        await site.find().toArray()
+      ).forEach((info) => {
+        delete info._id;
+        let area = info.location.area;
+        let _t = `${area.county}${area.town}${area.village}`;
+        data[_t] ||= [];
+        data[_t].push(info);
+      })
+    )
+  );
+  console.log(data);
+});

@@ -8,8 +8,22 @@ const router = express.Router();
 router
   .get("/data", async (req, res) => {
     let db = req.app.get("db") as dbType;
-    let data = [];
-    (await db.Mosquitos.collections()).forEach((db) => data.push(db.find()));
+    let data = {};
+    await Promise.all(
+      (
+        await db.Mosquitos.collections()
+      ).map(async (site) =>
+        (
+          await site.find().toArray()
+        ).forEach((info) => {
+          delete info._id;
+          let area = info.location.area;
+          let _t = `${area.county}${area.town}${area.village}`;
+          data[_t] ||= [];
+          data[_t].push(info);
+        })
+      )
+    );
     res.json(data);
   })
   .post("/postData", async (req, res) => {
