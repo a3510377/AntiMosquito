@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import axios from "axios";
 import { Map, View, Geolocation, Feature } from "ol";
 import { Vector as layerVector } from "ol/layer";
 import { Vector as sourceVector } from "ol/source";
@@ -13,9 +14,19 @@ import { TopoJSON } from "ol/format";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
 import "ol/ol.css";
+import { apiUrl } from "@/config";
 
 export default defineComponent({
-  mounted() {
+  data() {
+    return {
+      data: {},
+    };
+  },
+  async mounted() {
+    let data = (this.data = await axios({
+      url: `${apiUrl}/api/v1/data`,
+      method: "GET",
+    }));
     let positionFeature = new Feature(),
       firstPosDone = false;
     let appView = new View({
