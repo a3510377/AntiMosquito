@@ -41,34 +41,37 @@ router
     if (!userInfo) return res.status(401).json({ message: "密鑰錯誤" });
 
     let data: dbDataMosquitos[] = [];
-    Object.entries(body).forEach(async ([_ip, value], index) => {
-      let ipData = await getIp(_ip);
-      if (!ipData) return;
-      let info = await getVillage(ipData.longitude, ipData.latitude);
-      value.forEach(async (_key) => {
-        if (!info || info?.error) return;
+    await Promise.all(
+      Object.entries(body).map(async ([_ip, value]) => {
+        let ipData = await getIp(_ip);
         if (!ipData) return;
-        for (let chick of ["time", "humidity", "mosquitos", "temperature"])
-          if (!_key?.[chick]) return console.log(chick);
-        data.push({
-          time: _key.time,
-          humidity: _key.humidity,
-          mosquitos: _key.mosquitos,
-          temperature: _key.temperature,
-          location: {
+        let info = await getVillage(ipData.longitude, ipData.latitude);
+        if (!info) return;
+        return value.map((_key) => {
+          if (!info) return;
+          if (!ipData) return;
+          for (let chick of ["time", "humidity", "mosquitos", "temperature"])
+            if (!_key?.[chick]) return console.log(chick);
+          data.push({
+            time: _key.time,
+            humidity: _key.humidity,
+            mosquitos: _key.mosquitos,
+            temperature: _key.temperature,
             location: {
-              longitude: ipData.longitude,
-              latitude: ipData.latitude,
+              location: {
+                longitude: ipData.longitude,
+                latitude: ipData.latitude,
+              },
+              area: {
+                county: info.ctyName,
+                town: info.townName,
+                village: info.villageName,
+              },
             },
-            area: {
-              county: info.ctyName,
-              town: info.townName,
-              village: info.villageName,
-            },
-          },
+          });
         });
-      });
-    });
+      })
+    );
 
     data.length > 0 &&
       db.Mosquitos.collection(userInfo._id.toString()).insertMany(data);
@@ -76,17 +79,3 @@ router
   });
 
 export default router;
-
-// let t = async () => {
-//   let ip = "1.2.3.4";
-
-//   console.log(
-//     await fetch(
-//       `/api/v1/check?ip=${ip}&token=${
-//         (
-//           await fetch("/api/v1/setup?ip=" + ip)
-//         ).body
-//       }`
-//     )
-//   );
-// };
