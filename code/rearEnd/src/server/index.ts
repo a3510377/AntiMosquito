@@ -10,6 +10,7 @@ import { checkPort } from "@/utils/server";
 import { ErrnoException } from "@/http";
 import WebSocket from "ws";
 import ws from "./gateway";
+import { getIp } from "@/utils/axios";
 
 config();
 
@@ -71,3 +72,4 @@ server.on("listening", async () => {
 });
 
 export default server;
+getIp("118.232.71.19").then((d) => console.log(d));
