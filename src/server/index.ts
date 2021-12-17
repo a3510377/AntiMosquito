@@ -72,4 +72,3 @@ server.on("listening", async () => {
 });
 
 export default server;
-getIp("118.232.71.19").then((d) => console.log(d));
