@@ -1,8 +1,7 @@
 import axios from "axios";
 import { config } from "dotenv";
-import { xml2json } from "xml-js";
 
-import { GeolocationAPIData } from "@/types/axios.data";
+import { GeolocationAPIData, villageAPIData } from "@/types/axios.data";
 config();
 
 /**查看IP資料
@@ -25,12 +24,19 @@ export const getIp = async (
   ).data as GeolocationAPIData;
   return data?.error ? false : data;
 };
-export const getVillage = async (longitude: float, latitude: float) => {
+/**從經緯度抓取村里資料
+ * @param longitude 經度
+ * @param latitude 緯度
+ */
+export const getVillage = async (
+  longitude: float,
+  latitude: float
+): Promise<false | villageAPIData> => {
   let data = (
     await axios({
       url: `https://api.nlsc.gov.tw/other/TownVillagePointQuery/${longitude}/${latitude}/4326`,
       method: "GET",
     })
-  ).data;
+  ).data as villageAPIData;
   return data?.error ? false : data;
 };
