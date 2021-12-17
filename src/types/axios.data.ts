@@ -18,3 +18,14 @@ export interface GeolocationAPIData {
   error: unknown;
   [key: string]: unknown;
 }
+
+export interface villageAPIData {
+  /**縣市名 (ex: 台南市) */
+  ctyName: string;
+  /**區名 (ex: 七股區)*/
+  townName: string;
+  /**里 (ex: 義合里) */
+  villageName: string;
+  /**錯誤訊息 */
+  error: unknown;
+}
