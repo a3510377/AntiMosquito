@@ -42,14 +42,14 @@ router
 
     let data: dbDataMosquitos[] = [];
     Object.entries(body).forEach(async ([_ip, value], index) => {
-      let ipData = await getIp("ip");
+      let ipData = await getIp(_ip);
       if (!ipData) return;
+      let info = await getVillage(ipData.longitude, ipData.latitude);
       value.forEach(async (_key) => {
-        if (ipData === false) return;
-        let info = await getVillage(ipData.longitude, ipData.latitude);
         if (!info || info?.error) return;
+        if (!ipData) return;
         for (let chick of ["time", "humidity", "mosquitos", "temperature"])
-          if (!data?.[chick]) return;
+          if (!_key?.[chick]) return console.log(chick);
         data.push({
           time: _key.time,
           humidity: _key.humidity,
@@ -70,7 +70,8 @@ router
       });
     });
 
-    db.Mosquitos.collection(userInfo._id.toString()).insertMany(data);
+    data.length > 0 &&
+      db.Mosquitos.collection(userInfo._id.toString()).insertMany(data);
     res.json(data);
   });
 
