@@ -50,7 +50,7 @@ export default class db extends EventEmitter {
     return data;
   }
   /**確認Token是否無誤 */
-  async checkToken(Token: string) {
+  async checkToken(Token?: string) {
     if (!Token) return false;
     return await this.siteInfo.findOne({ Token });
   }
