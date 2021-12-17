@@ -97,7 +97,7 @@ export default defineComponent({
                 text: resolution > 180 ? feature.get("COUNTYNAME") : void 0,
               }),
             }),
-          zIndex: 100,
+          zIndex: 150,
         }),
         /* 定位點 */
         new layerVector({

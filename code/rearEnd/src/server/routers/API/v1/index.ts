@@ -10,6 +10,5 @@ router
   .get("/", (req, res) => res.status(200).json({ v: 1 }))
   .use(create)
   .use(postData);
-// .use(mainError({ notFound: "awa" }));
 
 export default router;
