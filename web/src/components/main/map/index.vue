@@ -12,15 +12,23 @@ import { defaults, Attribution } from "ol/control";
 import { Style, Fill, Stroke, Text, Circle } from "ol/style";
 import { TopoJSON } from "ol/format";
 import { fromLonLat } from "ol/proj";
-import { Point } from "ol/geom";
+import { Geometry, Point } from "ol/geom";
 import "ol/ol.css";
+
 import { apiUrl } from "@/config";
+import { Options as StyleOptions } from "ol/style/Style";
 import { ApiMainData } from "@/types/apiData";
+import RenderFeature from "ol/render/Feature";
+
+interface cFeature extends Feature<Geometry> {
+  _chick: boolean;
+}
 
 export default defineComponent({
   data() {
     return {
       data: {} as ApiMainData,
+      oldClick: void 0 as cFeature | undefined,
     };
   },
   async mounted() {
@@ -59,27 +67,7 @@ export default defineComponent({
             url: "https://kiang.github.io/taiwan_basecode/cunli/topo/20210324.json",
             format: new TopoJSON(),
           }),
-          style: (feature, resolution) => {
-            if (resolution > 40)
-              return new Style({ fill: new Fill({ color: "#ffffff" }) });
-            let mosquitos = 0;
-
-            (
-              data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")]?.[
-                feature.get("VILLNAME")
-              ] || []
-            ).forEach((d) => (mosquitos += d.mosquitos));
-
-            return new Style({
-              stroke: new Stroke({ color: "#000", width: 1 }),
-              fill: new Fill({ color: this.setFillColor(~~(mosquitos / 10)) }),
-              text: new Text({
-                font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-                fill: new Fill({ color: "#000" }),
-                text: `${feature.get("VILLNAME")}\n${mosquitos || ""}`,
-              }),
-            });
-          },
+          style: this.villageStyle.bind(this),
           zIndex: 50,
         }),
         /* 鄉區 */
@@ -112,6 +100,10 @@ export default defineComponent({
               return new Style({
                 stroke: new Stroke({ color: "#ff0000", width: 1 }),
               });
+            return new Style({
+              fill: new Fill({ color: "#fff" }),
+              stroke: new Stroke({ color: "#ff00004a", width: 1 }),
+            });
           },
           zIndex: 100,
         }),
@@ -127,7 +119,8 @@ export default defineComponent({
               fill: new Fill({ color: "#ffffff00" }),
               text: new Text({
                 font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-                text: resolution > 180 ? feature.get("COUNTYNAME") : void 0,
+                text:
+                  resolution > 180 ? feature.get("COUNTYNAME") || "" : void 0,
               }),
             });
           },
@@ -151,6 +144,29 @@ export default defineComponent({
         new Attribution({ collapsible: false, collapsed: true }),
       ]),
     });
+    // singleclick pointermove
+    map.on("singleclick", (e) => {
+      map.forEachFeatureAtPixel(e.pixel, (feature) => {
+        let _feature = feature as cFeature;
+        if (_feature.get("VILLNAME")) {
+          _feature._chick = _feature._chick ? false : true;
+          _feature.setStyle(
+            this.villageStyle(_feature, void 0, {
+              stroke: new Stroke({ color: "#000", width: 3 }),
+            })
+          );
+          if (this.oldClick !== null)
+            this.oldClick?.setStyle(
+              this.villageStyle(
+                this.oldClick as unknown as Feature<Geometry> | RenderFeature
+              )
+            );
+          this.oldClick = _feature;
+        } else if (_feature.get("VILLNAME")) {
+          _feature._chick = false;
+        }
+      });
+    });
   },
   methods: {
     setFillColor(num: number) {
@@ -165,6 +181,32 @@ export default defineComponent({
       else if (num > 0) color = "#e3d738";
 
       return color;
+    },
+    villageStyle(
+      feature: Feature<Geometry> | RenderFeature,
+      resolution?: number,
+      options?: StyleOptions
+    ) {
+      if (resolution && resolution > 40)
+        return new Style({ fill: new Fill({ color: "#ffffff" }) });
+      let mosquitos = 0;
+
+      (
+        this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")]?.[
+          feature.get("VILLNAME")
+        ] || []
+      ).forEach((d) => (mosquitos += d.mosquitos));
+
+      return new Style({
+        stroke: new Stroke({ color: "#000", width: 1 }),
+        fill: new Fill({ color: this.setFillColor(~~(mosquitos / 10)) }),
+        text: new Text({
+          font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+          fill: new Fill({ color: "#000" }),
+          text: `${feature.get("VILLNAME") || ""}\n${mosquitos || ""}`,
+        }),
+        ...options,
+      });
     },
   },
 });
