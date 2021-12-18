@@ -18,11 +18,10 @@ router
         ).forEach((info) => {
           delete info._id;
           let area = info.location.area;
-          let _t = `${area.county} ${area.town} ${area.village}`;
           let county = (data[area.county] ||= {});
-          let town = (county ||= {});
-          town ||= [];
-          data[_t].push(info);
+          let town = (county[area.town] ||= {});
+          let village = (town[area.village] ||= []);
+          village.push(info);
         })
       )
     );
