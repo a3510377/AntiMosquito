@@ -22,13 +22,19 @@ import RenderFeature from "ol/render/Feature";
 
 interface cFeature extends Feature<Geometry> {
   _chick: boolean;
+  mosquitos: number;
 }
 
 export default defineComponent({
   data() {
     return {
       data: {} as ApiMainData,
-      oldClick: void 0 as cFeature | undefined,
+      oldClick: {
+        /**里 */
+        village: void 0 as cFeature | undefined,
+        /**鄉 */
+        town: void 0 as cFeature | undefined,
+      },
     };
   },
   async mounted() {
@@ -66,7 +72,7 @@ export default defineComponent({
         style: this.villageStyle.bind(this),
         zIndex: 50,
       }),
-      /** 鄉區 */
+      /** 鄉鎮 */
       town = new layerVector({
         source: new sourceVector({
           url: "https://kiang.github.io/taiwan_basecode/city/city.topo.json",
@@ -141,30 +147,42 @@ export default defineComponent({
       ]),
     });
     // singleclick pointermove
+    const toggleFun = (feature: cFeature, options: { setStyle?: Style }) => {
+      feature._chick = feature._chick ? false : true;
+      feature.setStyle(options.setStyle);
+      return feature;
+    };
     map.on("singleclick", (e) => {
+      /* 里 */
       map.forEachFeatureAtPixel(
         e.pixel,
-        (feature, t, t1) => {
-          let _feature = feature as cFeature;
-          if (_feature.get("VILLNAME")) {
-            _feature._chick = _feature._chick ? false : true;
-            _feature.setStyle(
-              this.villageStyle(_feature, void 0, {
+        (_feature) => {
+          let feature = _feature as cFeature;
+
+          if (feature.get("VILLNAME") && map.getView().get("resolution") < 40) {
+            feature = toggleFun(feature, {
+              setStyle: this.villageStyle(feature, void 0, {
                 stroke: new Stroke({ color: "#000", width: 3 }),
-              })
-            );
-            if (this.oldClick !== null)
-              this.oldClick?.setStyle(
-                this.villageStyle(
-                  this.oldClick as unknown as Feature<Geometry> | RenderFeature
-                )
+              }),
+            });
+            if (this.oldClick.village)
+              this.oldClick.village?.setStyle(
+                this.villageStyle(this.oldClick.village as cFeature)
               );
-            this.oldClick = _feature;
-          } else if (_feature.get("VILLNAME")) {
-            _feature._chick = false;
+            this.oldClick.village = feature;
           }
         },
         { layerFilter: (layer) => layer === village }
+      );
+      /* 鄉鎮 */
+      map.forEachFeatureAtPixel(
+        e.pixel,
+        (_feature) => {
+          let feature = _feature as cFeature;
+        },
+        {
+          layerFilter: (layer) => layer === town,
+        }
       );
     });
   },
@@ -183,19 +201,23 @@ export default defineComponent({
       return color;
     },
     villageStyle(
-      feature: Feature<Geometry> | RenderFeature,
+      _feature: cFeature | Feature<Geometry> | RenderFeature,
       resolution?: number,
       options?: StyleOptions
     ) {
+      let feature = _feature as cFeature;
       if (resolution && resolution > 40)
         return new Style({ fill: new Fill({ color: "#ffffff" }) });
       let mosquitos = 0;
 
-      (
-        this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")]?.[
-          feature.get("VILLNAME")
-        ] || []
-      ).forEach((d) => (mosquitos += d.mosquitos));
+      if (feature.mosquitos === void 0)
+        (
+          this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")]?.[
+            feature.get("VILLNAME")
+          ] || []
+        ).forEach((d) => (mosquitos += d.mosquitos));
+
+      mosquitos = feature.mosquitos ||= mosquitos;
 
       return new Style({
         stroke: new Stroke({ color: "#000", width: 1 }),
