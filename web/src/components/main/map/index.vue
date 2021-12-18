@@ -76,7 +76,7 @@ export default defineComponent({
               text: new Text({
                 font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
                 fill: new Fill({ color: "#000" }),
-                text: feature.get("VILLNAME"),
+                text: `${feature.get("VILLNAME")}\n${mosquitos || ""}`,
               }),
             });
           },
@@ -104,7 +104,7 @@ export default defineComponent({
                 }),
                 text: new Text({
                   font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-                  text: feature.get("TOWNNAME"),
+                  text: `${feature.get("TOWNNAME")}\n${mosquitos || ""}`,
                 }),
               });
             }
