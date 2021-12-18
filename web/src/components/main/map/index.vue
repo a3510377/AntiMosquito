@@ -57,88 +57,84 @@ export default defineComponent({
         firstPosDone = true;
       }
     });
-
-    let map = new Map({
-      target: this.$refs.map as HTMLElement,
-      layers: [
-        /* 里 */
-        new layerVector({
-          source: new sourceVector({
-            url: "https://kiang.github.io/taiwan_basecode/cunli/topo/20210324.json",
-            format: new TopoJSON(),
-          }),
-          style: this.villageStyle.bind(this),
-          zIndex: 50,
+    /** 里 */
+    let village = new layerVector({
+        source: new sourceVector({
+          url: "https://kiang.github.io/taiwan_basecode/cunli/topo/20210324.json",
+          format: new TopoJSON(),
         }),
-        /* 鄉區 */
-        new layerVector({
-          source: new sourceVector({
-            url: "https://kiang.github.io/taiwan_basecode/city/city.topo.json",
-            format: new TopoJSON(),
-          }),
-          style: (feature, resolution) => {
-            if (resolution > 40 && resolution < 180) {
-              let mosquitos = 0;
-              Object.entries(
-                data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] ||
-                  {}
-              ).forEach(([$_0, value]) =>
-                value.forEach((v) => (mosquitos += v.mosquitos))
-              );
-              return new Style({
-                stroke: new Stroke({ color: "#ff0000", width: 1 }),
-                fill: new Fill({
-                  color: this.setFillColor(~~(mosquitos / 50)),
-                }),
-                text: new Text({
-                  font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-                  text: `${feature.get("TOWNNAME")}\n${mosquitos || ""}`,
-                }),
-              });
-            }
-            if (resolution <= 180)
-              return new Style({
-                stroke: new Stroke({ color: "#ff0000", width: 1 }),
-              });
-            return new Style({
-              fill: new Fill({ color: "#fff" }),
-              stroke: new Stroke({ color: "#ff00004a", width: 1 }),
-            });
-          },
-          zIndex: 100,
+        style: this.villageStyle.bind(this),
+        zIndex: 50,
+      }),
+      /** 鄉區 */
+      town = new layerVector({
+        source: new sourceVector({
+          url: "https://kiang.github.io/taiwan_basecode/city/city.topo.json",
+          format: new TopoJSON(),
         }),
-        /* 縣市 */
-        new layerVector({
-          source: new sourceVector({
-            url: "https://kiang.github.io/taiwan_basecode/county/topo/20200820.json",
-            format: new TopoJSON(),
-          }),
-          style: (feature, resolution) => {
+        style: (feature, resolution) => {
+          if (resolution > 40 && resolution < 180) {
+            let mosquitos = 0;
+            Object.entries(
+              data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] || {}
+            ).forEach(([$_0, value]) =>
+              value.forEach((v) => (mosquitos += v.mosquitos))
+            );
             return new Style({
-              stroke: new Stroke({ color: "#0000ff", width: 1 }),
-              fill: new Fill({ color: "#ffffff00" }),
+              stroke: new Stroke({ color: "#ff0000", width: 1 }),
+              fill: new Fill({
+                color: this.setFillColor(~~(mosquitos / 50)),
+              }),
               text: new Text({
-                font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-                text:
-                  resolution > 180 ? feature.get("COUNTYNAME") || "" : void 0,
+                font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+                text: `${feature.get("TOWNNAME")}\n${mosquitos || ""}`,
               }),
             });
-          },
-          zIndex: 150,
+          }
+          if (resolution <= 180)
+            return new Style({
+              stroke: new Stroke({ color: "#ff0000", width: 1 }),
+            });
+          return new Style({
+            fill: new Fill({ color: "#fff" }),
+            stroke: new Stroke({ color: "#ff00004a", width: 1 }),
+          });
+        },
+        zIndex: 100,
+      }),
+      /** 縣市 */
+      county = new layerVector({
+        source: new sourceVector({
+          url: "https://kiang.github.io/taiwan_basecode/county/topo/20200820.json",
+          format: new TopoJSON(),
         }),
-        /* 定位點 */
-        new layerVector({
-          source: new sourceVector({ features: [positionFeature] }),
-          style: new Style({
-            image: new Circle({
-              radius: 6,
-              fill: new Fill({ color: "#3399CC" }),
-              stroke: new Stroke({ color: "#fff", width: 2 }),
+        style: (feature, resolution) => {
+          return new Style({
+            stroke: new Stroke({ color: "#0000ff", width: 1 }),
+            fill: new Fill({ color: "#ffffff00" }),
+            text: new Text({
+              font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+              text: resolution > 180 ? feature.get("COUNTYNAME") || "" : void 0,
             }),
+          });
+        },
+        zIndex: 150,
+      }),
+      /** 定位點 */
+      locationPoint = new layerVector({
+        source: new sourceVector({ features: [positionFeature] }),
+        style: new Style({
+          image: new Circle({
+            radius: 6,
+            fill: new Fill({ color: "#3399CC" }),
+            stroke: new Stroke({ color: "#fff", width: 2 }),
           }),
-          zIndex: 200,
         }),
-      ],
+        zIndex: 200,
+      });
+    let map = new Map({
+      target: this.$refs.map as HTMLElement,
+      layers: [village, town, county, locationPoint],
       view: appView,
       controls: defaults({ attribution: false }).extend([
         new Attribution({ collapsible: false, collapsed: true }),
@@ -146,26 +142,30 @@ export default defineComponent({
     });
     // singleclick pointermove
     map.on("singleclick", (e) => {
-      map.forEachFeatureAtPixel(e.pixel, (feature) => {
-        let _feature = feature as cFeature;
-        if (_feature.get("VILLNAME")) {
-          _feature._chick = _feature._chick ? false : true;
-          _feature.setStyle(
-            this.villageStyle(_feature, void 0, {
-              stroke: new Stroke({ color: "#000", width: 3 }),
-            })
-          );
-          if (this.oldClick !== null)
-            this.oldClick?.setStyle(
-              this.villageStyle(
-                this.oldClick as unknown as Feature<Geometry> | RenderFeature
-              )
+      map.forEachFeatureAtPixel(
+        e.pixel,
+        (feature, t, t1) => {
+          let _feature = feature as cFeature;
+          if (_feature.get("VILLNAME")) {
+            _feature._chick = _feature._chick ? false : true;
+            _feature.setStyle(
+              this.villageStyle(_feature, void 0, {
+                stroke: new Stroke({ color: "#000", width: 3 }),
+              })
             );
-          this.oldClick = _feature;
-        } else if (_feature.get("VILLNAME")) {
-          _feature._chick = false;
-        }
-      });
+            if (this.oldClick !== null)
+              this.oldClick?.setStyle(
+                this.villageStyle(
+                  this.oldClick as unknown as Feature<Geometry> | RenderFeature
+                )
+              );
+            this.oldClick = _feature;
+          } else if (_feature.get("VILLNAME")) {
+            _feature._chick = false;
+          }
+        },
+        { layerFilter: (layer) => layer === village }
+      );
     });
   },
   methods: {
