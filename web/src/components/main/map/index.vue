@@ -78,34 +78,7 @@ export default defineComponent({
           url: "https://kiang.github.io/taiwan_basecode/city/city.topo.json",
           format: new TopoJSON(),
         }),
-        style: (feature, resolution) => {
-          if (resolution > 40 && resolution < 180) {
-            let mosquitos = 0;
-            Object.entries(
-              data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] || {}
-            ).forEach(([$_0, value]) =>
-              value.forEach((v) => (mosquitos += v.mosquitos))
-            );
-            return new Style({
-              stroke: new Stroke({ color: "#ff0000", width: 1 }),
-              fill: new Fill({
-                color: this.setFillColor(~~(mosquitos / 50)),
-              }),
-              text: new Text({
-                font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-                text: `${feature.get("TOWNNAME")}\n${mosquitos || ""}`,
-              }),
-            });
-          }
-          if (resolution <= 180)
-            return new Style({
-              stroke: new Stroke({ color: "#ff0000", width: 1 }),
-            });
-          return new Style({
-            fill: new Fill({ color: "#fff" }),
-            stroke: new Stroke({ color: "#ff00004a", width: 1 }),
-          });
-        },
+        style: this.townStyle.bind(this),
         zIndex: 100,
       }),
       /** 縣市 */
@@ -166,9 +139,7 @@ export default defineComponent({
               }),
             });
             if (this.oldClick.village)
-              this.oldClick.village?.setStyle(
-                this.villageStyle(this.oldClick.village as cFeature)
-              );
+              this.oldClick.village?.setStyle(this.villageStyle);
             this.oldClick.village = feature;
           }
         },
@@ -179,6 +150,14 @@ export default defineComponent({
         e.pixel,
         (_feature) => {
           let feature = _feature as cFeature;
+          let resolution = map.getView().get("resolution") as number;
+          feature = toggleFun(feature, {
+            setStyle: this.townStyle(feature, resolution, {
+              stroke: new Stroke({ color: "#000", width: 3 }),
+            }),
+          });
+          if (this.oldClick.town) this.oldClick.town?.setStyle(this.townStyle);
+          this.oldClick.town = feature;
         },
         {
           layerFilter: (layer) => layer === town,
@@ -199,6 +178,41 @@ export default defineComponent({
       else if (num > 0) color = "#e3d738";
 
       return color;
+    },
+    townStyle(
+      _feature: cFeature | Feature<Geometry> | RenderFeature,
+      resolution?: number,
+      options?: StyleOptions
+    ) {
+      let feature = _feature as cFeature;
+      if (resolution && resolution > 40 && resolution < 180) {
+        let mosquitos = 0;
+        Object.entries(
+          this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] ||
+            {}
+        ).forEach(([$_0, value]) =>
+          value.forEach((v) => (mosquitos += v.mosquitos))
+        );
+        return new Style({
+          stroke: new Stroke({ color: "#ff0000", width: 1 }),
+          fill: new Fill({
+            color: this.setFillColor(~~(mosquitos / 50)),
+          }),
+          text: new Text({
+            font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+            text: `${feature.get("TOWNNAME")}\n${mosquitos || ""}`,
+          }),
+          ...options,
+        });
+      }
+      if (resolution && resolution <= 180)
+        return new Style({
+          stroke: new Stroke({ color: "#ff0000", width: 1 }),
+        });
+      return new Style({
+        fill: new Fill({ color: "#fff" }),
+        stroke: new Stroke({ color: "#ff00004a", width: 1 }),
+      });
     },
     villageStyle(
       _feature: cFeature | Feature<Geometry> | RenderFeature,
