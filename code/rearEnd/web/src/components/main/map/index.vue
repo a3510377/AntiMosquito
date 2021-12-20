@@ -1,5 +1,7 @@
 <template>
   <div class="map" ref="map" />
+  <div class="loading" ref="loading" />
+  <div class="test" v-text="oldClick"></div>
 </template>
 
 <script lang="ts">
@@ -21,7 +23,7 @@ import { ApiMainData } from "@/types/apiData";
 import RenderFeature from "ol/render/Feature";
 
 interface cFeature extends Feature<Geometry> {
-  _chick: boolean;
+  ol_uid: string;
   mosquitos: number;
 }
 
@@ -38,12 +40,13 @@ export default defineComponent({
     };
   },
   async mounted() {
-    let data = (this.data = (
+    let loading = this.$refs.loading as HTMLElement;
+    this.data = (
       await axios({
         url: `${apiUrl}/api/v1/data`,
         method: "GET",
       })
-    ).data as ApiMainData);
+    ).data as ApiMainData;
     let positionFeature = new Feature(),
       firstPosDone = false;
     let appView = new View({
@@ -110,6 +113,7 @@ export default defineComponent({
         new Attribution({ collapsible: false, collapsed: true }),
       ]),
     });
+    // map.on("render", () => console.log("test"))
     map.on("singleclick", (e) => {
       /* 里 */
       map.forEachFeatureAtPixel(
@@ -123,7 +127,10 @@ export default defineComponent({
                 stroke: new Stroke({ color: "#000", width: 3 }),
               })
             );
-            if (this.oldClick.village)
+            if (
+              this.oldClick.village &&
+              this.oldClick.village?.ol_uid !== feature.ol_uid
+            )
               this.oldClick.village?.setStyle(this.villageStyle);
             this.oldClick.village = feature;
           }
@@ -141,7 +148,10 @@ export default defineComponent({
               stroke: new Stroke({ color: "#000", width: 3 }),
             })
           );
-          if (this.oldClick.town && !Object.is(this.oldClick, feature))
+          if (
+            this.oldClick.town &&
+            this.oldClick.village?.ol_uid !== feature.ol_uid
+          )
             this.oldClick.town?.setStyle(this.townStyle);
           this.oldClick.town = feature;
         },
