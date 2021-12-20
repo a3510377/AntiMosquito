@@ -170,7 +170,6 @@ export default defineComponent({
     ) {
       let feature = _feature as cFeature;
       let mosquitos = 0;
-      console.log(feature.mosquitos);
 
       if (feature.mosquitos === void 0) {
         let data = this.data?.[feature.get("COUNTYNAME")];
