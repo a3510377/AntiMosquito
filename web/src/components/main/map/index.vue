@@ -87,16 +87,7 @@ export default defineComponent({
           url: "https://kiang.github.io/taiwan_basecode/county/topo/20200820.json",
           format: new TopoJSON(),
         }),
-        style: (feature, resolution) => {
-          return new Style({
-            stroke: new Stroke({ color: "#0000ff", width: 1 }),
-            fill: new Fill({ color: "#ffffff00" }),
-            text: new Text({
-              font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-              text: resolution > 180 ? feature.get("COUNTYNAME") || "" : void 0,
-            }),
-          });
-        },
+        style: this.countyStyle.bind(this),
         zIndex: 150,
       }),
       /** 定位點 */
@@ -119,12 +110,6 @@ export default defineComponent({
         new Attribution({ collapsible: false, collapsed: true }),
       ]),
     });
-    // singleclick pointermove
-    const toggleFun = (feature: cFeature, options: { setStyle?: Style }) => {
-      feature._chick = feature._chick ? false : true;
-      feature.setStyle(options.setStyle);
-      return feature;
-    };
     map.on("singleclick", (e) => {
       /* 里 */
       map.forEachFeatureAtPixel(
@@ -133,11 +118,11 @@ export default defineComponent({
           let feature = _feature as cFeature;
 
           if (feature.get("VILLNAME") && map.getView().get("resolution") < 40) {
-            feature = toggleFun(feature, {
-              setStyle: this.villageStyle(feature, void 0, {
+            feature.setStyle(
+              this.villageStyle(feature, void 0, {
                 stroke: new Stroke({ color: "#000", width: 3 }),
-              }),
-            });
+              })
+            );
             if (this.oldClick.village)
               this.oldClick.village?.setStyle(this.villageStyle);
             this.oldClick.village = feature;
@@ -151,17 +136,16 @@ export default defineComponent({
         (_feature) => {
           let feature = _feature as cFeature;
           let resolution = map.getView().get("resolution") as number;
-          feature = toggleFun(feature, {
-            setStyle: this.townStyle(feature, resolution, {
+          feature.setStyle(
+            this.townStyle(feature, resolution, {
               stroke: new Stroke({ color: "#000", width: 3 }),
-            }),
-          });
-          if (this.oldClick.town) this.oldClick.town?.setStyle(this.townStyle);
+            })
+          );
+          if (this.oldClick.town && !Object.is(this.oldClick, feature))
+            this.oldClick.town?.setStyle(this.townStyle);
           this.oldClick.town = feature;
         },
-        {
-          layerFilter: (layer) => layer === town,
-        }
+        { layerFilter: (layer) => layer === town }
       );
     });
   },
@@ -179,6 +163,40 @@ export default defineComponent({
 
       return color;
     },
+    countyStyle(
+      _feature: cFeature | Feature<Geometry> | RenderFeature,
+      resolution?: number,
+      options?: StyleOptions
+    ) {
+      let feature = _feature as cFeature;
+      let mosquitos = 0;
+
+      if (feature.mosquitos === void 0) {
+        let data = this.data?.[feature.get("COUNTYNAME")];
+        if (typeof data === "object")
+          Object.entries(data).forEach(([$_0, value]) =>
+            Object.entries(value).forEach(([$_1, _value]) =>
+              _value.forEach((v) => (mosquitos += v.mosquitos))
+            )
+          );
+      }
+      mosquitos = feature.mosquitos ||= mosquitos;
+
+      // if (mosquitos)
+
+      return new Style({
+        stroke: new Stroke({ color: "#0000ff", width: 1 }),
+        fill: new Fill({ color: "#ffffff00" }),
+        text: new Text({
+          font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+          text:
+            resolution && resolution > 180
+              ? feature.get("COUNTYNAME") + mosquitos || ""
+              : void 0,
+        }),
+        ...options,
+      });
+    },
     townStyle(
       _feature: cFeature | Feature<Geometry> | RenderFeature,
       resolution?: number,
@@ -187,12 +205,17 @@ export default defineComponent({
       let feature = _feature as cFeature;
       if (resolution && resolution > 40 && resolution < 180) {
         let mosquitos = 0;
-        Object.entries(
-          this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] ||
-            {}
-        ).forEach(([$_0, value]) =>
-          value.forEach((v) => (mosquitos += v.mosquitos))
-        );
+
+        if (feature.mosquitos === void 0)
+          Object.entries(
+            this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] ||
+              {}
+          ).forEach(([$_0, value]) =>
+            value.forEach((v) => (mosquitos += v.mosquitos))
+          );
+
+        mosquitos = feature.mosquitos ||= mosquitos;
+
         return new Style({
           stroke: new Stroke({ color: "#ff0000", width: 1 }),
           fill: new Fill({

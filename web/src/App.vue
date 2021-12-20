@@ -1,6 +1,6 @@
 <template>
   <templateMain />
-  <router-views />
+  <router-view class="wrapper" />
   <Map />
 </template>
 
