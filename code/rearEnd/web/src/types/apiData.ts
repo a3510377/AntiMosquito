@@ -1,12 +1,12 @@
 export interface villageData {
   time: string;
-  humidity: float;
-  mosquitos: float;
-  temperature: float;
+  humidity: number;
+  mosquitos: number;
+  temperature: number;
   location: {
     location: {
-      longitude: float;
-      latitude: float;
+      longitude: number;
+      latitude: number;
     };
     area: {
       county: string;
