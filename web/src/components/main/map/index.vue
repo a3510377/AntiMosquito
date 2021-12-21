@@ -1,7 +1,6 @@
 <template>
   <div class="map" ref="map" />
   <div class="loading" ref="loading" />
-  <div class="test" v-text="oldClick"></div>
 </template>
 
 <script lang="ts">
@@ -21,6 +20,7 @@ import { apiUrl } from "@/config";
 import { Options as StyleOptions } from "ol/style/Style";
 import { ApiMainData } from "@/types/apiData";
 import RenderFeature from "ol/render/Feature";
+import { mapProgress } from "./progress";
 
 interface cFeature extends Feature<Geometry> {
   ol_uid: string;
@@ -193,17 +193,20 @@ export default defineComponent({
       mosquitos = feature.mosquitos ||= mosquitos;
 
       // if (mosquitos)
-
+      // color: this.setFillColor(~~(mosquitos / 50)),
+      if (resolution && resolution > 180)
+        return new Style({
+          stroke: new Stroke({ color: "#0000ff", width: 1 }),
+          fill: new Fill({ color: this.setFillColor(~~(mosquitos / 100)) }),
+          text: new Text({
+            font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+            text: `${feature.get("COUNTYNAME")}\n${mosquitos || ""}`,
+          }),
+          ...options,
+        });
       return new Style({
         stroke: new Stroke({ color: "#0000ff", width: 1 }),
         fill: new Fill({ color: "#ffffff00" }),
-        text: new Text({
-          font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-          text:
-            resolution && resolution > 180
-              ? feature.get("COUNTYNAME") + mosquitos || ""
-              : void 0,
-        }),
         ...options,
       });
     },
