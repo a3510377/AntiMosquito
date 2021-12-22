@@ -36,6 +36,8 @@ export default defineComponent({
         village: void 0 as cFeature | undefined,
         /**鄉 */
         town: void 0 as cFeature | undefined,
+        /**縣市 */
+        county: void 0 as cFeature | undefined,
       },
     };
   },
@@ -150,12 +152,30 @@ export default defineComponent({
           );
           if (
             this.oldClick.town &&
-            this.oldClick.village?.ol_uid !== feature.ol_uid
+            this.oldClick.town?.ol_uid !== feature.ol_uid
           )
             this.oldClick.town?.setStyle(this.townStyle);
           this.oldClick.town = feature;
         },
         { layerFilter: (layer) => layer === town }
+      );
+      map.forEachFeatureAtPixel(
+        e.pixel,
+        (_feature) => {
+          let feature = _feature as cFeature;
+          feature.setStyle(
+            this.countyStyle(feature, void 0, {
+              stroke: new Stroke({ color: "#000", width: 3 }),
+            })
+          );
+          if (
+            this.oldClick.county &&
+            this.oldClick.county?.ol_uid !== feature.ol_uid
+          )
+            this.oldClick.county?.setStyle(this.townStyle);
+          this.oldClick.county = feature;
+        },
+        { layerFilter: (layer) => layer === county }
       );
     });
   },
@@ -192,8 +212,6 @@ export default defineComponent({
       }
       mosquitos = feature.mosquitos ||= mosquitos;
 
-      // if (mosquitos)
-      // color: this.setFillColor(~~(mosquitos / 50)),
       if (resolution && resolution > 180)
         return new Style({
           stroke: new Stroke({ color: "#0000ff", width: 1 }),
