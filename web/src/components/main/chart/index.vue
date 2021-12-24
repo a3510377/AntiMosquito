@@ -18,19 +18,8 @@ export default defineComponent({
     let myChart = echarts.init(this.chart);
     myChart.showLoading();
     myChart.setOption({
-      title: {
-        text: "歷年登革熱病例數",
-      },
-      tooltip: {},
-      legend: {
-        orient: "vertical",
-        left: "right",
-        data: ["男", "女"],
-      },
-      xAxis: {
-        data: [],
-      },
-      yAxis: {},
+      title: { text: "歷年登革熱病例數" },
+      legend: { orient: "vertical", left: "right", data: ["男", "女"] },
     });
     let data = (
         await axios({
@@ -63,7 +52,7 @@ export default defineComponent({
     myChart.hideLoading();
     myChart.setOption({
       xAxis: { data: Object.keys(dictData) },
-      yAxis: {},
+      yAxis: [{ type: "value" }],
       series: [
         {
           name: "男",
@@ -87,5 +76,6 @@ export default defineComponent({
 .chart {
   width: 600px;
   height: 400px;
+  background-color: white;
 }
 </style>
