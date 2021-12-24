@@ -34,7 +34,6 @@ router
       url: "",
     })
   )
-  .use("/v1", v1)
-  .use(mainError({ notFound: "awa2" }));
+  .use("/v1", v1);
 
 export default router;
