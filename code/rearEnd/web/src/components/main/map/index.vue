@@ -62,7 +62,7 @@ export default defineComponent({
         firstPosDone = true;
       }
     });
-    return { oldClick, positionFeature, map, appView };
+    return { oldClick, positionFeature, map, appView, geolocation };
   },
   async mounted() {
     let oldClick = this.oldClick,
@@ -151,6 +151,21 @@ export default defineComponent({
             title: "快篩院所",
           },
           () => layers.NS1Test.setVisible(!layers.NS1Test.getVisible())
+        ),
+        new baseControl(
+          {
+            target: map,
+            text: `<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px" fill="#fff"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`,
+            title: "定位到我",
+            show: !!this.geolocation.getPosition(),
+          },
+          () => {
+            A_map.getView().setZoom(12);
+            A_map.getView().animate({
+              center: this.geolocation.getPosition(),
+              duration: 1,
+            });
+          }
         ),
       ],
     });
