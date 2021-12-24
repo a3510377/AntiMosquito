@@ -1,6 +1,6 @@
 <template>
   <HeaderMain />
-  <!-- <chartMain /> -->
+  <chartMain />
 </template>
 
 <script lang="ts">
