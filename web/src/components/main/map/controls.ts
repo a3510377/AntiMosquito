@@ -6,7 +6,7 @@ export class baseControl {
       target?: HTMLElement;
       show?: boolean;
     } = {},
-    private clickEvent?: Function
+    private clickEvent?: (this: HTMLButtonElement, ev: MouseEvent) => any
   ) {
     if (this.options.show === void 0) this.options.show = true;
   }
@@ -16,15 +16,20 @@ export class baseControl {
     button.innerHTML = this.options.text || "";
     button.title = this.options.title || "";
     button.type = "button";
-    button.addEventListener("click", this.clickEvent?.bind(this), false);
+    button.addEventListener("click", this.clickEvent || (() => void 0), false);
     return button;
   }
 }
 export class baseControlDiv {
   constructor(
-    options: { target?: HTMLElement; control?: Array<baseControl> } = {}
+    options: {
+      target?: HTMLElement;
+      control?: Array<baseControl>;
+      classList?: string[];
+    } = {}
   ) {
     const div = document.createElement("div");
+    options.classList?.forEach((_class) => div.classList.add(_class));
     options.control
       ?.map((value) => value?.makeButton())
       .forEach((value) => {
