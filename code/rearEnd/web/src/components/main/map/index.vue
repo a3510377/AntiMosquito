@@ -284,8 +284,6 @@ export default defineComponent({
     }
     .ol-zoom.ol-unselectable.ol-control {
       button {
-        height: 3.3vh;
-        width: 3.3vh;
         background-color: rgba(0, 60, 136, 0.6) !important;
       }
       .split:not(.nTop) {
