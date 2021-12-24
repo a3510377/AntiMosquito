@@ -17,7 +17,7 @@ export default defineComponent({
     let myChart = echarts.init(this.chart);
     let data = (
       await axios({
-        url: "https://AntiMosquito.a102009102009.repl.co/api/pls&url=https://od.cdc.gov.tw/eic/Age_County_Gender_061.json",
+        url: "https://antimosquito.a102009102009.repl.co/api/pls/?url=eic/Age_County_Gender_061.json",
         method: "GET",
       })
     ).data;

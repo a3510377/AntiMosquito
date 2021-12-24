@@ -9,9 +9,12 @@ import v1 from "./v1";
 const router = express.Router();
 
 router
-  .all("/pls", async (req, res) => {
+  .get("/pls", async (req, res) => {
     if (!req.query.url) return res.status(400).json({});
-    axios({ url: req.query.url as string, method: "GET" })
+    axios({
+      url: `https://od.cdc.gov.tw/${req.query.url}` as string,
+      method: "GET",
+    })
       .then((d) => {
         for (let [key, value] of Object.entries(d.headers))
           res.setHeader(key, value);
