@@ -31,4 +31,8 @@ export default defineComponent({
 
 <style lang="scss">
 @import url(@/assets/scss/main.scss);
+
+#app {
+  margin-top: var(--html-margin-top);
+}
 </style>
