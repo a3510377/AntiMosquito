@@ -32,11 +32,7 @@ export class baseControlDiv {
     options.classList?.forEach((_class) => div.classList.add(_class));
     options.control
       ?.map((value) => value?.makeButton())
-      .forEach((value) => {
-        console.log(value);
-
-        div.append(value);
-      });
+      .forEach((value) => div.append(value));
     options.target
       ?.querySelector(".ol-zoom.ol-unselectable.ol-control")
       ?.append(div);
