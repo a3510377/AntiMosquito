@@ -22,7 +22,7 @@ void setup()
     Serial.begin(9600);
     //    pinMode(D2, INPUT);
 
-    WiFi.begin("kbro-75-26", "09217776");
+    WiFi.begin("", "");
     Serial.println("連結");
     while (WiFi.status() != WL_CONNECTED)
     {
