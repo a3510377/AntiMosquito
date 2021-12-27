@@ -1,6 +1,8 @@
 <template>
-  <Map />
-  <chartMain />
+  <div class="home">
+    <Map />
+    <chartMain />
+  </div>
 </template>
 
 <script lang="ts">
@@ -16,4 +18,22 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.home {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  :deep() {
+    .map {
+      height: 70vh;
+      width: 80%;
+    }
+    .chart {
+      width: 400px;
+      height: 300px;
+    }
+  }
+}
+</style>

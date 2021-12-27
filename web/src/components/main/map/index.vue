@@ -276,8 +276,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .map {
-  width: 500px;
-  height: 500px;
+  width: 100%;
+  height: 100%;
   :deep() {
     .ol-attribution.ol-unselectable.ol-control.ol-uncollapsible {
       display: none;
