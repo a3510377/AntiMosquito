@@ -1,20 +1,16 @@
 <template>
-  <templateMain />
-  <router-view class="wrapper" />
-  <Map />
-  <chartMain />
+  <templateMain>
+    <router-view class="wrapper" />
+    <div class="a">awa</div>
+  </templateMain>
 </template>
 
 <script lang="ts">
 import templateMain from "@/views/main.vue";
 import { defineComponent } from "vue";
-import Map from "@/components/main/map/index.vue";
-import chartMain from "@/components/main/chart/index.vue";
 export default defineComponent({
   components: {
     templateMain,
-    Map,
-    chartMain,
   },
   setup() {
     setTimeout(() => {

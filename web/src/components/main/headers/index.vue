@@ -4,16 +4,7 @@
     <div class="menu flex flex-item-center">
       <div class="list flex flex-center" ref="menuListEl">
         <div class="content">
-          <div class="item"><router-link to="/">文檔</router-link></div>
-          <div class="item">2</div>
-          <div class="item">3</div>
-          <div class="item">4</div>
-          <div class="item">5</div>
-          <div class="item">6</div>
-          <div class="item">7</div>
-          <div class="item">8</div>
-          <div class="item">9</div>
-          <div class="item">10</div>
+          <div class="item"><router-link to="/">滋事館</router-link></div>
         </div>
       </div>
       <div class="openMenu flex flex-item-center" @click="toggleMenu">
@@ -31,7 +22,12 @@ export default defineComponent({
     const menuListEl = ref("menuListEl") as unknown as Ref<HTMLElement>;
     return { menuListEl };
   },
-  mounted() {},
+  mounted() {
+    addEventListener(
+      "resize",
+      () => window.innerWidth < 700 && this.menuListEl.classList.remove("open")
+    );
+  },
   methods: {
     toggleMenu() {
       this.menuListEl.classList.toggle("open");
@@ -50,13 +46,6 @@ export default defineComponent({
   left: 0;
   right: 0;
   z-index: 9999;
-  .title {
-    font-weight: 900;
-    padding: 0;
-    font-size: 20pt;
-    margin: 0 5% 0 8%;
-    width: 10%;
-  }
   @media all and (max-width: 700px) {
     .title {
       width: 100%;
@@ -64,11 +53,20 @@ export default defineComponent({
     .list:not(.open) {
       display: none;
     }
-    .openMenu {
-      display: flex !important;
+    .menu {
+      width: 0 !important;
+      .openMenu {
+        display: flex !important;
+      }
     }
   }
-
+  .title {
+    font-weight: 900;
+    padding: 0;
+    font-size: 20pt;
+    min-width: 10%;
+    text-align: center;
+  }
   .menu {
     height: 100%;
     width: 100%;
