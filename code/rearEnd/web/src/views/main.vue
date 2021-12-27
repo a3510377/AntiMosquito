@@ -1,7 +1,9 @@
 <template>
-  <HeaderMain />
-  <slot />
-  <HeaderMain />
+  <div class="main">
+    <HeaderMain />
+    <slot />
+    <HeaderMain />
+  </div>
 </template>
 
 <script lang="ts">
