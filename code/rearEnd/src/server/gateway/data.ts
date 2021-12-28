@@ -3,6 +3,28 @@ export interface Events {
 }
 
 export const opCode = {
-  Heartbeat: 1, // send and Receive
-  Identify: 2, // send
+  /**
+   * @type {Send & Receive}
+   */
+  Heartbeat: 1,
+  /**
+   * @type {Send}
+   */
+  Identify: 2,
+  /**
+   * @type {Send}
+   */
+  Resume: 6,
+  /**
+   * @type {Send}
+   */
+  Reconnect: 7,
+  /**
+   * @type {Receive}
+   */
+  Hello: 10,
+  /**
+   * @type {Receive}
+   */
+  HeartbeatACK: 11,
 };

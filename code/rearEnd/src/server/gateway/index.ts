@@ -1,3 +1,4 @@
+import serverDb from "@/db";
 import WebSocket from "ws";
 import { random } from "@/utils/main";
 import { EventEmitter } from "events";
@@ -9,32 +10,43 @@ import { EventEmitter } from "events";
  */
 export class clientWs extends EventEmitter {
   certification: boolean = false;
-  constructor(public ws: WebSocket) {
+  lastTime: number = -1;
+  heartbeat_interval: number = ~~(1e3 * 30 * random(1, 0.8, false));
+  chick_loop: NodeJS.Timer;
+  constructor(public readonly ws: WebSocket, private readonly db: serverDb) {
     super();
-
     console.log("ws: 用戶連線");
     this.Hello();
     ws.on("message", (msg) =>
       this.emit("message", this.msgToJson(msg.toString()))
     );
     this.init();
+    this.chick_loop = setInterval(
+      () => this.ws.close(4009),
+      this.heartbeat_interval + 1e3 * 5
+    );
   }
   /**send hello event
-   * send op: 10
+   * @send op: 10
    */
   Hello() {
-    this.send({
-      op: 10,
-      d: { heartbeat_interval: ~~(1e3 * 10 * random(1, 0.8, false)) },
-    });
+    this.send({ op: 10, d: { heartbeat_interval: this.heartbeat_interval } });
   }
-  /**監聽用戶端傳來的心臟跳動
-   * get op: 1
-   * send op: 11
+  /**回復心臟跳動
+   * @get op: 1
+   * @send op: 11
    */
   Heartbeat() {
     /* Heartbeat ACK */
     this.send({ op: 11 });
+  }
+  /**認證
+   * @get op: 2
+   */
+  async Identify(data: { token: string } | Object) {
+    return this.db.checkToken(
+      "token" in data && typeof data?.token === "string" ? data.token : void 0
+    );
   }
   /*  */
   /**轉換 JSON */
@@ -48,7 +60,7 @@ export class clientWs extends EventEmitter {
   /*utils */
   /**init */
   init() {
-    this.on("message", (msg) => {
+    this.on("message", async (msg) => {
       if (
         typeof msg === "string" ||
         (typeof msg === "object" && typeof msg.op === "number")
@@ -56,10 +68,19 @@ export class clientWs extends EventEmitter {
         return this.ws.send({ code: 400 });
       switch (msg.op) {
         case 1:
+          this.Heartbeat();
           break;
-
+        case 2:
+          if ("d" in msg && msg.d.token) await this.Identify(msg);
+          break;
         default:
-          break;
+          if (!this.certification)
+            return this.ws.send({
+              error: { code: 4003, message: "未認證" },
+            });
+          this.ws.send({
+            error: { code: 4001, message: "未知操作碼" },
+          });
       }
     });
   }
@@ -71,12 +92,13 @@ export class clientWs extends EventEmitter {
 }
 
 export default class WS extends WebSocket.Server {
+  db: serverDb = new serverDb();
   constructor(options: WebSocket.ServerOptions) {
     super(options);
     this.init();
   }
   init() {
-    this.on("connection", (ws) => new clientWs(ws));
+    this.on("connection", (ws) => new clientWs(ws, this.db));
   }
   sendAll(data: string | object | number) {
     if (typeof data === "object") data = JSON.stringify(data);
