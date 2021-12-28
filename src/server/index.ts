@@ -8,9 +8,7 @@ import routers from "./routers";
 import serverDb from "@/db";
 import { checkPort } from "@/utils/server";
 import { ErrnoException } from "@/http";
-import WebSocket from "ws";
 import ws from "./gateway";
-import { getIp } from "@/utils/axios";
 
 config();
 
