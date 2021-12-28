@@ -13,7 +13,7 @@ unsigned long lastTime = 0;
 unsigned long timerDelay = 1e3 * 20;
 
 // AsyncWebServer server(80);
-String serverPath = "https://AntiMosquito.a102009102009.repl.co";
+String serverPath = "antimosquito.a102009102009.repl.co";
 void wifiApInit();
 
 void setup()
@@ -22,7 +22,7 @@ void setup()
     Serial.begin(9600);
     //    pinMode(D2, INPUT);
 
-    WiFi.begin("", "");
+    WiFi.begin("monkey", "00000000");
     Serial.println("連結");
     while (WiFi.status() != WL_CONNECTED)
     {
@@ -34,6 +34,7 @@ void setup()
 }
 void loop()
 {
+    asyncGet();
 }
 
 void asyncGet()

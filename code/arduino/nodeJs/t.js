@@ -1,9 +1,9 @@
 import { Socket } from "net";
 
 const client = new Socket();
-const HOST = "127.0.0.1"; //localhost
+const HOST = "antimosquito.a102009102009.repl.co"; //localhost
 
-client.connect(5050, HOST, () => {
+client.connect(443, HOST, () => {
   client.write("GET /api HTTP/1.1\r\n");
   client.write(`Host: ${HOST}\r\n`);
   client.write("Content-Type: application/json\r\n");
