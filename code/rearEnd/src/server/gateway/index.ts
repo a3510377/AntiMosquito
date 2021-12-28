@@ -8,11 +8,16 @@ import { EventEmitter } from "events";
   4. 網管響應 event: HeartbeatACK ( { op: 11 } )
  */
 export class clientWs extends EventEmitter {
+  certification: boolean = false;
   constructor(public ws: WebSocket) {
     super();
+
     console.log("ws: 用戶連線");
     this.Hello();
-    this.on("message", this.onMessage.bind(this));
+    ws.on("message", (msg) =>
+      this.emit("message", this.msgToJson(msg.toString()))
+    );
+    this.init();
   }
   /**send hello event
    * send op: 10
@@ -20,7 +25,7 @@ export class clientWs extends EventEmitter {
   Hello() {
     this.send({
       op: 10,
-      d: { heartbeat_interval: 1e3 * 10 * random(1, 0.8, false) },
+      d: { heartbeat_interval: ~~(1e3 * 10 * random(1, 0.8, false)) },
     });
   }
   /**監聽用戶端傳來的心臟跳動
@@ -28,11 +33,8 @@ export class clientWs extends EventEmitter {
    * send op: 11
    */
   Heartbeat() {
-    this.on("message", (msg) => {
-      if (msg?.code !== 1) return;
-      /* Heartbeat ACK */
-      this.send({ op: 11 });
-    });
+    /* Heartbeat ACK */
+    this.send({ op: 11 });
   }
   /*  */
   /**轉換 JSON */
@@ -43,11 +45,24 @@ export class clientWs extends EventEmitter {
     return msg;
   }
   /* event */
-  /**onMessage event */
-  onMessage(msg: string) {
-    this.emit("message", this.msgToJson(msg));
-  }
   /*utils */
+  /**init */
+  init() {
+    this.on("message", (msg) => {
+      if (
+        typeof msg === "string" ||
+        (typeof msg === "object" && typeof msg.op === "number")
+      )
+        return this.ws.send({ code: 400 });
+      switch (msg.op) {
+        case 1:
+          break;
+
+        default:
+          break;
+      }
+    });
+  }
   /**send */
   send(data: string | object | number) {
     if (typeof data === "object") data = JSON.stringify(data);
@@ -63,7 +78,7 @@ export default class WS extends WebSocket.Server {
   init() {
     this.on("connection", (ws) => new clientWs(ws));
   }
-  send(data: string | object | number) {
+  sendAll(data: string | object | number) {
     if (typeof data === "object") data = JSON.stringify(data);
     this.clients.forEach((client) => client.send(data));
   }
