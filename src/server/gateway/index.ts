@@ -9,10 +9,10 @@ import { EventEmitter } from "events";
   4. 網管響應 event: HeartbeatACK ( { op: 11 } )
  */
 export class clientWs extends EventEmitter {
-  certification: boolean = false;
-  lastTime: number = -1;
-  heartbeat_interval: number = ~~(1e3 * 30 * random(1, 0.8, false));
-  chick_loop: NodeJS.Timer;
+  private certification: boolean = false;
+  private lastTime: number = -1;
+  readonly heartbeat_interval: number = ~~(1e3 * 30 * random(1, 0.8, false));
+  private chick_loop: NodeJS.Timer;
   constructor(public readonly ws: WebSocket, private readonly db: serverDb) {
     super();
     console.log("ws: 用戶連線");
