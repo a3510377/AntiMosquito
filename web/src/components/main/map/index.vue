@@ -1,6 +1,9 @@
 <template>
-  <div class="map" ref="map" />
-  <div class="loading" ref="loading" />
+  <div class="maps flex flex-item-center">
+    <div class="map" ref="map">
+      <div class="info" ref="info"></div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -38,6 +41,7 @@ export default defineComponent({
   setup() {
     /* refs */
     const map = ref(null) as unknown as Ref<HTMLElement>;
+    const info = ref(null) as unknown as Ref<HTMLElement>;
     const oldClick = reactive({
       /**里 */
       village: void 0 as cFeature | undefined,
@@ -68,11 +72,12 @@ export default defineComponent({
         firstPosDone = true;
       }
     });
-    return { oldClick, positionFeature, map, appView, geolocation };
+    return { oldClick, positionFeature, map, info, appView, geolocation };
   },
   async mounted() {
     let oldClick = this.oldClick,
       map = this.map,
+      info = this.info,
       _this = this;
     this.data = (
       await axios({
@@ -179,7 +184,10 @@ export default defineComponent({
             text: `<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px" fill="#fff"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>`,
             target: map,
           },
-          () => toggleFullScreen(map)
+          () =>
+            toggleFullScreen(map)
+              ? this.map.classList.add("full")
+              : this.map.classList.remove("full")
         ),
       ],
     });
@@ -275,34 +283,65 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.map {
-  width: 100%;
+.maps {
+  width: 90%;
   height: 100%;
-  :deep() {
-    .ol-attribution.ol-unselectable.ol-control.ol-uncollapsible {
-      display: none;
+  padding: 10px 0;
+  .map {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    &.full .info {
+      width: 20%;
     }
-    .ol-zoom.ol-unselectable.ol-control {
-      button {
-        background-color: rgba(0, 60, 136, 0.6) !important;
+    .info {
+      border-radius: 10px;
+      background-color: rgb(58, 55, 55);
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 40%;
+      z-index: 99;
+    }
+    :deep() {
+      canvas {
+        border-radius: 10px !important;
+        background-color: white !important;
+        border: 1px solid #000 !important;
+        overflow: hidden !important;
       }
-      .split:not(.nTop) {
-        margin-top: 10px;
+      .ol-attribution.ol-unselectable.ol-control.ol-uncollapsible {
+        display: none;
       }
-      .off {
-        background-color: rgba(0, 60, 136, 0.3) !important;
+      .ol-zoom.ol-unselectable.ol-control {
+        button {
+          background-color: rgba(0, 60, 136, 0.6) !important;
+        }
+        .split:not(.nTop) {
+          margin-top: 10px;
+        }
+        .off {
+          background-color: rgba(0, 60, 136, 0.3) !important;
+        }
       }
+    }
+    &:-moz-full-screen,
+    &:-webkit-full-screen,
+    &:-ms-fullscreen,
+    &:fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
     }
   }
-  &:-moz-full-screen,
-  &:-webkit-full-screen,
-  &:-ms-fullscreen,
-  &:fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  @media all and (max-width: 930px) {
+    flex-direction: column;
+    .map {
+      width: 100%;
+    }
   }
 }
 </style>

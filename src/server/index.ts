@@ -22,6 +22,7 @@ app
   .engine("html", require("ejs").renderFile)
   .set("view engine", "html")
   .set("db", db)
+  .set("ws", wss)
   .set("port", port)
   .use(require("cors")())
   .use(express.json())

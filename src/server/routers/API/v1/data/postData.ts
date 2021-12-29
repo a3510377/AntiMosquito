@@ -28,7 +28,7 @@ router
     res.json(data);
   })
   .post("/nowData", async (req, res) => {
-    let body = req.body as dataMosquitos & { IP: string };
+    let body = req.body as dataMosquitos & { ip: string };
     let authorization = req.headers["authorization"] as string;
 
     if (body.constructor !== Object)
@@ -36,7 +36,7 @@ router
         messages: "參數錯誤",
         parametric: {
           data: {
-            IP: "IP",
+            ip: "IP",
             time: "時間: string | number",
             humidity: "濕度: number",
             mosquitos: "蚊子數量: number",
@@ -52,7 +52,7 @@ router
     let userInfo = (await db.checkToken(authorization)) as any;
     if (!userInfo) return res.status(401).json({ message: "密鑰錯誤" });
 
-    let ipData = await getIp(body.IP);
+    let ipData = await getIp(body.ip);
     if (!ipData) return res.status(400).json({ message: "IP錯誤" });
     let info = await getVillage(ipData.longitude, ipData.latitude);
     if (!info) return res.status(400).json({ message: "IP 錯誤" });
