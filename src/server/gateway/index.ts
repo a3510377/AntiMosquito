@@ -2,6 +2,7 @@ import serverDb from "@/db";
 import WebSocket from "ws";
 import { random } from "@/utils/main";
 import { EventEmitter } from "events";
+import { WithId } from "mongodb";
 /* 
   1. 用戶連線
   2. 伺服器發送 event:hello ( { op: 10, d: { heartbeat_interval: 1e3 * 10 } } )
@@ -13,6 +14,8 @@ export class clientWs extends EventEmitter {
   private lastTime: number = -1;
   readonly heartbeat_interval: number = ~~(1e3 * 30 * random(1, 0.8, false));
   private chick_loop: NodeJS.Timer;
+  private type: "web" | "client" = void 0;
+  private token: false | WithId<Document> = void 0;
   constructor(public readonly ws: WebSocket, private readonly db: serverDb) {
     super();
     console.log("ws: 用戶連線");
@@ -44,7 +47,7 @@ export class clientWs extends EventEmitter {
    * @get op: 2
    */
   async Identify(data: { token: string } | Object) {
-    return this.db.checkToken(
+    return await this.db.checkToken(
       "token" in data && typeof data?.token === "string" ? data.token : void 0
     );
   }
@@ -71,7 +74,15 @@ export class clientWs extends EventEmitter {
           this.Heartbeat();
           break;
         case 2:
-          if ("d" in msg && msg.d.token) await this.Identify(msg);
+          if ("t" in msg && msg.t === "web") this.type = "web";
+          else if ("d" in msg && msg.d.token) {
+            let chickToken = await this.Identify(msg);
+            if (chickToken !== false || chickToken !== void 0)
+              this.ws.send({
+                type: "client",
+                id: "",
+              });
+          }
           break;
         default:
           if (!this.certification)
