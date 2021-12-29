@@ -26,7 +26,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   :deep() {
-    .map {
+    .maps {
       height: 70vh;
       width: 80%;
     }

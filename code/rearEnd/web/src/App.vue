@@ -1,7 +1,6 @@
 <template>
   <templateMain>
     <router-view class="wrapper" />
-    <div class="a">awa</div>
   </templateMain>
 </template>
 

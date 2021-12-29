@@ -4,7 +4,9 @@
     <div class="menu flex flex-item-center">
       <div class="list flex flex-center" ref="menuListEl">
         <div class="content">
-          <div class="item"><router-link to="/">滋事館</router-link></div>
+          <div class="item">
+            <router-link to="/DiseaseInfo">滋事館</router-link>
+          </div>
         </div>
       </div>
       <div class="openMenu flex flex-item-center" @click="toggleMenu">
