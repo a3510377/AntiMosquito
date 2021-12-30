@@ -36,8 +36,8 @@ import {
 } from "./util";
 import { baseControl, baseControlDiv } from "./controls";
 import { toggleFullScreen } from "@/util/utils";
-import { ws as WebSocket } from "@/util/ws";
-
+import { ws as _WebSocket } from "@/util/ws";
+Object.assign(window, { _WebSocket });
 export default defineComponent({
   data() {
     return {
@@ -51,8 +51,8 @@ export default defineComponent({
     const map = ref(null) as unknown as Ref<HTMLElement>;
     const info = ref(null) as unknown as Ref<HTMLElement>;
     const ws = ref(
-      new WebSocket("antimosquito.a102009102009.repl.co")
-    ) as Ref<WebSocket>;
+      new _WebSocket("antimosquito.a102009102009.repl.co")
+    ) as Ref<_WebSocket>;
 
     const oldClick = reactive({
       /**里 */
@@ -84,9 +84,10 @@ export default defineComponent({
         firstPosDone = true;
       }
     });
-    return { oldClick, positionFeature, map, info, appView, geolocation };
+    return { oldClick, positionFeature, map, info, appView, geolocation, ws };
   },
   async mounted() {
+    this.ws.connect();
     let oldClick = this.oldClick,
       map = this.map,
       info = this.info,
