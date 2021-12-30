@@ -9,6 +9,9 @@
   "dependencies": {
     "axios": "^0.23.0",
     "echarts": "^5.2.2",
+    "events": "^3.3.0",
+    "node-event": "^0.0.0",
+    "node-events": "^0.0.2",
     "ol": "^6.9.0",
     "sass": "^1.43.2",
     "vue": "^3.2.20",

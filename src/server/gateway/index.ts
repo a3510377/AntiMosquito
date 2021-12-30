@@ -17,6 +17,7 @@ export class clientWs extends EventEmitter {
   private chick_loop: NodeJS.Timer;
   private type: "web" | "client" = void 0;
   private token: false | WithId<Document> = void 0;
+  public Errors: Errors = new Errors(this);
   constructor(public readonly ws: WebSocket, private readonly db: serverDb) {
     super();
     console.log("ws: 用戶連線");
@@ -75,24 +76,23 @@ export class clientWs extends EventEmitter {
           this.Heartbeat();
           break;
         case opCode.Identify:
-          if ("t" in msg && msg.t === "web") this.type = "web";
-          else if ("d" in msg && msg.d.token) {
+          if ("t" in msg && msg.t === "web") {
+            this.type = "web";
+            this.send({ op: 0, t: "ready" });
+          } else if ("d" in msg && msg.d.token) {
             let chickToken = await this.Identify(msg);
-            if (chickToken !== false || chickToken !== void 0)
-              this.ws.send({
-                type: "client",
-                id: "",
-              });
+            this.certification = !!chickToken;
+            if (!chickToken) this.ws.send({ op: 0, type: "client" });
           }
+          break;
+        case opCode.HeartbeatACK:
+          if (msg.t !== "web" && !this.certification) return;
+          this.Heartbeat();
           break;
         default:
           if (!this.certification && this.type !== "web")
-            return this.ws.send({
-              error: { code: 4003, message: "未認證" },
-            });
-          this.ws.send({
-            error: { code: 4001, message: "未知操作碼" },
-          });
+            return this.Errors.noCertification();
+          return this.Errors.noOpcode();
       }
     });
   }
@@ -115,5 +115,17 @@ export default class WS extends WebSocket.Server {
   sendAll(data: string | object | number) {
     if (typeof data === "object") data = JSON.stringify(data);
     this.clients.forEach((client) => client.send(data));
+  }
+}
+export class Errors {
+  private ws: WebSocket;
+  constructor(private client: clientWs) {
+    this.ws = this.client.ws;
+  }
+  noCertification() {
+    this.ws.send({ error: { code: 4003, message: "未認證" } });
+  }
+  noOpcode() {
+    this.ws.send({ error: { code: 4001, message: "未知操作碼" } });
   }
 }
