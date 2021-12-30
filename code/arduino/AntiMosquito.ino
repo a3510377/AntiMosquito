@@ -1,6 +1,6 @@
 #include <Wire.h>
-#include "DHT.h"
-#include "RTClib.h"
+#include <DHT.h>
+#include <RTClib.h>
 #include <ArduinoJson.h>
 #include <APDS9930.h>
 
@@ -165,7 +165,6 @@ void sendJson(int mosquitos = 1)
   char json_output[150];
 
   json_doc["ip"] = ip;
-  json_doc["time"] = String(now.unixtime() - 3600) + "~" + String(now.unixtime());
   json_doc["humidity"] = h;
   json_doc["mosquitos"] = mosquitos;
   json_doc["temperature"] = t;

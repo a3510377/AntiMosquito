@@ -3,6 +3,7 @@ import WebSocket from "ws";
 import { random } from "@/utils/main";
 import { EventEmitter } from "events";
 import { WithId } from "mongodb";
+import { opCode } from "./data";
 /* 
   1. 用戶連線
   2. 伺服器發送 event:hello ( { op: 10, d: { heartbeat_interval: 1e3 * 10 } } )
@@ -70,10 +71,10 @@ export class clientWs extends EventEmitter {
       )
         return this.ws.send({ code: 400 });
       switch (msg.op) {
-        case 1:
+        case opCode.Heartbeat:
           this.Heartbeat();
           break;
-        case 2:
+        case opCode.Identify:
           if ("t" in msg && msg.t === "web") this.type = "web";
           else if ("d" in msg && msg.d.token) {
             let chickToken = await this.Identify(msg);
@@ -85,7 +86,7 @@ export class clientWs extends EventEmitter {
           }
           break;
         default:
-          if (!this.certification)
+          if (!this.certification && this.type !== "web")
             return this.ws.send({
               error: { code: 4003, message: "未認證" },
             });
