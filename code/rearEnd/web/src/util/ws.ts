@@ -32,15 +32,15 @@ export class ws extends EventEmitter {
 
     switch (json.op) {
       case opCode.Hello:
+        if (!json?.d?.heartbeat_interval) return this.close(false);
         this.Identifying();
-        if (json?.d?.heartbeat_interval) return this.ws?.close();
         this.setHeartbeatInterval(json?.d?.heartbeat_interval as number);
         break;
     }
   }
   onError() {}
   onClose() {
-    if (this.usClose) this.Resuming();
+    if (!this.usClose) this.Resuming();
   }
   /**回復心跳 */
   Heartbeat() {

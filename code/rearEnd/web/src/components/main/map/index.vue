@@ -36,6 +36,7 @@ import {
 } from "./util";
 import { baseControl, baseControlDiv } from "./controls";
 import { toggleFullScreen } from "@/util/utils";
+import { ws as WebSocket } from "@/util/ws";
 
 export default defineComponent({
   data() {
@@ -49,6 +50,10 @@ export default defineComponent({
     /* refs */
     const map = ref(null) as unknown as Ref<HTMLElement>;
     const info = ref(null) as unknown as Ref<HTMLElement>;
+    const ws = ref(
+      new WebSocket("antimosquito.a102009102009.repl.co")
+    ) as Ref<WebSocket>;
+
     const oldClick = reactive({
       /**里 */
       village: void 0 as cFeature | undefined,
