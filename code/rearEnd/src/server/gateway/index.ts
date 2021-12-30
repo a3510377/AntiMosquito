@@ -70,7 +70,7 @@ export class clientWs extends EventEmitter {
         typeof msg === "string" ||
         (typeof msg === "object" && typeof msg.op === "number")
       )
-        return this.ws.send({ code: 400 });
+        return this.send({ code: 400 });
       switch (msg.op) {
         case opCode.Heartbeat:
           this.Heartbeat();
@@ -82,7 +82,7 @@ export class clientWs extends EventEmitter {
           } else if ("d" in msg && msg.d.token) {
             let chickToken = await this.Identify(msg);
             this.certification = !!chickToken;
-            if (!chickToken) this.ws.send({ op: 0, type: "client" });
+            if (!chickToken) this.send({ op: 0, type: "client" });
           }
           break;
         case opCode.HeartbeatACK:
@@ -123,9 +123,9 @@ export class Errors {
     this.ws = this.client.ws;
   }
   noCertification() {
-    this.ws.send({ error: { code: 4003, message: "未認證" } });
+    this.client.send({ error: { code: 4003, message: "未認證" } });
   }
   noOpcode() {
-    this.ws.send({ error: { code: 4001, message: "未知操作碼" } });
+    this.client.send({ error: { code: 4001, message: "未知操作碼" } });
   }
 }
