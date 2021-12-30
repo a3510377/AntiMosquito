@@ -7,6 +7,19 @@ import { ApiMainData } from "@/types/apiData";
 
 export interface typeThis {
   data: ApiMainData;
+  ram: {
+    [county: string]: {
+      main: number;
+      data?: {
+        [town: string]: {
+          main: number;
+          data?: {
+            [village: string]: number;
+          };
+        };
+      };
+    };
+  };
 }
 
 export interface cFeature extends Feature<Geometry> {
@@ -36,7 +49,10 @@ export function countyStyle(
   let feature = _feature as cFeature;
   let mosquitos = 0;
 
-  if (feature.mosquitos === void 0) {
+  if (
+    this.ram?.[feature.get("COUNTYNAME")] === void 0 ||
+    this.ram?.[feature.get("COUNTYNAME")]["main"] < 0
+  ) {
     let data = this.data?.[feature.get("COUNTYNAME")];
     if (typeof data === "object")
       Object.entries(data).forEach(([$_0, value]) =>
@@ -45,8 +61,9 @@ export function countyStyle(
         )
       );
   }
-  mosquitos = feature.mosquitos ||= mosquitos;
-
+  mosquitos = (this.ram[feature.get("COUNTYNAME")] ||= { main: mosquitos })[
+    "main"
+  ];
   if (resolution && resolution > 180)
     return new Style({
       stroke: new Stroke({ color: "#0000ff", width: 1 }),
@@ -73,14 +90,21 @@ export function townStyle(
   if (resolution && resolution > 40 && resolution < 180) {
     let mosquitos = 0;
 
-    if (feature.mosquitos === void 0)
+    if (
+      this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")] ===
+        void 0 ||
+      (this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")]
+        .main || 0) < 0
+    )
       Object.entries(
         this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] || {}
       ).forEach(([$_0, value]) =>
         value.forEach((v) => (mosquitos += v.mosquitos))
       );
 
-    mosquitos = feature.mosquitos ||= mosquitos;
+    let _ = (this.ram[feature.get("COUNTYNAME")] ||= { main: -1 });
+    (_.data ||= {})[feature.get("TOWNNAME")] ||= { main: mosquitos };
+    mosquitos = _.data[feature.get("TOWNNAME")]["main"] ||= mosquitos;
 
     return new Style({
       stroke: new Stroke({ color: "#ff0000", width: 1 }),

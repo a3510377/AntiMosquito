@@ -27,7 +27,13 @@ import "ol/ol.css";
 
 import { apiUrl } from "@/config";
 import { ApiMainData } from "@/types/apiData";
-import { cFeature, countyStyle, townStyle, villageStyle } from "./util";
+import {
+  cFeature,
+  countyStyle,
+  townStyle,
+  typeThis,
+  villageStyle,
+} from "./util";
 import { baseControl, baseControlDiv } from "./controls";
 import { toggleFullScreen } from "@/util/utils";
 
@@ -36,6 +42,7 @@ export default defineComponent({
     return {
       data: null as unknown as ApiMainData,
       layers: {} as { [key: string]: layerVector<sourceVector<Geometry>> },
+      ram: {} as typeThis["ram"],
     };
   },
   setup() {
