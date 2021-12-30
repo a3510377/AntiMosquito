@@ -49,10 +49,7 @@ export class ws extends EventEmitter {
   }
   /**連線 */
   Identifying() {
-    this.sendWs({
-      op: opCode.Identify,
-      t: "web",
-    });
+    this.sendWs({ op: opCode.Identify, t: "web" });
   }
   /* ----- fun ----- */
   /**重新連線 */
