@@ -30,6 +30,7 @@ router
   })
   .post("/nowData", async (req, res) => {
     let body = req.body as dataMosquitos & { ip: string };
+    console.log(body);
     let authorization = req.headers["authorization"] as string;
 
     if (body.constructor !== Object)
