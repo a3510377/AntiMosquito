@@ -1,5 +1,6 @@
 /**本站網址 */
-export const apiUrl = "https://antimosquito.a102009102009.repl.co";
+export const apiUrl =
+  import.meta.env.VITE_API_URL || "https://antimosquito.a102009102009.repl.co";
 
 /**主流 API 版本 */
 export const apiVersion = "1";

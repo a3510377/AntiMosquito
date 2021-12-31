@@ -1440,16 +1440,6 @@ needle@^2.5.2:
     iconv-lite "^0.4.4"
     sax "^1.2.4"
 
-node-event@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/node-event/-/node-event-0.0.0.tgz#f3d69ebe05e853e400d4d61e94ea1b7d8ae48ec9"
-  integrity sha1-89aevgXoU+QA1NYelOobfYrkjsk=
-
-node-events@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/node-events/-/node-events-0.0.2.tgz#6171dd01124839ce4d2b50ab3d9db6c9ae953410"
-  integrity sha1-YXHdARJIOc5NK1CrPZ22ya6VNBA=
-
 normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/normalize-path/-/normalize-path-3.0.0.tgz"
