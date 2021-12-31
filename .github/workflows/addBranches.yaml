@@ -18,14 +18,14 @@ jobs:
           node-version: "14.x"
 
       - name: install web package
-        run: cd code/rearEnd/web && npm install
+        run: cd code/web && npm install
 
       - name: build web
-        run: cd code/rearEnd/web && npm run build:pro
+        run: cd code/web && npm run build:pro
 
       - name: copy web to server
         run: |
-          cp -r "code/rearEnd/web/dist/." "code/rearEnd/src/web"
+          cp -r "code/web/dist/." "code/rearEnd/src/web"
 
       ################################################################
 
