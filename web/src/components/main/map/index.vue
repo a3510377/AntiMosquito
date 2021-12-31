@@ -51,7 +51,7 @@ export default defineComponent({
     const map = ref(null) as unknown as Ref<HTMLElement>;
     const info = ref(null) as unknown as Ref<HTMLElement>;
     const ws = ref(
-      new _WebSocket("antimosquito.a102009102009.repl.co")
+      new _WebSocket(apiUrl.replace("https://", ""))
     ) as Ref<_WebSocket>;
 
     const oldClick = reactive({
@@ -114,7 +114,7 @@ export default defineComponent({
       /**里 */
       village: new layerVector({
         source: new sourceVector({
-          url: "/data/topo/village/20210324.json",
+          url: `${apiUrl}/data/topo/village/20210324.json`,
           format: new TopoJSON(),
         }),
         style: villageStyle.bind(this),
@@ -123,7 +123,7 @@ export default defineComponent({
       /**鄉鎮 */
       town: new layerVector({
         source: new sourceVector({
-          url: "/data/topo/town/city.topo.json",
+          url: `${apiUrl}/data/topo/town/city.topo.json`,
           format: new TopoJSON(),
         }),
         style: townStyle.bind(this),
@@ -132,7 +132,7 @@ export default defineComponent({
       /**縣市 */
       county: new layerVector({
         source: new sourceVector({
-          url: "/data/topo/county/20200820.json",
+          url: `${apiUrl}/data/topo/county/20200820.json`,
           format: new TopoJSON(),
         }),
         style: countyStyle.bind(this),
@@ -141,7 +141,7 @@ export default defineComponent({
       /**快篩試劑配置醫療院所 @url https://data.cdc.gov.tw/dataset/dengue-ns1 */
       NS1Test: new layerVector({
         source: new sourceVector({
-          url: "/data/ns1hosp_20160603.json",
+          url: `${apiUrl}/data/ns1hosp_20160603.json`,
           format: new GeoJSON(),
         }),
         style: new Style({

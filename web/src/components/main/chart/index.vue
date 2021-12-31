@@ -9,6 +9,7 @@ import { defineComponent, ref, Ref } from "vue";
 import * as echarts from "echarts";
 import axios from "axios";
 import { ApiAgeCountyGender061 } from "@/types/apiData";
+import { apiUrl } from "@/config";
 
 export default defineComponent({
   setup() {
@@ -21,7 +22,7 @@ export default defineComponent({
   async mounted() {
     let data = (
       await axios({
-        url: "https://antimosquito.a102009102009.repl.co/api/pls/?url=eic/Age_County_Gender_061.json",
+        url: `${apiUrl}/api/pls/?url=eic/Age_County_Gender_061.json`,
         method: "GET",
       })
     ).data as ApiAgeCountyGender061[];
