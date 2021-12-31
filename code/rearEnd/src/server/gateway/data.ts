@@ -4,10 +4,15 @@ export interface Events {
 
 export enum opCode {
   /**
-   * @type {Send & Receive}
+   * @type {Receive}
+   * 客戶端讀取伺服器發送的事件
+   */
+  Event = 0,
+  /**
+   * @type {Send | Receive}
    * 客戶端發送心跳
    */
-  Heartbeat = 1,
+  Heartbeat,
   /**
    * @type {Send}
    * 客戶端發送認證請求

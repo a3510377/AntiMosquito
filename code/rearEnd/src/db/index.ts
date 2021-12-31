@@ -8,6 +8,7 @@ import { config } from "dotenv";
 import { getTokenData, makeId, makeToken } from "@/utils/uuid";
 import { EventEmitter } from "events";
 import { catchData } from "@/types/db.data";
+import WS from "@/server/gateway";
 
 config();
 
@@ -16,7 +17,11 @@ export default class db extends EventEmitter {
   client: MongoClient;
   protected link: boolean = false;
   protected _idIndex: number = 0;
-  constructor(public uri?: string, config?: MongoClientOptions) {
+  constructor(
+    private ws: WS,
+    public uri?: string,
+    config?: MongoClientOptions
+  ) {
     super();
     uri ||= process.env.dbUri;
     this.client = new MongoClient(uri, {
@@ -83,6 +88,10 @@ export default class db extends EventEmitter {
           )
             console.log("DB: 資料庫以存在不進行創建");
         });
+    });
+    this.Mosquitos.watch().on("change", (next) => {
+      delete next._id;
+      this.ws.sendAll(next);
     });
   }
 }
