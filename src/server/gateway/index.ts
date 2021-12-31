@@ -68,7 +68,7 @@ export class clientWs extends EventEmitter {
     this.on("message", async (msg) => {
       if (
         typeof msg === "string" ||
-        (typeof msg === "object" && typeof msg.op === "number")
+        (typeof msg === "object" && typeof msg?.op === "number")
       )
         return this.send({ code: 400 });
       switch (msg.op) {
