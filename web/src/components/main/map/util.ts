@@ -103,7 +103,7 @@ export function townStyle(
       );
 
     let _ = (this.ram[feature.get("COUNTYNAME")] ||= { main: -1 });
-    (_.data ||= {})[feature.get("TOWNNAME")] ||= { main: mosquitos };
+    (_.data ||= {})[feature.get("TOWNNAME")] ||= { main: -1 };
     mosquitos = _.data[feature.get("TOWNNAME")]["main"] ||= mosquitos;
 
     return new Style({

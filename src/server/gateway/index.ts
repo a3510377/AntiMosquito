@@ -104,7 +104,7 @@ export class clientWs extends EventEmitter {
 }
 
 export default class WS extends WebSocket.Server {
-  db: serverDb = new serverDb();
+  db: serverDb = new serverDb(this);
   constructor(options: WebSocket.ServerOptions) {
     super(options);
     this.init();
@@ -115,6 +115,13 @@ export default class WS extends WebSocket.Server {
   sendAll(data: string | object | number) {
     if (typeof data === "object") data = JSON.stringify(data);
     this.clients.forEach((client) => client.send(data));
+  }
+  updata(data: JsonAny) {
+    this.sendAll({
+      op: opCode.Event,
+      t: "updata",
+      d: data,
+    });
   }
 }
 export class Errors {

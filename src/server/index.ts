@@ -15,8 +15,8 @@ config();
 export let port: number = checkPort(process.env.PORT);
 const app = express();
 const server = http.createServer(app);
-const db = new serverDb();
 const wss = new ws({ server });
+const db = new serverDb(wss);
 
 app
   .engine("html", require("ejs").renderFile)

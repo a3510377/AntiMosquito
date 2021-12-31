@@ -36,6 +36,14 @@ export class ws extends EventEmitter {
         this.Identifying();
         this.setHeartbeatInterval(json?.d?.heartbeat_interval as number);
         break;
+      case opCode.Event:
+        if (!json.t) return;
+        switch (json.t) {
+          case "updata":
+            this.emit("updata", json.d);
+            break;
+        }
+        break;
     }
   }
   onError() {}

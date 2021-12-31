@@ -26,7 +26,7 @@ import {
 import "ol/ol.css";
 
 import { apiUrl } from "@/config";
-import { ApiMainData } from "@/types/apiData";
+import { ApiMainData, villageData } from "@/types/apiData";
 import {
   cFeature,
   countyStyle,
@@ -88,6 +88,17 @@ export default defineComponent({
   },
   async mounted() {
     this.ws.connect();
+    this.ws.on("updata", (data: villageData) => {
+      this.data = {
+        ...this.data,
+      };
+
+      let area = data.location.area,
+        _ = (this.ram[area.county] ||= { main: -1 });
+
+      (_.data ||= {})[area.town] ||= { main: -1 };
+      (_.data[area.town].data ||= { main: -1 })[area.village] = -1;
+    });
     let oldClick = this.oldClick,
       map = this.map,
       info = this.info,
