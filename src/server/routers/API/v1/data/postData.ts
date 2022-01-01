@@ -6,6 +6,63 @@ import WS from "@/server/gateway";
 
 const router = express.Router();
 
+async function nowData(
+  req: express.Request,
+  res: express.Response,
+  body: dataMosquitos & { ip: string },
+  authorization: string
+) {
+  if (body.constructor !== Object)
+    return res.status(400).json({
+      messages: "參數錯誤",
+      parametric: {
+        data: {
+          ip: "IP",
+          time: "時間: string | number",
+          humidity: "濕度: number",
+          mosquitos: "蚊子數量: number",
+          temperature: "溫度: number",
+        },
+        headers: { authorization: "token: string" },
+      },
+      code: 0,
+    });
+  let db = req.app.get("db") as dbType;
+
+  /* TODO: 添加type */
+  let userInfo = (await db.checkToken(authorization)) as any;
+  if (!userInfo) return res.status(401).json({ message: "密鑰錯誤" });
+
+  let ipData = await getIp(body.ip);
+  if (!ipData) return res.status(400).json({ message: "IP錯誤" });
+  let info = await getVillage(ipData.longitude, ipData.latitude);
+  if (!info) return res.status(400).json({ message: "IP 錯誤" });
+  let data: dbDataMosquitos = void 0;
+  for (let chick of ["time", "humidity", "mosquitos", "temperature"])
+    if (!body?.[chick]) res.status(400).json({ message: "缺少資料" });
+  data = {
+    time: body.time,
+    humidity: body.humidity,
+    mosquitos: body.mosquitos,
+    temperature: body.temperature,
+    location: {
+      location: {
+        longitude: ipData.longitude,
+        latitude: ipData.latitude,
+      },
+      area: {
+        county: info.ctyName,
+        town: info.townName,
+        village: info.villageName,
+      },
+    },
+  };
+  db.Mosquitos.collection(userInfo._id.toString()).insertOne(data);
+  let ws = req.app.get("ws") as WS;
+  ws.updata(data as unknown as JsonAny);
+  res.json(data);
+}
+
 router
   .get("/data", async (req, res) => {
     let db = req.app.get("db") as dbType;
@@ -28,61 +85,22 @@ router
     );
     res.json(data);
   })
-  .post("/nowData", async (req, res) => {
-    let body = req.body as dataMosquitos & { ip: string };
-    console.log(body);
-    let authorization = req.headers["authorization"] as string;
-
-    if (body.constructor !== Object)
-      return res.status(400).json({
-        messages: "參數錯誤",
-        parametric: {
-          data: {
-            ip: "IP",
-            time: "時間: string | number",
-            humidity: "濕度: number",
-            mosquitos: "蚊子數量: number",
-            temperature: "溫度: number",
-          },
-          headers: { authorization: "token: string" },
-        },
-        code: 0,
-      });
-    let db = req.app.get("db") as dbType;
-
-    /* TODO: 添加type */
-    let userInfo = (await db.checkToken(authorization)) as any;
-    if (!userInfo) return res.status(401).json({ message: "密鑰錯誤" });
-
-    let ipData = await getIp(body.ip);
-    if (!ipData) return res.status(400).json({ message: "IP錯誤" });
-    let info = await getVillage(ipData.longitude, ipData.latitude);
-    if (!info) return res.status(400).json({ message: "IP 錯誤" });
-    let data: dbDataMosquitos = void 0;
-    for (let chick of ["time", "humidity", "mosquitos", "temperature"])
-      if (!body?.[chick]) res.status(400).json({ message: "缺少資料" });
-    data = {
-      time: body.time,
-      humidity: body.humidity,
-      mosquitos: body.mosquitos,
-      temperature: body.temperature,
-      location: {
-        location: {
-          longitude: ipData.longitude,
-          latitude: ipData.latitude,
-        },
-        area: {
-          county: info.ctyName,
-          town: info.townName,
-          village: info.villageName,
-        },
-      },
-    };
-    db.Mosquitos.collection(userInfo._id.toString()).insertOne(data);
-    let ws = req.app.get("ws") as WS;
-    ws.updata(data as unknown as JsonAny);
-    res.json(data);
+  .get("/nowData", async (req, res) => {
+    nowData(
+      req,
+      res,
+      req.query as unknown as dataMosquitos & { ip: string },
+      req.headers["authorization"] as string
+    );
   })
+  .post("/nowData", async (req, res) =>
+    nowData(
+      req,
+      res,
+      req.body as dataMosquitos & { ip: string },
+      req.headers["authorization"] as string
+    )
+  )
   .post("/postData", async (req, res) => {
     let body = req.body as { [IP: string]: dataMosquitos[] };
     let authorization = req.headers["authorization"] as string;
