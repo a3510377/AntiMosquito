@@ -4,9 +4,11 @@
 #include <ArduinoJson.h>
 #include <APDS9930.h>
 
+RTC_DS1307 RTC;
+
 String ssid = "monkeyTest";
 String password = "123456789";
-String host = "192.168.137.1";
+String host = "antimosquito.a102009102009.repl.co";
 String port = "3000";
 String path = "/api/v1/nowData";
 String ip = "192.168.137.1";
@@ -19,6 +21,13 @@ void setup()
 {
     Serial.begin(115200);
     Serial2.begin(115200);
+
+    RTC.begin();
+    if (!RTC.isrunning())
+    {
+        Serial.println("RTC is NOT running!");
+        RTC.adjust(DateTime(__DATE__, __TIME__));
+    }
 
     // 重製esp8266
     Serial2.println("AT+RST");
@@ -79,7 +88,7 @@ void loop()
     if (num == 8)
     {
         // http post
-        Serial2.println("GET " + path + " HTTP/1.1");
+        Serial2.println("GET " + path + "?ip=" + ip + "&time=" + RTC.now() + "&humidity=1&mosquitos=1&temperature=1" + " HTTP/1.1");
         Serial2.println("Host: " + host);
         Serial2.println("authorization: " + token);
         Serial2.println("Content-Type: application/json");
