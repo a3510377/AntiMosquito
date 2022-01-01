@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include <DHT.h>
 #include <RTClib.h>
-#include <ArduinoJson.h>
+//#include <ArduinoJson.h>
 #include <APDS9930.h>
 
 RTC_DS1307 RTC;
@@ -87,8 +87,7 @@ void loop()
     }
     if (num == 8)
     {
-        // http post
-        Serial2.println("GET " + path + "?ip=" + ip + "&time=" + RTC.now() + "&humidity=1&mosquitos=1&temperature=1" + " HTTP/1.1");
+        Serial2.print("GET " + path + "?ip=" + ip + "&time=" + "&humidity=1&mosquitos=1&temperature=1" + " HTTP/1.1");
         Serial2.println("Host: " + host);
         Serial2.println("authorization: " + token);
         Serial2.println("Content-Type: application/json");
