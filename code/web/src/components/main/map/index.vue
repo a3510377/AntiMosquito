@@ -51,7 +51,7 @@ export default defineComponent({
     const map = ref(null) as unknown as Ref<HTMLElement>;
     const info = ref(null) as unknown as Ref<HTMLElement>;
     const ws = ref(
-      new _WebSocket(apiUrl.replace("https://", ""))
+      new _WebSocket(apiUrl.replace(/(https?:\/\/)/, ""))
     ) as Ref<_WebSocket>;
 
     const oldClick = reactive({
@@ -87,6 +87,8 @@ export default defineComponent({
     return { oldClick, positionFeature, map, info, appView, geolocation, ws };
   },
   async mounted() {
+    addEventListener;
+
     this.ws.connect();
     this.ws.on("updata", (data: villageData) => {
       this.data = {

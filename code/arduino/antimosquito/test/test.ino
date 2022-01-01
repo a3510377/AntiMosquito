@@ -79,15 +79,11 @@ void loop()
     if (num == 8)
     {
         // http post
-        String data = "{\"a\": \"awa\"}";
-        Serial2.println("POST " + path + " HTTP/1.1");
+        Serial2.println("GET " + path + " HTTP/1.1");
         Serial2.println("Host: " + host);
         Serial2.println("authorization: " + token);
         Serial2.println("Content-Type: application/json");
         Serial2.println("Cache-Control: no-cache");
-        Serial2.print("Content-Length: ");
-        Serial2.println(12);
-        Serial2.println(data);
         Serial2.println("");
     }
 }
