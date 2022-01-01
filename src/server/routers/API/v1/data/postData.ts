@@ -38,10 +38,10 @@ async function nowData(
   let info = await getVillage(ipData.longitude, ipData.latitude);
   if (!info) return res.status(400).json({ message: "IP 錯誤" });
   let data: dbDataMosquitos = void 0;
-  for (let chick of ["time", "humidity", "mosquitos", "temperature"])
+  for (let chick of ["humidity", "mosquitos", "temperature"])
     if (!body?.[chick]) res.status(400).json({ message: "缺少資料" });
   data = {
-    time: body.time,
+    time: body.time || new Date().toString(),
     humidity: body.humidity,
     mosquitos: body.mosquitos,
     temperature: body.temperature,
