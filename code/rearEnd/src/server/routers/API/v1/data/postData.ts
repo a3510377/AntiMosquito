@@ -18,7 +18,7 @@ async function nowData(
       parametric: {
         data: {
           ip: "IP",
-          time: "時間: string | number",
+          time: "時間: string | number | undefined",
           humidity: "濕度: number",
           mosquitos: "蚊子數量: number",
           temperature: "溫度: number",
