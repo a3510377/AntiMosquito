@@ -10,7 +10,7 @@ import * as echarts from "echarts";
 import axios from "axios";
 import { ApiAgeCountyGender061 } from "@/types/apiData";
 import { apiUrl } from "@/config";
-
+console.log(apiUrl);
 export default defineComponent({
   setup() {
     const DengueFeverCasesOverTheYearsHtml = ref(

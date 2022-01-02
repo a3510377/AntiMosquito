@@ -8,7 +8,7 @@ export class ws extends EventEmitter {
   usClose: boolean = false;
   constructor(private url: string) {
     super();
-    if (!url.startsWith("wss://")) this.url = `wss://${url}`;
+    if (!url.startsWith("wss://")) this.url = `ws://${url}`;
   }
   get wsUrl() {
     return this.url;

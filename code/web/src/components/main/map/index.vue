@@ -25,7 +25,7 @@ import {
 } from "ol/interaction";
 import "ol/ol.css";
 
-import { apiUrl } from "@/config";
+import { apiUrl, webUrl } from "@/config";
 import { ApiMainData, villageData } from "@/types/apiData";
 import {
   cFeature,
@@ -105,6 +105,7 @@ export default defineComponent({
       map = this.map,
       info = this.info,
       _this = this;
+
     this.data = (
       await axios({
         url: `${apiUrl}/api/v1/data`,
@@ -116,7 +117,7 @@ export default defineComponent({
       /**里 */
       village: new layerVector({
         source: new sourceVector({
-          url: `${apiUrl}/data/topo/village/20210324.json`,
+          url: `${webUrl}data/topo/village/20210324.json`,
           format: new TopoJSON(),
         }),
         style: villageStyle.bind(this),
@@ -125,7 +126,7 @@ export default defineComponent({
       /**鄉鎮 */
       town: new layerVector({
         source: new sourceVector({
-          url: `${apiUrl}/data/topo/town/city.topo.json`,
+          url: `${webUrl}data/topo/town/city.topo.json`,
           format: new TopoJSON(),
         }),
         style: townStyle.bind(this),
@@ -134,7 +135,7 @@ export default defineComponent({
       /**縣市 */
       county: new layerVector({
         source: new sourceVector({
-          url: `${apiUrl}/data/topo/county/20200820.json`,
+          url: `${webUrl}data/topo/county/20200820.json`,
           format: new TopoJSON(),
         }),
         style: countyStyle.bind(this),
@@ -143,7 +144,7 @@ export default defineComponent({
       /**快篩試劑配置醫療院所 @url https://data.cdc.gov.tw/dataset/dengue-ns1 */
       NS1Test: new layerVector({
         source: new sourceVector({
-          url: `${apiUrl}/data/ns1hosp_20160603.json`,
+          url: `${webUrl}data/ns1hosp_20160603.json`,
           format: new GeoJSON(),
         }),
         style: new Style({
@@ -275,11 +276,15 @@ export default defineComponent({
         e.pixel,
         (_feature) => {
           let feature = _feature as cFeature;
-          let resolution = A_map.getView().get("resolution") as number;
           feature.setStyle(
-            townStyle.call(this, feature, resolution, {
-              stroke: new Stroke({ color: "#000", width: 3 }),
-            })
+            townStyle.call(
+              this,
+              feature,
+              A_map.getView().get("resolution") as number,
+              {
+                stroke: new Stroke({ color: "#000", width: 3 }),
+              }
+            )
           );
           if (oldClick.town && oldClick.town?.ol_uid !== feature.ol_uid)
             oldClick.town?.setStyle(townStyle.bind(this));
@@ -292,9 +297,14 @@ export default defineComponent({
         (_feature) => {
           let feature = _feature as cFeature;
           feature.setStyle(
-            countyStyle.call(this, feature, void 0, {
-              stroke: new Stroke({ color: "#000", width: 3 }),
-            })
+            countyStyle.call(
+              this,
+              feature,
+              A_map.getView().get("resolution") as number,
+              {
+                stroke: new Stroke({ color: "#000", width: 3 }),
+              }
+            )
           );
           if (oldClick.county && oldClick.county?.ol_uid !== feature.ol_uid)
             oldClick.county?.setStyle(townStyle.bind(this));

@@ -1,6 +1,12 @@
+const toUrl = (url: string) =>
+  /^https?:\/\//.test(url) ? url : `http://${url}`;
+
+export const webUrl = import.meta.env.BASE_URL;
+
 /**本站網址 */
 export const apiUrl =
-  import.meta.env.VITE_API_URL || "https://antimosquito.a102009102009.repl.co";
+  toUrl(import.meta.env.VITE_API_URL) ||
+  "https://antimosquito.a102009102009.repl.co";
 
 /**主流 API 版本 */
 export const apiVersion = "1";

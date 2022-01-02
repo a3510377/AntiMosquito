@@ -191,7 +191,7 @@ void loop()
                 float t = dht.readTemperature(); //讀取攝氏溫度
 
                 Serial2.println("GET " + path + " HTTP/1.1");
-                Serial2.println("Host: " + host + "?ip=" + "&humidity=" + "&mosquitos=" + "&temperature=");
+                Serial2.println("Host: " + host + "?ip=" + ip + "&humidity=" + h + "&mosquitos=1" + "&temperature=" + t);
                 Serial2.println("authorization: " + token);
                 Serial2.println("Content-Type: application/json");
                 Serial2.println("");

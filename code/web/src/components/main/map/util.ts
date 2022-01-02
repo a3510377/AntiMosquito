@@ -70,7 +70,9 @@ export function countyStyle(
       fill: new Fill({ color: setFillColor(~~(mosquitos / 100)) }),
       text: new Text({
         font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-        text: `${feature.get("COUNTYNAME")}\n${mosquitos || ""}`,
+        text: `${feature.get("COUNTYNAME")}\n${
+          mosquitos !== -1 ? mosquitos : ""
+        }`,
       }),
       ...options,
     });
@@ -113,7 +115,9 @@ export function townStyle(
       }),
       text: new Text({
         font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-        text: `${feature.get("TOWNNAME")}\n${mosquitos || ""}`,
+        text: `${feature.get("TOWNNAME")}\n${
+          mosquitos !== -1 ? mosquitos : ""
+        }`,
       }),
       ...options,
     });
@@ -153,7 +157,9 @@ export function villageStyle(
     text: new Text({
       font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
       fill: new Fill({ color: "#000" }),
-      text: `${feature.get("VILLNAME") || ""}\n${mosquitos || ""}`,
+      text: `${feature.get("VILLNAME") || ""}\n${
+        mosquitos !== -1 ? mosquitos : ""
+      }`,
     }),
     ...options,
   });
