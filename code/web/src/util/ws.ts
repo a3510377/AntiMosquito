@@ -1,3 +1,4 @@
+import { ssl } from "@/config";
 import { EventEmitter } from "events";
 import { opCode } from "./wsData";
 
@@ -8,7 +9,7 @@ export class ws extends EventEmitter {
   usClose: boolean = false;
   constructor(private url: string) {
     super();
-    if (!url.startsWith("wss://")) this.url = `ws://${url}`;
+    if (!url.startsWith("wss://")) this.url = `${ssl ? "wss" : "ws"}://${url}`;
   }
   get wsUrl() {
     return this.url;

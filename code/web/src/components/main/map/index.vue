@@ -91,8 +91,6 @@ export default defineComponent({
     return { oldClick, positionFeature, map, info, appView, geolocation, ws };
   },
   async mounted() {
-    addEventListener;
-
     await this.ws.connect();
     this.ws.on("updata", (data: villageData) => {
       console.log("updata");

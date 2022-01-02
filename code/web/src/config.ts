@@ -1,8 +1,13 @@
-const toUrl = (url: string | undefined) =>
-  void 0 !== url ? (/^https?:\/\//.test(url) ? url : `http://${url}`) : url;
-
+export const ssl =
+  import.meta.env.VITE_SSL === void 0 ? true : import.meta.env.VITE_SSL;
 export const webUrl = import.meta.env.BASE_URL;
 
+const toUrl = (url: string | undefined) =>
+  void 0 !== url
+    ? /^https?:\/\//.test(url)
+      ? url
+      : `http${ssl ? "s" : ""}://${url}`
+    : url;
 /**本站網址 */
 export const apiUrl =
   toUrl(import.meta.env.VITE_API_URL) ||
