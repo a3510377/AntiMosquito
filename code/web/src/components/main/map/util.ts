@@ -59,11 +59,12 @@ export function countyStyle(
           _value.forEach((v) => ((mosquitos as number) += v.mosquitos))
         )
       );
+    (this.ram[feature.get("COUNTYNAME")] ||= { main: mosquitos }).main =
+      mosquitos;
   }
 
   /*  */
   mosquitos =
-    mosquitos ||
     (this.ram[feature.get("COUNTYNAME")] ||= { main: mosquitos }).main ||
     mosquitos;
 
@@ -95,20 +96,21 @@ export function townStyle(
       townMain =
         this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")];
 
-    if (townMain === void 0 || (townMain?.main || -1) < 0)
+    if (townMain === void 0 || (townMain?.main || -1) < 0) {
       Object.entries(
         this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] || {}
       ).forEach(([_, value]) =>
         value.forEach((v) => (mosquitos += v.mosquitos))
       );
-
-    /*  */
-    mosquitos =
-      mosquitos ||
       (((this.ram[feature.get("COUNTYNAME")] ||= {}).data ||= {})[
         feature.get("TOWNNAME")
-      ] ||= {}).main ||
-      mosquitos;
+      ] ||= {}).main = mosquitos;
+    }
+    /*  */
+    mosquitos =
+      (((this.ram[feature.get("COUNTYNAME")] ||= {}).data ||= {})[
+        feature.get("TOWNNAME")
+      ] ||= {}).main || mosquitos;
 
     return new Style({
       stroke: new Stroke({ color: "#ff0000", width: 1 }),
@@ -145,19 +147,21 @@ export function villageStyle(
       this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")]
         ?.data?.["VILLNAME"];
 
-  if (VILLNAMEMain === void 0 || VILLNAMEMain < 0)
+  if (VILLNAMEMain === void 0 || VILLNAMEMain < 0) {
     (
       this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")]?.[
         feature.get("VILLNAME")
       ] || []
     ).forEach((d) => (mosquitos += d.mosquitos));
-
-  mosquitos =
-    mosquitos ||
     ((((this.ram[feature.get("COUNTYNAME")] ||= {}).data ||= {})[
       feature.get("TOWNNAME")
-    ] ||= {}).data ||= {})[feature.get("VILLNAME")] ||
-    mosquitos;
+    ] ||= {}).data ||= {})[feature.get("VILLNAME")] = mosquitos;
+  }
+
+  mosquitos =
+    ((((this.ram[feature.get("COUNTYNAME")] ||= {}).data ||= {})[
+      feature.get("TOWNNAME")
+    ] ||= {}).data ||= {})[feature.get("VILLNAME")] || mosquitos;
 
   return new Style({
     stroke: new Stroke({ color: "#000", width: 1 }),

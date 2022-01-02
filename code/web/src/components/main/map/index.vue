@@ -1,7 +1,10 @@
 <template>
   <div class="maps flex flex-item-center">
     <div class="map" ref="map">
-      <div class="info" ref="info"></div>
+      <div class="info" ref="info">
+        <h1 class="title" v-text="title" />
+        <div class="content"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +47,7 @@ export default defineComponent({
       data: null as unknown as ApiMainData,
       layers: {} as { [key: string]: layerVector<sourceVector<Geometry>> },
       ram: {} as typeThis["ram"],
+      title: "" as string,
     };
   },
   setup() {
@@ -89,20 +93,28 @@ export default defineComponent({
   async mounted() {
     addEventListener;
 
-    this.ws.connect();
+    await this.ws.connect();
     this.ws.on("updata", (data: villageData) => {
-      console.log(data);
-
+      console.log("updata");
       let area = data.location.area,
         dCounty = (this.data[area.county] ||= {}),
-        dTown = (dCounty[area.town] ||= {});
-      (dTown[area.village] ||= []).push(data);
+        dTown = (dCounty[area.town] ||= {}),
+        chick = false;
+      dTown[area.village] = (dTown[area.village] ||= []).map((v) => {
+        chick ||= v._id === data._id;
+        return v._id === data._id ? data : v;
+      });
+      if (!chick) dTown[area.village].push(data);
 
       let county = (this.ram[area.county] ||= { main: -1 });
       county.main = -1;
       let town = ((county.data ||= {})[area.town] ||= { main: -1 });
       town.main = -1;
       (town.data ||= {})[area.village] = -1;
+
+      Object.values(this.layers).forEach((v) =>
+        v.getSource().dispatchEvent("change")
+      );
     });
     let oldClick = this.oldClick,
       map = this.map,
@@ -115,7 +127,6 @@ export default defineComponent({
         method: "GET",
       })
     ).data as ApiMainData;
-
     let layers = (this.layers = {
       /**里 */
       village: new layerVector({
@@ -189,6 +200,8 @@ export default defineComponent({
       ],
       view: this.appView,
     });
+    Object.assign(window, { A_map, layers });
+
     new baseControlDiv({
       target: map,
       classList: ["split", "nTop"],
@@ -257,6 +270,8 @@ export default defineComponent({
         e.pixel,
         (_feature) => {
           let feature = _feature as cFeature;
+          if (A_map.getView().get("resolution") < 40)
+            this.title = feature.get("VILLNAME");
 
           if (
             feature.get("VILLNAME") &&
@@ -279,15 +294,14 @@ export default defineComponent({
         e.pixel,
         (_feature) => {
           let feature = _feature as cFeature;
+          let resolution = A_map.getView().get("resolution") as number;
+          if (resolution && resolution > 40 && resolution < 180)
+            this.title = feature.get("TOWNNAME");
+
           feature.setStyle(
-            townStyle.call(
-              this,
-              feature,
-              A_map.getView().get("resolution") as number,
-              {
-                stroke: new Stroke({ color: "#000", width: 3 }),
-              }
-            )
+            townStyle.call(this, feature, resolution, {
+              stroke: new Stroke({ color: "#000", width: 3 }),
+            })
           );
           if (oldClick.town && oldClick.town?.ol_uid !== feature.ol_uid)
             oldClick.town?.setStyle(townStyle.bind(this));
@@ -299,15 +313,14 @@ export default defineComponent({
         e.pixel,
         (_feature) => {
           let feature = _feature as cFeature;
+          let resolution = A_map.getView().get("resolution") as number;
+          if (resolution && resolution > 180)
+            this.title = feature.get("COUNTYNAME");
+
           feature.setStyle(
-            countyStyle.call(
-              this,
-              feature,
-              A_map.getView().get("resolution") as number,
-              {
-                stroke: new Stroke({ color: "#000", width: 3 }),
-              }
-            )
+            countyStyle.call(this, feature, resolution, {
+              stroke: new Stroke({ color: "#000", width: 3 }),
+            })
           );
           if (oldClick.county && oldClick.county?.ol_uid !== feature.ol_uid)
             oldClick.county?.setStyle(townStyle.bind(this));
@@ -330,17 +343,11 @@ export default defineComponent({
     height: 100%;
     width: 100%;
     position: relative;
-    &.full .info {
-      width: 20%;
-    }
     .info {
       border-radius: 10px;
-      background-color: rgb(58, 55, 55);
       position: absolute;
       right: 0;
-      top: 0;
       bottom: 0;
-      width: 40%;
       z-index: 99;
     }
     :deep() {

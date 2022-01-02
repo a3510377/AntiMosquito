@@ -1,4 +1,5 @@
 export interface villageData {
+  _id: string;
   time: string;
   humidity: number;
   mosquitos: number;
