@@ -25,9 +25,12 @@ export class clientWs extends EventEmitter {
     ws.on("message", (msg) =>
       this.emit("message", this.msgToJson(msg.toString()))
     );
+    ws.on("close", () => clearInterval(this.chick_loop));
     this.init();
     this.chick_loop = setInterval(
-      () => this.ws.close(4009),
+      () =>
+        +new Date() - this.lastTime > this.heartbeat_interval + 2e3 &&
+        this.ws.close(4009),
       this.heartbeat_interval + 1e3 * 5
     );
   }
@@ -44,6 +47,7 @@ export class clientWs extends EventEmitter {
   Heartbeat() {
     /* Heartbeat ACK */
     this.send({ op: 11 });
+    this.lastTime = +new Date();
   }
   /**認證
    * @get op: 2
@@ -66,11 +70,6 @@ export class clientWs extends EventEmitter {
   /**init */
   init() {
     this.on("message", async (msg) => {
-      if (
-        typeof msg === "string" ||
-        (typeof msg === "object" && typeof msg?.op === "number")
-      )
-        return this.send({ code: 400 });
       switch (msg.op) {
         case opCode.Heartbeat:
           this.Heartbeat();
@@ -99,7 +98,7 @@ export class clientWs extends EventEmitter {
   /**send */
   send(data: string | object | number) {
     if (typeof data === "object") data = JSON.stringify(data);
-    this.ws.send(data, (error) => console.error(error));
+    this.ws.send(data, (error) => error && console.error(error));
   }
 }
 

@@ -1,5 +1,5 @@
-const toUrl = (url: string) =>
-  /^https?:\/\//.test(url) ? url : `http://${url}`;
+const toUrl = (url: string | undefined) =>
+  void 0 !== url ? (/^https?:\/\//.test(url) ? url : `http://${url}`) : url;
 
 export const webUrl = import.meta.env.BASE_URL;
 

@@ -91,15 +91,18 @@ export default defineComponent({
 
     this.ws.connect();
     this.ws.on("updata", (data: villageData) => {
-      this.data = {
-        ...this.data,
-      };
+      console.log(data);
 
       let area = data.location.area,
-        _ = (this.ram[area.county] ||= { main: -1 });
+        dCounty = (this.data[area.county] ||= {}),
+        dTown = (dCounty[area.town] ||= {});
+      (dTown[area.village] ||= []).push(data);
 
-      (_.data ||= {})[area.town] ||= { main: -1 };
-      (_.data[area.town].data ||= { main: -1 })[area.village] = -1;
+      let county = (this.ram[area.county] ||= { main: -1 });
+      county.main = -1;
+      let town = ((county.data ||= {})[area.town] ||= { main: -1 });
+      town.main = -1;
+      (town.data ||= {})[area.village] = -1;
     });
     let oldClick = this.oldClick,
       map = this.map,

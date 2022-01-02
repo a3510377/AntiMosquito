@@ -9,10 +9,10 @@ export interface typeThis {
   data: ApiMainData;
   ram: {
     [county: string]: {
-      main: number;
+      main?: number;
       data?: {
         [town: string]: {
-          main: number;
+          main?: number;
           data?: {
             [village: string]: number;
           };
@@ -47,23 +47,25 @@ export function countyStyle(
   options?: StyleOptions
 ) {
   let feature = _feature as cFeature,
-    mosquitos = 0,
+    mosquitos: number = 0,
     countyMain = this.ram?.[feature.get("COUNTYNAME")];
 
-  if (countyMain === void 0 || countyMain.main < 0) {
+  if (countyMain === void 0 || (countyMain?.main || -1) < 0) {
+    mosquitos = 0;
     let data = this.data?.[feature.get("COUNTYNAME")];
     if (typeof data === "object")
-      Object.entries(data).forEach(([$_0, value]) =>
-        Object.entries(value).forEach(([$_1, _value]) =>
-          _value.forEach((v) => (mosquitos += v.mosquitos))
+      Object.entries(data).forEach(([_, value]) =>
+        Object.entries(value).forEach(([_, _value]) =>
+          _value.forEach((v) => ((mosquitos as number) += v.mosquitos))
         )
       );
   }
 
   /*  */
-  mosquitos = (this.ram[feature.get("COUNTYNAME")] ||= { main: mosquitos })[
-    "main"
-  ];
+  mosquitos =
+    mosquitos ||
+    (this.ram[feature.get("COUNTYNAME")] ||= { main: mosquitos }).main ||
+    mosquitos;
 
   if (resolution && resolution > 180)
     return new Style({
@@ -71,9 +73,7 @@ export function countyStyle(
       fill: new Fill({ color: setFillColor(~~(mosquitos / 100)) }),
       text: new Text({
         font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-        text: `${feature.get("COUNTYNAME")}\n${
-          mosquitos !== -1 ? mosquitos : ""
-        }`,
+        text: `${feature.get("COUNTYNAME")}\n${mosquitos > 0 ? mosquitos : ""}`,
       }),
       ...options,
     });
@@ -89,12 +89,13 @@ export function townStyle(
   options?: StyleOptions
 ) {
   let feature = _feature as cFeature;
+
   if (resolution && resolution > 40 && resolution < 180) {
     let mosquitos = 0,
       townMain =
         this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")];
 
-    if (townMain === void 0 || townMain.main < 0)
+    if (townMain === void 0 || (townMain?.main || -1) < 0)
       Object.entries(
         this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] || {}
       ).forEach(([_, value]) =>
@@ -102,11 +103,12 @@ export function townStyle(
       );
 
     /*  */
-    mosquitos = (((this.ram[feature.get("COUNTYNAME")] ||= {
-      main: -1,
-    }).data ||= {})[feature.get("TOWNNAME")] ||= {
-      main: -1,
-    }).main ||= mosquitos;
+    mosquitos =
+      mosquitos ||
+      (((this.ram[feature.get("COUNTYNAME")] ||= {}).data ||= {})[
+        feature.get("TOWNNAME")
+      ] ||= {}).main ||
+      mosquitos;
 
     return new Style({
       stroke: new Stroke({ color: "#ff0000", width: 1 }),
@@ -115,9 +117,7 @@ export function townStyle(
       }),
       text: new Text({
         font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-        text: `${feature.get("TOWNNAME")}\n${
-          mosquitos !== -1 ? mosquitos : ""
-        }`,
+        text: `${feature.get("TOWNNAME")}\n${mosquitos > 0 ? mosquitos : ""}`,
       }),
       ...options,
     });
@@ -145,18 +145,19 @@ export function villageStyle(
       this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")]
         ?.data?.["VILLNAME"];
 
-  if (VILLNAMEMain === void 0 || VILLNAMEMain > 0)
+  if (VILLNAMEMain === void 0 || VILLNAMEMain < 0)
     (
       this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")]?.[
         feature.get("VILLNAME")
       ] || []
     ).forEach((d) => (mosquitos += d.mosquitos));
 
-  mosquitos = ((((this.ram[feature.get("COUNTYNAME")] ||= {
-    main: -1,
-  }).data ||= {})[feature.get("TOWNNAME")] ||= {
-    main: -1,
-  }).data ||= { main: -1 })[feature.get("VILLNAME")] ||= mosquitos;
+  mosquitos =
+    mosquitos ||
+    ((((this.ram[feature.get("COUNTYNAME")] ||= {}).data ||= {})[
+      feature.get("TOWNNAME")
+    ] ||= {}).data ||= {})[feature.get("VILLNAME")] ||
+    mosquitos;
 
   return new Style({
     stroke: new Stroke({ color: "#000", width: 1 }),
@@ -165,7 +166,7 @@ export function villageStyle(
       font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
       fill: new Fill({ color: "#000" }),
       text: `${feature.get("VILLNAME") || ""}\n${
-        mosquitos !== -1 ? mosquitos : ""
+        mosquitos > 0 ? mosquitos : ""
       }`,
     }),
     ...options,

@@ -48,7 +48,7 @@ export class ws extends EventEmitter {
   }
   onError() {}
   onClose() {
-    if (!this.usClose) this.Resuming();
+    if (!this.usClose) setTimeout(() => this.Resuming(), 2e3);
   }
   /**回復心跳 */
   Heartbeat() {
