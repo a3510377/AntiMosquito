@@ -74,7 +74,6 @@ router
         (
           await site.find().toArray()
         ).forEach((info) => {
-          delete info._id;
           let area = info.location.area;
           let county = (data[area.county] ||= {});
           let town = (county[area.town] ||= {});
