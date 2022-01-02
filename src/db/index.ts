@@ -93,8 +93,10 @@ export default class db extends EventEmitter {
       "change",
       (d) => {
         let data = d.fullDocument;
-        delete data._id;
-        this.ws.updata(data);
+        if (data) {
+          delete data._id;
+          this.ws.updata(data);
+        }
       }
     );
   }
