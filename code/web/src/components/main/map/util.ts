@@ -46,13 +46,11 @@ export function countyStyle(
   resolution?: number,
   options?: StyleOptions
 ) {
-  let feature = _feature as cFeature;
-  let mosquitos = 0;
+  let feature = _feature as cFeature,
+    mosquitos = 0,
+    countyMain = this.ram?.[feature.get("COUNTYNAME")];
 
-  if (
-    this.ram?.[feature.get("COUNTYNAME")] === void 0 ||
-    this.ram?.[feature.get("COUNTYNAME")]["main"] < 0
-  ) {
+  if (countyMain === void 0 || countyMain.main < 0) {
     let data = this.data?.[feature.get("COUNTYNAME")];
     if (typeof data === "object")
       Object.entries(data).forEach(([$_0, value]) =>
@@ -61,9 +59,12 @@ export function countyStyle(
         )
       );
   }
+
+  /*  */
   mosquitos = (this.ram[feature.get("COUNTYNAME")] ||= { main: mosquitos })[
     "main"
   ];
+
   if (resolution && resolution > 180)
     return new Style({
       stroke: new Stroke({ color: "#0000ff", width: 1 }),
@@ -79,7 +80,6 @@ export function countyStyle(
   return new Style({
     stroke: new Stroke({ color: "#0000ff", width: 1 }),
     fill: new Fill({ color: "#ffffff00" }),
-    ...options,
   });
 }
 export function townStyle(
@@ -90,23 +90,23 @@ export function townStyle(
 ) {
   let feature = _feature as cFeature;
   if (resolution && resolution > 40 && resolution < 180) {
-    let mosquitos = 0;
+    let mosquitos = 0,
+      townMain =
+        this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")];
 
-    if (
-      this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")] ===
-        void 0 ||
-      (this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")]
-        .main || 0) < 0
-    )
+    if (townMain === void 0 || townMain.main < 0)
       Object.entries(
         this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")] || {}
-      ).forEach(([$_0, value]) =>
+      ).forEach(([_, value]) =>
         value.forEach((v) => (mosquitos += v.mosquitos))
       );
 
-    let _ = (this.ram[feature.get("COUNTYNAME")] ||= { main: -1 });
-    (_.data ||= {})[feature.get("TOWNNAME")] ||= { main: -1 };
-    mosquitos = _.data[feature.get("TOWNNAME")]["main"] ||= mosquitos;
+    /*  */
+    mosquitos = (((this.ram[feature.get("COUNTYNAME")] ||= {
+      main: -1,
+    }).data ||= {})[feature.get("TOWNNAME")] ||= {
+      main: -1,
+    }).main ||= mosquitos;
 
     return new Style({
       stroke: new Stroke({ color: "#ff0000", width: 1 }),
@@ -137,19 +137,26 @@ export function villageStyle(
   resolution?: number,
   options?: StyleOptions
 ) {
-  let feature = _feature as cFeature;
   if (resolution && resolution > 40)
     return new Style({ fill: new Fill({ color: "#ffffff" }) });
-  let mosquitos = 0;
+  let feature = _feature as cFeature,
+    mosquitos = 0,
+    VILLNAMEMain =
+      this.ram?.[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")]
+        ?.data?.["VILLNAME"];
 
-  if (feature.mosquitos === void 0)
+  if (VILLNAMEMain === void 0 || VILLNAMEMain > 0)
     (
       this.data?.[feature.get("COUNTYNAME")]?.[feature.get("TOWNNAME")]?.[
         feature.get("VILLNAME")
       ] || []
     ).forEach((d) => (mosquitos += d.mosquitos));
 
-  mosquitos = feature.mosquitos ||= mosquitos;
+  mosquitos = ((((this.ram[feature.get("COUNTYNAME")] ||= {
+    main: -1,
+  }).data ||= {})[feature.get("TOWNNAME")] ||= {
+    main: -1,
+  }).data ||= { main: -1 })[feature.get("VILLNAME")] ||= mosquitos;
 
   return new Style({
     stroke: new Stroke({ color: "#000", width: 1 }),
