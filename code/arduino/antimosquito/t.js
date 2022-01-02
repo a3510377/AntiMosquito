@@ -1,9 +1,9 @@
 import net from "net";
 
 const client = new net.Socket();
-const HOST = "127.0.0.1";
+const HOST = "168.0.0.1";
 
-client.connect(5050, HOST, () => {
+client.connect(443, HOST, () => {
   client.write(
     "GET /api/v1/nowData?ip=1.1.1.1&time=999999&humidity=1&mosquitos=1&temperature=1 HTTP/1.1\r\n"
   );
