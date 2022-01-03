@@ -2,7 +2,6 @@ import express from "express";
 import dbType from "@/db";
 import { dataMosquitos, dbDataMosquitos } from "@/types/db.data";
 import { getIp, getVillage } from "@/utils/axios";
-import WS from "@/server/gateway";
 
 const router = express.Router();
 
@@ -58,8 +57,6 @@ async function nowData(
     },
   };
   db.Mosquitos.collection(userInfo._id.toString()).insertOne(data);
-  let ws = req.app.get("ws") as WS;
-  ws.updata(data as unknown as JsonAny);
   res.json(data);
 }
 
@@ -163,8 +160,6 @@ router
 
     data.length > 0 &&
       db.Mosquitos.collection(userInfo._id.toString()).insertMany(data);
-    let ws = req.app.get("ws") as WS;
-    ws.updata(data as unknown as JsonAny);
     res.json(data);
   });
 
