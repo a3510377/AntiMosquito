@@ -204,46 +204,26 @@ void loop()
         Mosquitos++;
         delay(100);
         digitalWrite(2, LOW);
+
+        Serial.println("準備發送");
+
+        float h = dht.readHumidity();    //讀取濕度
+        float t = dht.readTemperature(); //讀取攝氏溫度
+
+        // http post
+        Serial2.println("GET " + path + " HTTP/1.1");
+        Serial2.println("Host: " + host + "?ip=" + ip + "&humidity=" + h + "&mosquitos=1" + "&temperature=" + t);
+        Serial2.println("authorization: " + token);
+        Serial2.println("Content-Type: application/json");
+        Serial2.println("Cache-Control: no-cache");
+        Serial2.println("");
+
+        delay(500);
       }
     }
     num++;
   }
   if (num == 9)
   {
-    DateTime now = RTC.now();
-
-    // 整點發送一次資料
-    // if (now.minute() == 0 && now.second() == 0) {    // 每小時
-    if (now.second() == 0)
-    { // 每分鐘
-      Serial.println("準備發送");
-
-      float h = dht.readHumidity();    //讀取濕度
-      float t = dht.readTemperature(); //讀取攝氏溫度
-
-      StaticJsonDocument<200> json_doc;
-      char json_output[150];
-
-      json_doc["ip"] = ip;
-      json_doc["humidity"] = h;
-      json_doc["mosquitos"] = Mosquitos;
-      json_doc["temperature"] = t;
-
-      // json to string
-      serializeJson(json_doc, json_output);
-      Serial.println(json_output);
-
-      // http post
-      Serial2.println("POST " + path + " HTTP/1.1");
-      Serial2.println("Host: " + host);
-      Serial2.println("authorization: " + token);
-      Serial2.println("Content-Type: application/json");
-      Serial2.println("Cache-Control: no-cache");
-      Serial2.println(json_output);
-      Serial2.println("");
-
-      delay(500);
-    }
-    num = 8;
   }
 }
