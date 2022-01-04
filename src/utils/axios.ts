@@ -29,8 +29,8 @@ export const getIp = async (
  * @param latitude 緯度
  */
 export const getVillage = async (
-  longitude: float,
-  latitude: float
+  longitude?: float,
+  latitude?: float
 ): Promise<false | villageAPIData> => {
   let data = (
     await axios({

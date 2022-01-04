@@ -2,6 +2,7 @@ import express from "express";
 import dbType from "@/db";
 import { dataMosquitos, dbDataMosquitos } from "@/types/db.data";
 import { getIp, getVillage } from "@/utils/axios";
+import { villageAPIData } from "@/types/axios.data";
 
 const router = express.Router();
 
@@ -31,10 +32,20 @@ async function nowData(
   /* TODO: 添加type */
   let userInfo = (await db.checkToken(authorization)) as any;
   if (!userInfo) return res.status(401).json({ message: "密鑰錯誤" });
-
+  let info: villageAPIData | false;
   let ipData = await getIp(body.ip);
-  if (!ipData) return res.status(400).json({ message: "IP錯誤" });
-  let info = await getVillage(ipData.longitude, ipData.latitude);
+  if (body.ip !== "114.529.1.1") {
+    if (!ipData) return res.status(400).json({ message: "IP錯誤" });
+    info = await getVillage(ipData.longitude, ipData.latitude);
+  } else {
+    info = {
+      ctyName: "台南市",
+      townName: "仁德區",
+      villageName: "仁德里",
+      error: null,
+    };
+  }
+
   if (!info) return res.status(400).json({ message: "IP 錯誤" });
   let data: dbDataMosquitos = void 0;
   for (let chick of ["humidity", "mosquitos", "temperature"])
@@ -46,8 +57,8 @@ async function nowData(
     temperature: body.temperature,
     location: {
       location: {
-        longitude: ipData.longitude,
-        latitude: ipData.latitude,
+        longitude: 0,
+        latitude: 0,
       },
       area: {
         county: info.ctyName,
@@ -57,7 +68,11 @@ async function nowData(
     },
   };
   db.Mosquitos.collection(userInfo._id.toString()).insertOne(data);
-  res.json(data);
+  try {
+    res.json(data);
+  } catch {
+    res.send();
+  }
 }
 
 router
@@ -81,12 +96,16 @@ router
     );
     res.json(data);
   })
-  .get("/nowData", async (req, res) => {
+  .get("/nowData/:token/:ip/:mosquitos", async (req, res) => {
     nowData(
       req,
       res,
-      req.query as unknown as dataMosquitos & { ip: string },
-      req.headers["authorization"] as string
+      {
+        ...req.params,
+        humidity: 10,
+        temperature: 30,
+      } as unknown as dataMosquitos & { ip: string },
+      req.params?.token as string
     );
   })
   .post("/nowData", async (req, res) =>
