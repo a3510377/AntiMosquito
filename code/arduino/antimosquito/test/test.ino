@@ -17,7 +17,7 @@ String password = "123456789";
 String host = "192.168.137.1";
 String port = "3000";
 String path = "/api/v1/nowData";
-String ip = "118.232.71.19";
+String ip = "163.26.155.19";
 String token = "ppml5Juie2o8dLTm.1k1kk0g.YNrYQHHXirtl8CK1qIOD";
 
 int threshold = 0;
@@ -178,7 +178,8 @@ void loop()
             Serial.print(ch0);
             Serial.print(F("  Ch1: "));
             Serial.println(ch1);
-
+            Serial.println(ambient_light, threshold);
+            delay(100);
             if (ambient_light < threshold)
             {
                 digitalWrite(2, HIGH);
@@ -191,12 +192,14 @@ void loop()
                 float t = dht.readTemperature(); //讀取攝氏溫度
 
                 Serial2.println("GET " + path + " HTTP/1.1");
-                Serial2.println("Host: " + host + "?ip=" + ip + "&humidity=" + h + "&mosquitos=1" + "&temperature=" + t);
+                Serial2.print("Host: " + host + "?ip=" + ip + "&humidity=");
+                Serial2.print(h);
+                Serial2.print("&mosquitos=1" + "&temperature=");
+                Serial2.println(t);
                 Serial2.println("authorization: " + token);
                 Serial2.println("Content-Type: application/json");
                 Serial2.println("");
             }
         }
-        num++;
     }
 }

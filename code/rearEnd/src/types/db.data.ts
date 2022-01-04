@@ -22,9 +22,9 @@ export interface siteInfo {
 export interface Location {
   location: {
     /**緯度 */
-    latitude: float;
+    latitude?: float;
     /**經度 */
-    longitude: float;
+    longitude?: float;
   };
   area: {
     /**縣 */
