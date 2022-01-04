@@ -79,6 +79,7 @@ router
   .get("/data", async (req, res) => {
     let db = req.app.get("db") as dbType;
     let data = {};
+
     await Promise.all(
       (
         await db.Mosquitos.collections()
