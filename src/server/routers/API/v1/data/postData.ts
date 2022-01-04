@@ -33,8 +33,8 @@ async function nowData(
   let userInfo = (await db.checkToken(authorization)) as any;
   if (!userInfo) return res.status(401).json({ message: "密鑰錯誤" });
   let info: villageAPIData | false;
-  let ipData = await getIp(body.ip);
   if (body.ip !== "114.529.1.1") {
+    let ipData = await getIp(body.ip);
     if (!ipData) return res.status(400).json({ message: "IP錯誤" });
     info = await getVillage(ipData.longitude, ipData.latitude);
   } else {
@@ -86,6 +86,9 @@ router
         (
           await site.find().toArray()
         ).forEach((info) => {
+          try {
+            info.mosquitos = +info.mosquitos;
+          } catch {}
           let area = info.location.area;
           let county = (data[area.county] ||= {});
           let town = (county[area.town] ||= {});
