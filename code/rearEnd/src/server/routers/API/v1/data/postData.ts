@@ -39,7 +39,7 @@ async function nowData(
     info = await getVillage(ipData.longitude, ipData.latitude);
   } else {
     info = {
-      ctyName: "台南市",
+      ctyName: "臺南市",
       townName: "仁德區",
       villageName: "仁德里",
       error: null,
