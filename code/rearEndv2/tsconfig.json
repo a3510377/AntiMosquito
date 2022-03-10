@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowJs": false,
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": ["esnext", "dom"],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "lib": ["ES2020"],
+  "includes": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["tools/**/*.*", "web/**/*.*"]
+}
