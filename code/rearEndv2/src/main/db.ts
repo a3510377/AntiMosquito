@@ -3,10 +3,7 @@ import UserModel from "../models/user";
 
 import { server } from "./server";
 
-export class serverDb {
-  public model = {
-    DataModel,
-    UserModel,
-  };
+export class dbServer {
+  public model = { DataModel, UserModel };
   constructor(public server: server) {}
 }
