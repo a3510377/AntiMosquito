@@ -1,1 +1,3 @@
-export class serverDb {}
+export class serverDb {
+  constructor() {}
+}

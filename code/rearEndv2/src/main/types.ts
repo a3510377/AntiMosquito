@@ -1,9 +1,10 @@
 /*----- ws -----*/
-export interface Events {
+/**wsEvent */
+export interface wsEvents {
   Hello: { heartbeat_interval: number };
 }
-
-export enum opCode {
+/**op codes */
+export enum wsOpCode {
   /**
    * @type {Receive}
    * 客戶端讀取伺服器發送的事件

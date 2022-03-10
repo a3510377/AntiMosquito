@@ -3,7 +3,7 @@ import WebSocket from "ws";
 import { random } from "../utils/number";
 import { EventEmitter } from "events";
 import { WithId } from "mongodb";
-import { opCode } from "./types";
+import { wsOpCode } from "./types";
 /* 
   1. 用戶連線
   2. 伺服器發送 event:hello ( { op: 10, d: { heartbeat_interval: 1e3 * 10 } } )
@@ -71,10 +71,10 @@ export class clientWs extends EventEmitter {
   init() {
     this.on("message", async (msg) => {
       switch (msg.op) {
-        case opCode.Heartbeat:
+        case wsOpCode.Heartbeat:
           this.Heartbeat();
           break;
-        case opCode.Identify:
+        case wsOpCode.Identify:
           if ("t" in msg && msg.t === "web") {
             this.type = "web";
             this.send({ op: 0, t: "ready" });
@@ -84,7 +84,7 @@ export class clientWs extends EventEmitter {
             if (!chickToken) this.send({ op: 0, type: "client" });
           }
           break;
-        case opCode.HeartbeatACK:
+        case wsOpCode.HeartbeatACK:
           if (msg.t !== "web" && !this.certification) return;
           this.Heartbeat();
           break;
@@ -117,7 +117,7 @@ export default class WS extends WebSocket.Server {
   }
   updata(data: JsonAny) {
     this.sendAll({
-      op: opCode.Event,
+      op: wsOpCode.Event,
       t: "updata",
       d: data,
     });
