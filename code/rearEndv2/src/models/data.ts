@@ -11,11 +11,11 @@ export interface dataType extends Document {
   temperature: number;
 }
 
-export const guildSchema = new Schema<dataType>({
+export const dataSchema = new Schema<dataType>({
   time: Date,
   humidity: Number,
   mosquitos: Number,
   temperature: Number,
 });
 
-export default model<dataType>("data", guildSchema);
+export default model<dataType>("data", dataSchema);
