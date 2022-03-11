@@ -2,18 +2,18 @@ import { Document, Schema, model } from "mongoose";
 
 export interface dataType extends Document {
   /**時間( timestamp1-timestamp2 ) */
-  time: `${string}-${string}`;
+  time?: `${string}-${string}`;
   /**濕度( % ) */
   humidity: number;
   /**蚊子數量 */
-  mosquitos: number;
+  mosquitos?: number;
   /**溫度( 度 ) */
-  temperature: number;
+  temperature?: number;
 }
 
 export const dataSchema = new Schema<dataType>({
   time: Date,
-  humidity: Number,
+  humidity: { type: Number, default: 1 },
   mosquitos: Number,
   temperature: Number,
 });
