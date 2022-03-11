@@ -1,8 +1,8 @@
 import { Document, Schema, model } from "mongoose";
 
 export interface dataType extends Document {
-  /**時間( timestamp1-timestamp2 ) */
-  time?: `${string}-${string}`;
+  /**時間( timestamp ) */
+  time: Date;
   /**濕度( % ) */
   humidity: number;
   /**蚊子數量 */
@@ -12,9 +12,9 @@ export interface dataType extends Document {
 }
 
 export const dataSchema = new Schema<dataType>({
-  time: Date,
-  humidity: { type: Number, default: 1 },
-  mosquitos: Number,
+  time: { type: Date, default: new Date() },
+  mosquitos: { type: Number, default: 1 },
+  humidity: Number,
   temperature: Number,
 });
 
