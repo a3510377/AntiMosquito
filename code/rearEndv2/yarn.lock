@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@techstark/opencv-js@^4.5.4-release.1":
-  version "4.5.4-release.1"
-  resolved "https://registry.yarnpkg.com/@techstark/opencv-js/-/opencv-js-4.5.4-release.1.tgz#f7295d0895a918350a7eeaad4026bdebdea6a452"
-  integrity sha512-+KLtavrhhG6WzieOdDFmgy9HwlZr+qUTEO8eMSJm3z/zPq1638x2SM4Kl8GOTRYDLsDFVtzYx2AbUvVjw6YnKg==
-  dependencies:
-    mirada "^0.0.15"
-
 "@types/body-parser@*":
   version "1.19.2"
   resolved "https://registry.npmjs.org/@types/body-parser/-/body-parser-1.19.2.tgz"
