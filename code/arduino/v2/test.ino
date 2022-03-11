@@ -74,10 +74,9 @@ void setup()
     config.pin_sscb_scl = SIOC_GPIO_NUM;
     config.pin_pwdn = PWDN_GPIO_NUM;
     config.pin_reset = RESET_GPIO_NUM;
-    config.xclk_freq_hz = 20000000;
+    config.xclk_freq_hz = 2e7;
     config.pixel_format = PIXFORMAT_JPEG;
 
-    // init with high specs to pre-allocate larger buffers
     if (psramFound())
     {
         config.frame_size = FRAMESIZE_SVGA;
@@ -131,8 +130,7 @@ String sendPhoto()
 
     if (client.connect(serverName.c_str(), serverPort))
     {
-        Serial.println("Connection successful!");
-        String head = "--RandomNerdTutorials\r\nContent-Disposition: form-data; name=\"imageFile\"; filename=\"esp32-cam.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
+        String head = "Content-Disposition: form-data; name=\"imageFile\"; filename=\"cam-img.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n";
         String tail = "\r\n--RandomNerdTutorials--\r\n";
 
         uint32_t imageLen = fb->len;
@@ -148,7 +146,7 @@ String sendPhoto()
 
         uint8_t *fbBuf = fb->buf;
         size_t fbLen = fb->len;
-        for (size_t n = 0; n < fbLen; n = n + 1024)
+        for (size_t n = 0; n < fbLen; n += 1024)
         {
             if (n + 1024 < fbLen)
             {
@@ -165,11 +163,11 @@ String sendPhoto()
 
         esp_camera_fb_return(fb);
 
-        int timoutTimer = 10000;
+        int timoutTimer = 1e3;
         long startTimer = millis();
         boolean state = false;
 
-        while ((startTimer + timoutTimer) > millis())
+        while (startTimer + timoutTimer > millis())
         {
             Serial.print(".");
             delay(100);
@@ -179,25 +177,17 @@ String sendPhoto()
                 if (c == '\n')
                 {
                     if (getAll.length() == 0)
-                    {
                         state = true;
-                    }
                     getAll = "";
                 }
                 else if (c != '\r')
-                {
                     getAll += String(c);
-                }
                 if (state == true)
-                {
                     getBody += String(c);
-                }
                 startTimer = millis();
             }
             if (getBody.length() > 0)
-            {
                 break;
-            }
         }
         Serial.println();
         client.stop();
