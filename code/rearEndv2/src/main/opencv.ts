@@ -5,3 +5,6 @@ let canvas = createCanvas(200, 200);
 let ctx = canvas.getContext("2d");
 
 let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+let src = cv.matFromImageData(imgData);
+
+console.log(src);
