@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "canvas": "^2.9.0",
+    "mirada": "^0.0.15",
     "opencv.js": "^1.2.1"
   }
 }
