@@ -3,6 +3,17 @@ import WebSocket from "ws";
 
 import { server } from "./server";
 
+export class wsFunc {
+  public static msgToJson(msg: WebSocket.RawData): string | Object {
+    let data = msg.toString();
+    try {
+      data = JSON.parse(data);
+    } catch {}
+    return data;
+  }
+  public static onMessage(this: wsClient, msg: MessageType) {}
+}
+
 /* 
   1. 用戶連線
   2. 伺服器發送 event:hello ( { op: 10, d: { heartbeat_interval: 1e3 * 10 } } )
@@ -15,7 +26,7 @@ export class wsClient extends EventEmitter {
     this.hello();
     console.log("ws: 用戶連線");
     ws.on("message", (msg) =>
-      this.emit("message", wsServer.onMessage.bind(this, msg))
+      this.emit("message", wsFunc.onMessage.bind(this, wsFunc.msgToJson(msg)))
     );
     this.init();
   }
@@ -37,14 +48,6 @@ export class wsServer extends WebSocket.Server {
     super(options);
     this.on("connection", (ws) => new wsClient(ws, this));
   }
-  public static msgToJson(msg: WebSocket.RawData): string | Object {
-    let data = msg.toString();
-    try {
-      data = JSON.parse(data);
-    } catch {}
-    return data;
-  }
-  public static onMessage(this: wsClient, msg: WebSocket.RawData) {}
 }
 
 export interface Events {
@@ -77,4 +80,9 @@ export enum opCode {
    * 伺服器發送確認心跳
    */
   HeartbeatACK,
+}
+
+export interface MessageType {
+  t: opCode;
+  d: {};
 }
