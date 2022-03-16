@@ -15,7 +15,7 @@ export class wsClient extends EventEmitter {
     this.hello();
     console.log("ws: 用戶連線");
     ws.on("message", (msg) =>
-      this.emit("message", server.onMessage.bind(server))
+      this.emit("message", wsServer.onMessage.bind(this, msg))
     );
     this.init();
   }
@@ -37,7 +37,14 @@ export class wsServer extends WebSocket.Server {
     super(options);
     this.on("connection", (ws) => new wsClient(ws, this));
   }
-  public onMessage() {}
+  public static msgToJson(msg: WebSocket.RawData): string | Object {
+    let data = msg.toString();
+    try {
+      data = JSON.parse(data);
+    } catch {}
+    return data;
+  }
+  public static onMessage(this: wsClient, msg: WebSocket.RawData) {}
 }
 
 export interface Events {
