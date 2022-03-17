@@ -11,7 +11,21 @@ export namespace wsFunc {
     } catch {}
     return data;
   }
-  export function clientInit(this: wsClient, msg: MessageType) {}
+  export function Heartbeat(this: wsClient) {}
+  export function clientInit(this: wsClient, msg: MessageType) {
+    this.on("message", async (msg) => {
+      switch (msg.op) {
+        case opCode.Heartbeat:
+          wsFunc.Heartbeat.call(this);
+          break;
+        case opCode.HeartbeatACK:
+          wsFunc.Heartbeat.call(this);
+          break;
+        default:
+          return;
+      }
+    });
+  }
   export async function send(this: wsClient, data: unknown) {
     if (typeof data === "object") data = JSON.stringify(data);
     this.ws.send(data, console.error);
@@ -72,11 +86,6 @@ export enum opCode {
    * 客戶端發送心跳
    */
   Heartbeat,
-  /**
-   * @type {Send}
-   * 客戶端發送認證請求
-   */
-  Identify,
   /**
    * @type {Receive}
    * 伺服器初始化完畢發送
