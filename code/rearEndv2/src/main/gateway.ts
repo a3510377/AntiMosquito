@@ -3,15 +3,22 @@ import WebSocket from "ws";
 
 import { server } from "./server";
 
-export class wsFunc {
-  public static msgToJson(msg: WebSocket.RawData): string | Object {
+export namespace wsFunc {
+  export function msgToJson(msg: WebSocket.RawData): string | Object {
     let data = msg.toString();
     try {
       data = JSON.parse(data);
     } catch {}
     return data;
   }
-  public static onMessage(this: wsClient, msg: MessageType) {}
+  export function clientInit(this: wsClient, msg: MessageType) {}
+  export async function send(this: wsClient, data: unknown) {
+    if (typeof data === "object") data = JSON.stringify(data);
+    this.ws.send(data, console.error);
+  }
+  export namespace events {
+    export function onMessage(this: wsClient, msg: MessageType) {}
+  }
 }
 
 /* 
@@ -21,22 +28,22 @@ export class wsFunc {
   4. 網管響應 event: HeartbeatACK ( { op: 11 } )
  */
 export class wsClient extends EventEmitter {
+  public send = <typeof wsFunc.send>wsFunc.send.bind(this);
   constructor(public readonly ws: WebSocket, public readonly server: wsServer) {
     super();
     this.hello();
     console.log("ws: 用戶連線");
     ws.on("message", (msg) =>
-      this.emit("message", wsFunc.onMessage.bind(this, wsFunc.msgToJson(msg)))
+      this.emit(
+        "message",
+        wsFunc.events.onMessage.bind(this, wsFunc.msgToJson(msg))
+      )
     );
     this.init();
   }
   public init() {}
   public hello() {
     // this.send({ op: 10, d: { heartbeat_interval: this.heartbeat_interval } });
-  }
-  public send(data: string | object | number) {
-    if (typeof data === "object") data = JSON.stringify(data);
-    this.ws.send(data, (error) => error && console.error(error));
   }
 }
 
