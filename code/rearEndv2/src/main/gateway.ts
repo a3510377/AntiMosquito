@@ -27,6 +27,7 @@ export namespace wsFunc {
   /**wsClient 初始化 */
   export function clientInit(this: wsClient) {
     this.on("message", async (msg) => {
+      msg = wsFunc.msgToJson(msg);
       switch (msg.op) {
         case opCode.Heartbeat:
           wsFunc.HeartbeatACK.call(this);
@@ -40,10 +41,7 @@ export namespace wsFunc {
     if (typeof data === "object") data = JSON.stringify(data);
     this.ws.send(data, console.error);
   }
-  /**事件處理器 */
-  export namespace events {
-    export function onMessage(this: wsClient, msg: MessageType) {}
-  }
+  export function onEvent(this: wsClient, msg: unknown) {}
 }
 
 /* 
@@ -57,12 +55,6 @@ export class wsClient extends EventEmitter {
   constructor(public readonly ws: WebSocket, public readonly server: wsServer) {
     super();
     console.log("ws: 用戶連線");
-    ws.on("message", (msg) =>
-      this.emit(
-        "message",
-        wsFunc.events.onMessage.bind(this, wsFunc.msgToJson(msg))
-      )
-    );
     wsFunc.clientInit.call(this);
   }
 }
