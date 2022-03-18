@@ -18,6 +18,7 @@
     "ws": "^8.5.0"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.11.97",
     "@types/ws": "^8.5.3"
   }
 }
