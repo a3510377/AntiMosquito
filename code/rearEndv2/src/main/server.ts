@@ -49,6 +49,7 @@ export class server {
   }
   /**start */
   public async start() {
+    this.init();
     await mongoose
       .connect(this.config.db.uri)
       .then(() => console.log("資料庫連接完成"))

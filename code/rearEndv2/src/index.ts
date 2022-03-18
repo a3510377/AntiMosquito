@@ -1,3 +1,3 @@
-import { config } from "dotenv";
+import { server } from "./main/server";
 
-config();
+new server().start();
