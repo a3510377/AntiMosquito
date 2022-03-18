@@ -1,9 +1,11 @@
 import { EventEmitter } from "events";
 import WebSocket from "ws";
 
+import { random } from "../utils/number";
 import { server } from "./server";
 
 export namespace wsFunc {
+  /**將訊息改為 json or string */
   export function msgToJson(msg: WebSocket.RawData): string | Object {
     let data = msg.toString();
     try {
@@ -11,25 +13,34 @@ export namespace wsFunc {
     } catch {}
     return data;
   }
-  export function Heartbeat(this: wsClient) {}
-  export function clientInit(this: wsClient, msg: MessageType) {
+  /**回復心跳 */
+  export function HeartbeatACK(this: wsClient) {
+    this.send({ op: opCode.HeartbeatACK });
+  }
+  /**初始化完畢發送 */
+  export function Hello(this: wsClient) {
+    this.send({
+      op: opCode.Hello,
+      heartbeat_interval: ~~(1e3 * 30 * random(1, 0.8, false)),
+    });
+  }
+  /**wsClient 初始化 */
+  export function clientInit(this: wsClient) {
     this.on("message", async (msg) => {
       switch (msg.op) {
         case opCode.Heartbeat:
-          wsFunc.Heartbeat.call(this);
+          wsFunc.HeartbeatACK.call(this);
           break;
-        case opCode.HeartbeatACK:
-          wsFunc.Heartbeat.call(this);
-          break;
-        default:
-          return;
       }
     });
+    wsFunc.Hello.call(this);
   }
+  /**發送訊息至 wsClient */
   export async function send(this: wsClient, data: unknown) {
     if (typeof data === "object") data = JSON.stringify(data);
     this.ws.send(data, console.error);
   }
+  /**事件處理器 */
   export namespace events {
     export function onMessage(this: wsClient, msg: MessageType) {}
   }
@@ -45,7 +56,6 @@ export class wsClient extends EventEmitter {
   public send = <typeof wsFunc.send>wsFunc.send.bind(this);
   constructor(public readonly ws: WebSocket, public readonly server: wsServer) {
     super();
-    this.hello();
     console.log("ws: 用戶連線");
     ws.on("message", (msg) =>
       this.emit(
@@ -53,21 +63,21 @@ export class wsClient extends EventEmitter {
         wsFunc.events.onMessage.bind(this, wsFunc.msgToJson(msg))
       )
     );
-    this.init();
-  }
-  public init() {}
-  public hello() {
-    // this.send({ op: 10, d: { heartbeat_interval: this.heartbeat_interval } });
+    wsFunc.clientInit.call(this);
   }
 }
 
 export class wsServer extends WebSocket.Server {
+  public connection: wsClient[] = [];
   constructor(
     protected readonly server: server,
     public options: WebSocket.ServerOptions = {}
   ) {
     super(options);
-    this.on("connection", (ws) => new wsClient(ws, this));
+    this.on("connection", (ws) => this.connection.push(new wsClient(ws, this)));
+  }
+  public send(data: unknown) {
+    this.connection.forEach((ws) => ws.send(data));
   }
 }
 
@@ -76,24 +86,20 @@ export interface Events {
 }
 
 export enum opCode {
-  /**
+  /**客戶端讀取伺服器發送的事件
    * @type {Receive}
-   * 客戶端讀取伺服器發送的事件
    */
   Event = 0,
-  /**
+  /**客戶端發送心跳
    * @type {Send | Receive}
-   * 客戶端發送心跳
    */
   Heartbeat,
-  /**
+  /**伺服器初始化完畢發送
    * @type {Receive}
-   * 伺服器初始化完畢發送
    */
   Hello = 10,
-  /**
+  /**伺服器發送確認心跳
    * @type {Receive}
-   * 伺服器發送確認心跳
    */
   HeartbeatACK,
 }
