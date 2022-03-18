@@ -76,10 +76,6 @@ export class wsServer extends WebSocket.Server {
   }
 }
 
-export interface Events {
-  Hello: { heartbeat_interval: number };
-}
-
 export enum opCode {
   /**客戶端讀取伺服器發送的事件
    * @type {Receive}
@@ -97,9 +93,4 @@ export enum opCode {
    * @type {Receive}
    */
   HeartbeatACK,
-}
-
-export interface MessageType {
-  t: opCode;
-  d: {};
 }
