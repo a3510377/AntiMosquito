@@ -79,6 +79,9 @@ export class wsServer extends WebSocket.Server {
   public send(data: unknown) {
     this.connection.forEach((ws) => ws.send(data));
   }
+  public updata(data: unknown) {
+    this.send({ op: opCode.Event, t: "updata", d: data });
+  }
 }
 
 export interface Events {
