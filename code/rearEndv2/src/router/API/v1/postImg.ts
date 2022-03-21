@@ -1,24 +1,37 @@
 /* /postImg */
 import express from "express";
-import multer from "multer";
+import multer, { diskStorage } from "multer";
+import { createCanvas, Image } from "canvas";
 
+const fileType = ["image/jpeg", "image/png"];
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, "./uploads/"),
-    filename: (req, file, cb) =>
+  fileFilter: (req, file, cb) => {
+    if (!fileType.includes(file.mimetype) && !req.file) {
+      cb(null, false);
+      return cb(new Error("Allowed only .png/.jpg"));
+    }
+    cb(null, true);
+  },
+  storage: diskStorage({
+    filename: (_req, file, cb) =>
       cb(null, `${new Date().getTime()}-${file.originalname}`),
   }),
 });
 
 const router = express.Router();
 
-router.get("/", upload.single("singleFile"), (req, res) => {
-  console.log(req.file);
-  res.json({
-    code: "0000",
-    type: "single",
-    originalname: req.file.originalname,
-  });
+router.post("/", upload.single("myfile"), (req, res) => {
+  const encode_image = req.file.buffer.toString("base64");
+  const img = new Image();
+  img.onload = () => {
+    const canvas = createCanvas(img.width, img.height);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    res.end(canvas.toBuffer());
+  };
+  img.src = `data:${req.file.mimetype};charset=utf-8;base64,${encode_image}`;
+  // res.json({ originalname: req.file.originalname });
 });
 
 export default router;
