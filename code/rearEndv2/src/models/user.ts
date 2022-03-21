@@ -6,11 +6,11 @@ export interface userType extends Document {
   location: { /**緯度 */ latitude?: number; /**經度 */ longitude?: number };
   area: {
     /**縣 */
-    county: string;
+    county?: string;
     /**區 */
-    town: string;
+    town?: string;
     /**里 */
-    village: string;
+    village?: string;
   };
 }
 
@@ -21,4 +21,4 @@ export const userSchema = new Schema<userType>({
   area: { county: String, town: String, village: String },
 });
 
-export default model<userType>("data", userSchema);
+export default model<userType>("userSchema", userSchema);

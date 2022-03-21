@@ -62,10 +62,10 @@ export class wsClient extends EventEmitter {
 export class wsServer extends WebSocket.Server {
   public connection: wsClient[] = [];
   constructor(
-    protected readonly server: server,
+    public readonly server: server,
     public options: WebSocket.ServerOptions = {}
   ) {
-    super(options);
+    super({ ...options, server: server.server });
     this.on("connection", (ws) => this.connection.push(new wsClient(ws, this)));
   }
   public send(data: unknown) {

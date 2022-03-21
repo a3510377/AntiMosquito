@@ -51,9 +51,10 @@ export class server {
   public async start() {
     this.init();
     await mongoose
-      .connect(this.config.db.uri)
+      .connect(process.env.mongodbUri)
       .then(() => console.log("資料庫連接完成"))
       .catch(() => console.log("資料庫連接錯誤"));
+    this.server.listen(process.env.PORT || 3500);
   }
   public init() {
     this.app
@@ -65,7 +66,6 @@ export class server {
       .use(express.json())
       .use(express.urlencoded({ extended: false }))
       .use(logger("dev"))
-      .use("/", express.static(path.join(__dirname, "../web")))
       .get("/uptimerobot", (_req, res) => {
         res.status(200).send();
         console.info("uptimerobot check");
