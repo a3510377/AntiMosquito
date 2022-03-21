@@ -37,7 +37,7 @@ router.post("/", upload.single("myfile"), (req, res) => {
 
     res.end(canvas.toBuffer());
   };
-  img.src = `data:${req.file.mimetype};charset=utf-8;base64,${encode_image}`;
+  img.src = base64Img(req.file.mimetype, encode_image);
   // res.json({ originalname: req.file.originalname });
 });
 
