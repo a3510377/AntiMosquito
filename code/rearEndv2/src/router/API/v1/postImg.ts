@@ -1,8 +1,11 @@
 /* /postImg */
+import cv from "opencv.js";
 import express from "express";
 import multer, { diskStorage } from "multer";
 import { createCanvas, Image } from "canvas";
 
+const base64Img = (mimetype: string, base64: string) =>
+  `data:${mimetype};charset=utf-8;base64,${base64}`;
 const fileType = ["image/jpeg", "image/png"];
 const upload = multer({
   fileFilter: (req, file, cb) => {
@@ -27,6 +30,10 @@ router.post("/", upload.single("myfile"), (req, res) => {
     const canvas = createCanvas(img.width, img.height);
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
+
+    let src = cv.matFromImageData(
+      ctx.getImageData(0, 0, canvas.width, canvas.height)
+    );
 
     res.end(canvas.toBuffer());
   };
