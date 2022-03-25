@@ -18,5 +18,5 @@
   },
   "lib": ["ES2020"],
   "includes": ["src/**/*.ts", "src/**/*.d.ts"],
-  "exclude": ["tools/**/*.*", "web/**/*.*"]
+  "exclude": ["tools/**/*.*", "web/**/*.*", "test/**/*.*"]
 }

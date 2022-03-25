@@ -3,6 +3,7 @@ import cv from "opencv.js";
 import express from "express";
 import multer, { diskStorage } from "multer";
 import { createCanvas, Image } from "canvas";
+import { main } from "../../../utils/opencv";
 
 const base64Img = (mimetype: string, base64: string) =>
   `data:${mimetype};charset=utf-8;base64,${base64}`;
@@ -34,6 +35,8 @@ router.post("/", upload.single("myfile"), (req, res) => {
     let src = cv.matFromImageData(
       ctx.getImageData(0, 0, canvas.width, canvas.height)
     );
+
+    let { filterListContours } = main(src, { size: 100 });
 
     res.end(canvas.toBuffer());
   };
