@@ -3,7 +3,6 @@ import { Server, createServer } from "http";
 import { config } from "dotenv";
 import mongoose from "mongoose";
 import logger from "morgan";
-import path from "path";
 
 import { dbServer } from "./db";
 import { wsServer } from "./gateway";
@@ -21,6 +20,7 @@ export class server {
   public ws: wsServer = new wsServer(this);
   public config = { db: { uri: process.env.dbUri } };
   constructor() {
+    process.on("uncaughtException", (er: unknown) => console.error(er));
     this.server
       .on("error", (error: ErrnoException) => {
         if (error.syscall !== "listen") throw error;

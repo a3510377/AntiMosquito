@@ -2,18 +2,20 @@ import cv from "opencv.js";
 
 export const main = (
   src: cv.Mat,
-  config: {
+  config?: {
     max?: [number, number, number];
     min?: [number, number, number];
     size?: number;
     rect?: boolean;
-  } = {
+  }
+): { src?: cv.Mat; listContours: cv.Mat[]; filterListContours: cv.Mat[] } => {
+  config = {
     max: [40, 40, 40],
     min: [0, 0, 0],
     size: 100,
     rect: false,
-  }
-): { src?: cv.Mat; listContours: cv.Mat[]; filterListContours: cv.Mat[] } => {
+    ...config,
+  };
   let retData: { [k: string]: unknown } = {};
   let mask = new cv.Mat();
   let mask1 = new cv.Mat();

@@ -1,4 +1,5 @@
 /* /postImg */
+import { server } from "@/main/server";
 import cv from "opencv.js";
 import express from "express";
 import multer, { diskStorage } from "multer";
@@ -12,14 +13,10 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     if (!fileType.includes(file.mimetype) && !req.file) {
       cb(null, false);
-      return cb(new Error("Allowed only .png/.jpg"));
+      return console.log("data type error");
     }
     cb(null, true);
   },
-  storage: diskStorage({
-    filename: (_req, file, cb) =>
-      cb(null, `${new Date().getTime()}-${file.originalname}`),
-  }),
 });
 
 const router = express.Router();
@@ -38,7 +35,12 @@ router.post("/", upload.single("myfile"), (req, res) => {
 
     let { filterListContours } = main(src, { size: 100 });
 
-    res.end(canvas.toBuffer());
+    if (filterListContours.length)
+      (<server["db"]>req.app.get("db")).createData({
+        mosquitos: filterListContours.length,
+      });
+
+    res.json({ contours: filterListContours.length });
   };
   img.src = base64Img(req.file.mimetype, encode_image);
   // res.json({ originalname: req.file.originalname });
