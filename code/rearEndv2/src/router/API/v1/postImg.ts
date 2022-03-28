@@ -2,7 +2,7 @@
 import { server } from "@/main/server";
 import cv from "opencv.js";
 import express from "express";
-import multer, { diskStorage } from "multer";
+import multer from "multer";
 import { createCanvas, Image } from "canvas";
 import { main } from "../../../utils/opencv";
 import jpeg from "jpeg-js";

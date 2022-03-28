@@ -19,6 +19,7 @@ export class server {
   public db: dbServer = new dbServer(this);
   public ws: wsServer = new wsServer(this);
   public config = { db: { uri: process.env.dbUri } };
+  public pin: number = 0;
   constructor() {
     process.on("uncaughtException", (er: unknown) => console.error(er));
     this.server
@@ -61,6 +62,7 @@ export class server {
       .set("view engine", "html")
       .set("db", this.db)
       .set("ws", this.ws)
+      .set("main", this)
       .set("port", port)
       .use(require("cors")())
       .use(express.json())
