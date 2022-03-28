@@ -10,16 +10,9 @@ router
   .use("/postImg", postImg)
   .post("/makeId", (req) => {
     let server: server = <server>req.app.get("main");
-    let id = `${+new Date()}${server}`;
-    server.db.createUser({
-      name: "",
-      description: "",
-      area: {
-        county: "",
-        town: "",
-        village: "",
-      },
-    });
+    server.pin >= 9;
+    let id = `${+new Date()}${0}`;
+    server.db.createUser({ id });
   });
 
 export default router;
