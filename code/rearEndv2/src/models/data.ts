@@ -4,9 +4,9 @@ export interface dataType extends Document {
   /**時間( timestamp ) */
   time: Date;
   /**濕度( % ) */
-  humidity: number;
+  humidity?: number;
   /**蚊子數量 */
-  mosquitos?: number;
+  mosquitos: number;
   /**溫度( 度 ) */
   temperature?: number;
 }
