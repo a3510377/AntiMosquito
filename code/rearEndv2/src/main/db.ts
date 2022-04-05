@@ -1,4 +1,13 @@
-import { FilterQuery, AnyObject, AnyKeys } from "mongoose";
+import {
+  FilterQuery,
+  AnyObject,
+  AnyKeys,
+  UpdateQuery,
+  UpdateWithAggregationPipeline,
+  QueryOptions,
+  Callback,
+  UpdateResult,
+} from "mongoose";
 
 import DataModel, { dataType } from "../models/data";
 import UserModel, { userType } from "../models/user";
@@ -15,6 +24,13 @@ export class dbServer {
   /**尋找用戶 */
   public async findUser(find: FilterQuery<userType>) {
     return await UserModel.findOne(find).catch();
+  }
+  public async editUser(
+    find: FilterQuery<userType>,
+    update?: UpdateQuery<userType> | UpdateWithAggregationPipeline,
+    options?: QueryOptions
+  ): Promise<UpdateResult> {
+    return await UserModel.updateOne(find, update, options);
   }
   /**創建資料 */
   public async createData(data: AnyObject | AnyKeys<dataType>) {
