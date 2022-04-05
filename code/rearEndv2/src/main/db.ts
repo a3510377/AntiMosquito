@@ -5,8 +5,6 @@ import {
   UpdateQuery,
   UpdateWithAggregationPipeline,
   QueryOptions,
-  Callback,
-  UpdateResult,
 } from "mongoose";
 
 import DataModel, { dataType } from "../models/data";
@@ -29,7 +27,7 @@ export class dbServer {
     find: FilterQuery<userType>,
     update?: UpdateQuery<userType> | UpdateWithAggregationPipeline,
     options?: QueryOptions
-  ): Promise<UpdateResult> {
+  ): Promise<ReturnType<typeof UserModel.updateOne>> {
     return await UserModel.updateOne(find, update, options);
   }
   /**創建資料 */

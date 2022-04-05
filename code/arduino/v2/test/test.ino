@@ -107,6 +107,7 @@ void setup()
   }
 
   id = read_String(address);
+  // writeString(address, "");
   if (!id)
   {
     if (!client.connect(serverName.c_str(), serverPort))
