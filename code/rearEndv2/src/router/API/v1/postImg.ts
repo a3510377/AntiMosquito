@@ -6,8 +6,9 @@ import multer from "multer";
 import { createCanvas, Image } from "canvas";
 import { main } from "../../../utils/opencv";
 import jpeg from "jpeg-js";
+import { userType } from "@/models/user";
 
-let gImg: { data: cv.Mat; type: string };
+let gImg: { [id: string]: { data: cv.Mat; type: string } };
 const base64Img = (mimetype: string, base64: string) =>
   `data:${mimetype};charset=utf-8;base64,${base64}`;
 const fileType = ["image/jpeg", "image/png"];
@@ -32,6 +33,8 @@ router
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
 
+      let id = req.query.id.toString();
+
       let src = cv.matFromImageData(
         ctx.getImageData(0, 0, canvas.width, canvas.height)
       );
@@ -40,13 +43,12 @@ router
         size: 100,
         rect: true,
       });
-      if (_img) {
-        gImg?.data?.delete();
-        gImg = {
-          data: _img,
-          type: req.file.mimetype,
-        };
-      }
+      gImg[id]?.data?.delete();
+      gImg[id] = {
+        data: _img,
+        type: req.file.mimetype,
+      };
+      req.app.emit("addImg", id);
 
       if (filterListContours.length)
         (<server["db"]>req.app.get("db")).createData({
@@ -59,26 +61,49 @@ router
     // res.json({ originalname: req.file.originalname });
   })
   .get("/", (req, res) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = createCanvas(img.width, img.height);
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
+    res.send();
+  })
+  .get("/imgs", (req, res) => {
+    res.set({
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      Connection: "keep-alive",
+    });
+    const getImg = (id: string, img: typeof gImg[number]) => {
+      const _img = new Image();
+      _img.onload = async () => {
+        let user = await (<server["db"]>req.app.get("db")).findUser({ id });
+        const canvas = createCanvas(_img.width, _img.height);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(_img, 0, 0);
 
-      let src = cv.matFromImageData(
-        ctx.getImageData(0, 0, canvas.width, canvas.height)
-      );
-
-      res.end(canvas.toBuffer());
+        cv.matFromImageData(
+          ctx.getImageData(0, 0, canvas.width, canvas.height)
+        );
+        return addImg({ img: canvas.toBuffer(), user });
+      };
+      _img.src = jpeg.encode(
+        {
+          data: img.data.data,
+          width: img.data.size().width,
+          height: img.data.size().height,
+        },
+        50
+      ).data;
     };
-    img.src = jpeg.encode(
-      {
-        data: gImg.data.data,
-        width: gImg.data.size().width,
-        height: gImg.data.size().height,
-      },
-      50
-    ).data;
+    const addImg = (data: {
+      img: Buffer;
+      user: userType & { _id: unknown };
+    }) => {
+      res.write("event: addImg\n");
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
+    };
+
+    req.app.on("addImg", (_id) => {
+      let id = _id.toString();
+      getImg(id, gImg[id]);
+    });
+    for (let [id, img] of Object.entries(gImg)) getImg(id, img);
   });
 
 export default router;

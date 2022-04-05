@@ -187,7 +187,9 @@ String sendPhoto()
     uint32_t extraLen = head.length() + tail.length();
     uint32_t totalLen = imageLen + extraLen;
 
-    client.println("POST " + serverPath + " HTTP/1.1");
+    client.print("POST " + serverPath);
+    client.print("?id=" + id);
+    client.print(" HTTP/1.1");
     client.println("Host: " + serverName);
     client.println("Content-Length: " + String(totalLen));
     client.println("Content-Type: multipart/form-data; boundary=RandomNerdTutorials");

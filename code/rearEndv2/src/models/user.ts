@@ -16,7 +16,7 @@ export interface userType extends Document {
 }
 
 export const userSchema = new Schema<userType>({
-  id: { type: String, require: true, unique: true },
+  id: { type: String, required: true, unique: true },
   name: String,
   description: String,
   location: { longitude: Number, latitude: Number },
