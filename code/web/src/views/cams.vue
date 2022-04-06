@@ -36,10 +36,8 @@ export default defineComponent({
     }, 5e2);
     let source = new EventSource("//127.0.01:3500/api/v1/postImg/imgs");
     source.addEventListener("addImg", ({ data: _data }) => {
-      let data = JSON.parse(_data);
-      console.log(data);
-
-      this.data;
+      let data = <{ id: string; img: string; user: Object }>JSON.parse(_data);
+      this.data[data.id] = data;
     });
     source.addEventListener("open", () => (this.ready = true), false);
   },
@@ -57,9 +55,6 @@ export default defineComponent({
 
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   .not-ready {
     font-size: 25pt;
