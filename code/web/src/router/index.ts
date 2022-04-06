@@ -16,6 +16,11 @@ const routes: RouteRecordRaw[] = [
     path: "/DiseaseInfo",
     component: () => import("@/views/DiseaseInfo/index.vue"),
   },
+  {
+    name: "cams",
+    path: "/cams",
+    component: () => import("@/views/cams.vue"),
+  },
 ];
 
 const router: Router = createRouter({

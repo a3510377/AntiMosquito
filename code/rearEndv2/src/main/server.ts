@@ -8,6 +8,7 @@ import { dbServer } from "./db";
 import { wsServer } from "./gateway";
 import { checkPort } from "../utils/string";
 import routers from "../router";
+import cors from "cors";
 
 export let port: number = checkPort(process.env.PORT);
 
@@ -64,7 +65,7 @@ export class server {
       .set("ws", this.ws)
       .set("main", this)
       .set("port", port)
-      .use(require("cors")())
+      .use(cors())
       .use(express.json())
       .use(express.urlencoded({ extended: false }))
       .use(logger("dev"))
