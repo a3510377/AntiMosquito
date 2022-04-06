@@ -2,7 +2,6 @@
   <div class="main">
     <HeaderMain />
     <slot />
-    <HeaderMain />
   </div>
 </template>
 

@@ -68,14 +68,15 @@ router
       "Cache-Control": "no-cache",
       Connection: "keep-alive",
     });
-    res.write("event: start\ndata: {}\n\n");
+    res.write("retry: 1500\nevent: ready\ndata:\n\n");
     const getImg = async (id: string, img: typeof gImg[number]) => {
       let user =
         (await (<server["db"]>req.app.get("db")).findUser({ id }).catch()) ||
         {};
-      addImg({ img: img.data, user });
+      addImg({ img: img.data, user, id });
     };
     const addImg = (data: {
+      id: string;
       img: Buffer | string;
       user: (userType & { _id: unknown }) | {};
     }) => {

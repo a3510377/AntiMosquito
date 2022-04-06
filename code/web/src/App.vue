@@ -28,6 +28,18 @@ export default defineComponent({
 @import url(@/assets/scss/main.scss);
 
 #app {
-  margin-top: var(--html-margin-top);
+  margin-top: var(--html-margin-top, 0) !important;
+  .wrapper {
+    min-height: calc(100vh - var(--html-margin-top, 0));
+  }
+}
+
+html,
+body,
+#app {
+  background-color: var(--html-background-color);
+  color: var(--main-color);
+  margin: 0;
+  padding: 0;
 }
 </style>
