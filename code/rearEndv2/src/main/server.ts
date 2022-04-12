@@ -10,8 +10,6 @@ import { checkPort } from "../utils/string";
 import routers from "../router";
 import cors from "cors";
 
-export let port: number = checkPort(process.env.PORT);
-
 config();
 
 export class server {
@@ -21,22 +19,27 @@ export class server {
   public ws: wsServer = new wsServer(this);
   public config = { db: { uri: process.env.dbUri } };
   public pin: number = 0;
+  public port: number = checkPort(process.env.PORT);
+  public data: { postImg: { [key: string]: ReturnType<typeof setTimeout> } } = {
+    postImg: {},
+  };
   constructor() {
     process.on("uncaughtException", (er: unknown) => console.error(er));
     this.server
       .on("error", (error: ErrnoException) => {
         if (error.syscall !== "listen") throw error;
 
-        let bind = (typeof port === "string" ? "Pipe" : "Port") + port;
+        let bind =
+          (typeof this.port === "string" ? "Pipe" : "Port") + this.port;
 
         switch (error.code) {
           case "EACCES":
             console.error(`${bind} 需要更高全縣`);
-            this.server.listen(++port);
+            this.server.listen(++this.port);
             break;
           case "EADDRINUSE":
-            console.error(`${bind} 已使用`);
-            this.server.listen(++port);
+            console.error(`${bind} 已使用\n正在更換 port`);
+            this.server.listen(++this.port);
             break;
           default:
             throw error;
@@ -64,7 +67,7 @@ export class server {
       .set("db", this.db)
       .set("ws", this.ws)
       .set("main", this)
-      .set("port", port)
+      .set("port", this.port)
       .use(cors())
       .use(express.json())
       .use(express.urlencoded({ extended: false }))

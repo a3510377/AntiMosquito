@@ -27,6 +27,8 @@ router
   .post("/", upload.single("myfile"), (req, res) => {
     const encode_image = req.file.buffer.toString("base64");
     const img = new Image();
+    const server = <server>(<unknown>req.app.get("main"));
+
     let id = <string>req.query.id || "test";
     img.onload = () => {
       const canvas = createCanvas(img.width, img.height);
@@ -43,7 +45,7 @@ router
       });
 
       if (filterListContours.length)
-        (<server["db"]>req.app.get("db")).createData({
+        server.db.createData({
           userId: id,
           mosquitos: filterListContours.length,
         });
@@ -55,12 +57,16 @@ router
       data: basImg,
       type: req.file.mimetype,
     };
+
+    clearTimeout(server.data.postImg[id]);
+    server.data.postImg[id] = setTimeout(
+      () => req.app.emit("deleteImg", id),
+      1e3 * 60 * 5
+    );
     req.app.emit("addImg", id);
+
     img.src = base64Img(req.file.mimetype, encode_image);
     // res.json({ originalname: req.file.originalname });
-  })
-  .get("/", (req, res) => {
-    res.send();
   })
   .get("/imgs", (req, res) => {
     res.set({
@@ -69,10 +75,9 @@ router
       Connection: "keep-alive",
     });
     res.write("retry: 1500\nevent: ready\ndata:\n\n");
+    const server = <server>(<unknown>req.app.get("main"));
     const getImg = async (id: string, img: typeof gImg[number]) => {
-      let user =
-        (await (<server["db"]>req.app.get("db")).findUser({ id }).catch()) ||
-        {};
+      let user = (await server.db.findUser({ id }).catch()) || {};
       addImg({ img: img.data, user, id });
     };
     const addImg = (data: {
@@ -84,10 +89,16 @@ router
       res.write(`data: ${JSON.stringify(data)}\n\n`);
     };
 
-    req.app.on("addImg", (_id) => {
-      let id = _id.toString();
-      getImg(id, gImg[id]);
-    });
+    req.app
+      .on("addImg", (_id) => {
+        let id = _id.toString();
+        getImg(id, gImg[id]);
+      })
+      .on("deleteImg", (_id) => {
+        res.write("event: deleteImg\n");
+        res.write(`data: ${_id.toString()}\n\n`);
+      });
+
     for (let [id, img] of Object.entries(gImg)) getImg(id, img);
   });
 
