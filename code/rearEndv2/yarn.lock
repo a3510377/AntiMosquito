@@ -384,7 +384,7 @@ create-require@^1.1.0:
 
 cross-fetch@^3.0.4:
   version "3.1.5"
-  resolved "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.5.tgz"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
   integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
   dependencies:
     node-fetch "2.6.7"
@@ -521,7 +521,7 @@ express@^4.17.3:
 
 file-type@^12.3.0:
   version "12.4.2"
-  resolved "https://registry.npmjs.org/file-type/-/file-type-12.4.2.tgz"
+  resolved "https://registry.yarnpkg.com/file-type/-/file-type-12.4.2.tgz#a344ea5664a1d01447ee7fb1b635f72feb6169d9"
   integrity sha512-UssQP5ZgIOKelfsaB5CuGAL+Y+q7EmONuiwF3N5HAH0t27rvrttgi6Ra9k/+DVaY9UF6+ybxu5pOXLUdA8N7Vg==
 
 finalhandler@~1.1.2:
@@ -665,9 +665,14 @@ isarray@~1.0.0:
   resolved "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz"
   integrity sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=
 
-jpeg-js@*, jpeg-js@^0.4.3:
+jpeg-js@*:
   version "0.4.3"
   resolved "https://registry.npmjs.org/jpeg-js/-/jpeg-js-0.4.3.tgz"
+  integrity sha512-ru1HWKek8octvUHFHvE5ZzQ1yAsJmIvRdGWvSoKV52XKyuyYA437QWDttXT8eZXDSbuMpHlLzPDZUPd6idIz+Q==
+
+jpeg-js@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.4.3.tgz#6158e09f1983ad773813704be80680550eff977b"
   integrity sha512-ru1HWKek8octvUHFHvE5ZzQ1yAsJmIvRdGWvSoKV52XKyuyYA437QWDttXT8eZXDSbuMpHlLzPDZUPd6idIz+Q==
 
 kareem@2.3.4:
@@ -765,7 +770,7 @@ minizlib@^2.1.1:
 
 mirada@^0.0.15:
   version "0.0.15"
-  resolved "https://registry.npmjs.org/mirada/-/mirada-0.0.15.tgz"
+  resolved "https://registry.yarnpkg.com/mirada/-/mirada-0.0.15.tgz#f5e98bc5d6ec7fafde1ceb27947147780884ee0a"
   integrity sha512-mbm4c+wjBVcmUzHRLv/TfOAq+iy03D24KwGxx8H+NSXkD5EOZV9zFWbVxTvZCc9XwR0FIUhryU/kQm12SMSQ3g==
   dependencies:
     buffer "^5.4.3"
@@ -775,7 +780,7 @@ mirada@^0.0.15:
 
 misc-utils-of-mine-generic@^0.2.31:
   version "0.2.40"
-  resolved "https://registry.npmjs.org/misc-utils-of-mine-generic/-/misc-utils-of-mine-generic-0.2.40.tgz"
+  resolved "https://registry.yarnpkg.com/misc-utils-of-mine-generic/-/misc-utils-of-mine-generic-0.2.40.tgz#e6d6996251b5bbf4fda0f6f57c5889929081274b"
   integrity sha512-IFR0ddM4TwFk4AGbfaOrgYtCnEKYn1TObvwFN8v0P34OPp0S4V9fzWMU8Gyg2hbMzsumojNVMpwk1FzDo9yUJw==
 
 mkdirp@^0.5.4:
@@ -935,7 +940,7 @@ once@^1.3.0, once@^1.3.1:
 
 opencv.js@^1.2.1:
   version "1.2.1"
-  resolved "https://registry.npmjs.org/opencv.js/-/opencv.js-1.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/opencv.js/-/opencv.js-1.2.1.tgz#9e89fd669a749f80574ba5d4615a5ff3e3c09a16"
   integrity sha512-+ji5Pk3eyz+RRSeZr2kLZNJpjsKoGyPJOjFWng7+Cuq9ylHakBqJMxDGlBW1+qdju3k8DadWOiHJ6JaF28UpKA==
 
 parseurl@~1.3.3:

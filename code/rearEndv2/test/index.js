@@ -1,4 +1,4 @@
-const cv = require("opencv.js");
+const cv = require("opencv4nodejs");
 // const cv = require("mirada");
 const jpeg = require("jpeg-js");
 const { createCanvas, loadImage } = require("canvas");

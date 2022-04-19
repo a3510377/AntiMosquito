@@ -9,10 +9,23 @@
 </head>
 
 <body>
+    <input type="number" name="" id="id" min="0" max="999999">
     <form method="post" enctype="multipart/form-data" action="http://127.0.0.1:3500/api/v1/postImg">
         <input type="file" name="myfile" />
         <input type="submit" />
     </form>
+    <script>
+        (() => {
+            let formEl = document.querySelector("form")
+            let inEl = document.querySelector("input#id")
+            inEl.addEventListener("input", () => {
+                let url = new URL(formEl.action)
+                url.searchParams.set("id", inEl.value)
+                formEl.action = url.href
+            })
+
+        })()
+    </script>
 </body>
 
 </html>

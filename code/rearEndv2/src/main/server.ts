@@ -24,7 +24,9 @@ export class server {
     postImg: {},
   };
   constructor() {
-    process.on("uncaughtException", (er: unknown) => console.error(er));
+    process.on("uncaughtException", (er: unknown) =>
+      console.error(er.toString().slice(0, 1e4 * 20))
+    );
     this.server
       .on("error", (error: ErrnoException) => {
         if (error.syscall !== "listen") throw error;

@@ -1,13 +1,22 @@
 /* /postImg */
-import { server } from "@/main/server";
+import jpeg from "jpeg-js";
 import cv from "opencv.js";
 import express from "express";
 import multer from "multer";
 import { createCanvas, Image } from "canvas";
+
+import { server } from "@/main/server";
 import { main } from "../../../utils/opencv";
 import { userType } from "@/models/user";
 
-let gImg: { [id: string]: { data: string; type: string } } = {};
+let gImg: {
+  [id: string]: {
+    img: string;
+    type: string;
+    fImg: string;
+    data: { contours: number };
+  };
+} = {};
 const base64Img = (mimetype: string, base64: string) =>
   `data:${mimetype};charset=utf-8;base64,${base64}`;
 const fileType = ["image/jpeg", "image/png"];
@@ -30,6 +39,7 @@ router
     const server = <server>(<unknown>req.app.get("main"));
 
     let id = <string>req.query.id || "test";
+    let basImg = base64Img(req.file.mimetype, encode_image);
     img.onload = () => {
       const canvas = createCanvas(img.width, img.height);
       const ctx = canvas.getContext("2d");
@@ -51,21 +61,34 @@ router
         });
 
       res.json({ contours: filterListContours.length });
-    };
-    let basImg = base64Img(req.file.mimetype, encode_image);
-    gImg[id] = {
-      data: basImg,
-      type: req.file.mimetype,
+
+      clearTimeout(server.data.postImg[id]);
+      server.data.postImg[id] = setTimeout(
+        () => req.app.emit("deleteImg", id),
+        1e3 * 60 * 5
+      );
+      gImg[id] = {
+        img: basImg,
+        type: req.file.mimetype,
+        fImg: base64Img(
+          "image/jpeg",
+          jpeg
+            .encode(
+              {
+                data: _img.data,
+                width: _img.size().width,
+                height: _img.size().height,
+              },
+              50
+            )
+            ?.data?.toString("base64")
+        ),
+        data: { contours: filterListContours.length },
+      };
+      req.app.emit("addImg", id);
     };
 
-    clearTimeout(server.data.postImg[id]);
-    server.data.postImg[id] = setTimeout(
-      () => req.app.emit("deleteImg", id),
-      1e3 * 60 * 5
-    );
-    req.app.emit("addImg", id);
-
-    img.src = base64Img(req.file.mimetype, encode_image);
+    img.src = basImg;
     // res.json({ originalname: req.file.originalname });
   })
   .get("/imgs", (req, res) => {
@@ -76,17 +99,19 @@ router
     });
     res.write("retry: 1500\nevent: ready\ndata:\n\n");
     const server = <server>(<unknown>req.app.get("main"));
-    const getImg = async (id: string, img: typeof gImg[number]) => {
+    const getImg = async (id: string, img: typeof gImg[string]) => {
       let user = (await server.db.findUser({ id }).catch()) || {};
-      addImg({ img: img.data, user, id });
+      addImg({ ...img, user, id });
     };
     const addImg = (data: {
       id: string;
-      img: Buffer | string;
+      img?: Buffer | string;
+      fImg?: string;
+      data: typeof gImg[string]["data"];
       user: (userType & { _id: unknown }) | {};
     }) => {
       res.write("event: addImg\n");
-      res.write(`data: ${JSON.stringify(data)}\n\n`);
+      res.write(`data: ${JSON.stringify(data || "{}")}\n\n`);
     };
 
     req.app

@@ -1,8 +1,16 @@
 <template>
   <div class="cams">
     <p v-if="!ready" class="not-ready" v-text="`請稍後${vReady}`" />
-    <div v-else class="cam" v-for="(_, index) in data" :key="index">
-      <img :src="_.img" alt="" />
+    <div v-else>
+      <div v-for="(_, index) in data" :key="index">
+        <img
+          :src="_.show ? _.fImg : _.img"
+          class="cam"
+          @click="_.show = !_.show"
+        />
+        <p v-text="`數量: ${_?.data?.contours || 0}`" />
+        <p v-text="`ID: ${_.id || ''}`" />
+      </div>
     </div>
   </div>
 </template>
@@ -16,7 +24,18 @@ export default defineComponent({
     return {
       timeOut: <NodeJS.Timeout | undefined>void 0,
       ready: <boolean>false,
-      data: <{ [id: string]: { img: string; user: Object } }>{},
+      data: <
+        {
+          [id: string]: {
+            id: string;
+            img: string;
+            user: Object;
+            fImg: string;
+            show: boolean;
+            data: { contours: number };
+          };
+        }
+      >{},
       vReady: "",
     };
   },
@@ -36,8 +55,16 @@ export default defineComponent({
     }, 5e2);
     let source = new EventSource("//127.0.01:3500/api/v1/postImg/imgs");
     source.addEventListener("addImg", ({ data: _data }) => {
-      let data = <{ id: string; img: string; user: Object }>JSON.parse(_data);
-      this.data[data.id] = data;
+      let data = <
+        {
+          id: string;
+          img: string;
+          user: Object;
+          fImg: string;
+          data: { contours: number };
+        }
+      >JSON.parse(_data);
+      this.data[data.id] = { ...data, show: false };
     });
     source.addEventListener("open", () => (this.ready = true), false);
   },
@@ -58,6 +85,10 @@ export default defineComponent({
 
   .not-ready {
     font-size: 25pt;
+  }
+  .cam {
+    width: 10em;
+    cursor: pointer;
   }
 }
 </style>
