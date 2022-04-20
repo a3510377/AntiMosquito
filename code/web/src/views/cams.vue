@@ -8,8 +8,10 @@
           class="cam"
           @click="_.show = !_.show"
         />
-        <p v-text="`數量: ${_?.data?.contours || 0}`" />
-        <p v-text="`ID: ${_.id || ''}`" />
+        <div>
+          <p v-text="`數量: ${_?.data?.contours || 0}`" />
+          <p v-text="`ID: ${_.id || ''}`" />
+        </div>
       </div>
     </div>
   </div>
@@ -66,8 +68,7 @@ export default defineComponent({
       >JSON.parse(_data);
       this.data[data.id] = {
         ...data,
-        show:
-          this.data[data.id]?.show === void 0 ? false : this.data[data.id].show,
+        show: this.data[data.id] === void 0 ? false : this.data[data.id].show,
       };
     });
     source.addEventListener("open", () => (this.ready = true), false);
@@ -83,7 +84,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .cams {
   color: white;
-
   width: 100%;
   height: 100%;
 
@@ -93,6 +93,18 @@ export default defineComponent({
   .cam {
     width: 10em;
     cursor: pointer;
+  }
+  > div {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    > div {
+      margin: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
   }
 }
 </style>
