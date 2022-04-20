@@ -147,7 +147,7 @@ String sendPhoto()
 
     client.print("POST " + serverPath);
     client.print("?id=" + id);
-    client.print(" HTTP/1.1");
+    client.println(" HTTP/1.1");
     client.println("Host: " + serverName);
     client.println("Content-Length: " + String(totalLen));
     client.println("Content-Type: multipart/form-data; boundary=RandomNerdTutorials");

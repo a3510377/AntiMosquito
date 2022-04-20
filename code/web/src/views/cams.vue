@@ -64,7 +64,11 @@ export default defineComponent({
           data: { contours: number };
         }
       >JSON.parse(_data);
-      this.data[data.id] = { ...data, show: false };
+      this.data[data.id] = {
+        ...data,
+        show:
+          this.data[data.id]?.show === void 0 ? false : this.data[data.id].show,
+      };
     });
     source.addEventListener("open", () => (this.ready = true), false);
   },
