@@ -72,6 +72,7 @@ export default defineComponent({
       };
     });
     source.addEventListener("open", () => (this.ready = true), false);
+    source.addEventListener("deleteImg", ({ data }) => delete this.data[data]);
   },
   methods: {
     closeTimeOut() {
