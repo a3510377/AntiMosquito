@@ -15,7 +15,7 @@ const String serverName = "192.168.137.1";
 const String serverPath = "/api/v1/postImg";
 const String getIdPath = "/api/v1/makeId";
 
-String id;
+String id = "1";
 
 void restart();
 void writeString(char add, String data);
@@ -108,48 +108,6 @@ void setup()
 
   id = read_String(address);
   // writeString(address, "");
-  if (!id)
-  {
-    if (!client.connect(serverName.c_str(), serverPort))
-      return restart();
-
-    String getAll;
-    String getBody;
-    int timoutTimer = 1e4;
-    long startTimer = millis();
-    boolean state = false;
-
-    client.println("POST " + getIdPath + " HTTP/1.1");
-    client.println("Host: " + serverName);
-    client.println();
-
-    while ((startTimer + timoutTimer) > millis())
-    {
-      Serial.print(".");
-      delay(100);
-      while (client.available())
-      {
-        char c = client.read();
-        if (c == '\n')
-        {
-          if (getAll.length() == 0)
-            state = true;
-          getAll = "";
-        }
-        else if (c != '\r')
-          getAll += String(c);
-        if (state)
-          getBody += String(c);
-        startTimer = millis();
-      }
-      if (getBody.length() > 0)
-        break;
-    }
-    Serial.println();
-    client.stop();
-    Serial.println(getBody);
-  }
-
   sendPhoto();
 }
 
