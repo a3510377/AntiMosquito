@@ -34,7 +34,8 @@ const router = express.Router();
 
 router
   .post("/", upload.single("myfile"), (req, res) => {
-    const encode_image = req.file.buffer.toString("base64");
+    const encode_image = req.file?.buffer.toString("base64");
+    if (!encode_image) return res.status(400).end();
     const img = new Image();
     const server = <server>(<unknown>req.app.get("main"));
 
