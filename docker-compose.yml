@@ -1,0 +1,33 @@
+version: "2"
+
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes_from:
+      - mongodata
+  mongodata:
+    image: tianon/true
+    volumes:
+      - /data/db
+  server:
+    image: node:latest
+    volumes:
+      - ./data:/data
+    env_file:
+      - .\code\rearEndv2\.env
+    build:
+      dockerfile: docker/server.dockerfile
+      context: .
+    expose:
+      - 3500
+  web:
+    image: node:latest
+    volumes:
+      - ./data:/data
+    build:
+      dockerfile: docker/web.dockerfile
+      context: .
+    expose:
+      - 3000
