@@ -14,7 +14,7 @@ services:
     container_name: antimosquito-dbdata
     restart: unless-stopped
     volumes:
-      - /data/:db
+      - /data/db
   web:
     container_name: antimosquito-web
     restart: unless-stopped
