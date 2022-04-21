@@ -3,12 +3,12 @@ import { Server, createServer } from "http";
 import { config } from "dotenv";
 import mongoose from "mongoose";
 import logger from "morgan";
+import cors from "cors";
 
 import { dbServer } from "./db";
 import { wsServer } from "./gateway";
 import { checkPort } from "../utils/string";
 import routers from "../router";
-import cors from "cors";
 
 config();
 

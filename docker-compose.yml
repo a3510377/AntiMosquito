@@ -3,31 +3,26 @@ version: "3.9"
 services:
   mongo:
     image: mongo
+    container_name: antimosquito-mongodb
+    restart: unless-stopped
     ports:
       - "27017:27017"
     volumes_from:
       - mongodata
   mongodata:
     image: tianon/true
+    container_name: antimosquito-dbdata
+    restart: unless-stopped
     volumes:
-      - /data/db
-  server:
-    image: node:latest
-    volumes:
-      - ./data:/data
-    env_file:
-      - .\code\rearEndv2\.env
-    build:
-      dockerfile: docker/server.dockerfile
-      context: .
-    expose:
-      - 3500
+      - /data/:db
   web:
-    image: node:latest
-    volumes:
-      - ./data:/data
+    container_name: antimosquito-web
+    restart: unless-stopped
     build:
-      dockerfile: docker/web.dockerfile
       context: .
-    expose:
-      - 3000
+      dockerfile: docker/web.dockerfile
+    ports:
+      - "80:5000"
+    depends_on:
+      mongo:
+        condition: service_started

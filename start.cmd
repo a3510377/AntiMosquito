@@ -1,2 +1,5 @@
-start /d . .\scripts\web.cmd
-start /d . .\scripts\server.cmd
+@ECHO OFF
+
+git pull & docker-compose up -d --build & start /d . .\scripts\server.cmd
+
+exit

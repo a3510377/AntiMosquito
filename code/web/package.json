@@ -2,7 +2,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "cross-env NODE_ENV=development vite --host",
-    "serve": "vite preview",
+    "serve": "npm run build:lo & vite preview --host",
     "build:dev": "cross-env NODE_ENV=development vite build",
     "build:pro": "cross-env NODE_ENV=production vite build",
     "build:lo": "cross-env NODE_ENV=local vite build"

@@ -1,14 +1,14 @@
-FROM node:16-alpine AS builder
+FROM node:16 AS builder
 
-COPY ./package.json ./
+COPY ["./code/web/package.json", "./code/web/yarn.lock", "./"]
 
-RUN npm install
+RUN yarn --production --silent
 
 # app
 FROM node:16-alpine
 
 WORKDIR /app
 COPY --from=builder /node_modules/ /app/node_modules/
-COPY . .
+COPY ./code/web .
 
-CMD ["npm", "run", "dev"]
+CMD yarn serve
