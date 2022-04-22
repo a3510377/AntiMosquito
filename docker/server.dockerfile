@@ -1,6 +1,6 @@
 FROM node:16 AS builder
 
-COPY ["./code/web/package.json", "./code/web/yarn.lock", "./"]
+COPY ["./code/rearEndv2/package.json", "./code/rearEndv2/yarn.lock", "./"]
 
 RUN yarn --production --silent
 
@@ -9,6 +9,6 @@ FROM node:16-alpine
 
 WORKDIR /app
 COPY --from=builder /node_modules/ /app/node_modules/
-COPY ./code/web .
+COPY ./code/rearEndv2 .
 
-CMD yarn run serve
+CMD npm run start
