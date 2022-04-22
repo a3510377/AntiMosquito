@@ -12,7 +12,6 @@ services:
   mongodata:
     image: tianon/true
     container_name: antimosquito-dbdata
-    restart: unless-stopped
     volumes:
       - /data/db
   web:
