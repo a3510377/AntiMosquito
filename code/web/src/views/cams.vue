@@ -1,6 +1,13 @@
 <template>
   <div class="cams">
-    <p v-if="!ready" class="not-ready" v-text="`請稍後${vReady}`" />
+    <div
+      v-if="Object.keys(data).length <= 0 || !ready"
+      class="errorText not-ready"
+    >
+      {{ !ready ? "連線中" : "尚無數據" }}
+      <p v-text="vReady" />
+    </div>
+
     <div v-else>
       <div v-for="(_, index) in data" :key="index">
         <img
@@ -20,6 +27,7 @@
 <script lang="ts">
 import HeaderMain from "@/components/main/headers/index.vue";
 import { defineComponent } from "vue";
+import { apiUrl } from "@/config";
 
 export default defineComponent({
   data() {
@@ -55,7 +63,8 @@ export default defineComponent({
           ? txt[0]
           : txt.substring(0, this.vReady.length + 1);
     }, 5e2);
-    let source = new EventSource("//127.0.01:3500/api/v1/postImg/imgs");
+
+    let source = new EventSource(`${apiUrl}/api/v1/postImg/imgs`);
     source.addEventListener("addImg", ({ data: _data }) => {
       let data = <
         {
@@ -72,6 +81,7 @@ export default defineComponent({
       };
     });
     source.addEventListener("open", () => (this.ready = true), false);
+    source.addEventListener("close", () => (this.ready = false), false);
     source.addEventListener("deleteImg", ({ data }) => delete this.data[data]);
   },
   methods: {
@@ -86,26 +96,18 @@ export default defineComponent({
 .cams {
   color: white;
   width: 100%;
-  height: 100%;
-
-  .not-ready {
+  height: calc(100vh - var(--html-margin-top, 0));
+  .errorText {
+    width: 100%;
+    height: 100%;
     font-size: 25pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .cam {
     width: 10em;
     cursor: pointer;
-  }
-  > div {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    > div {
-      margin: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
   }
 }
 </style>

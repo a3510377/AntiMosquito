@@ -1,6 +1,6 @@
 <template>
   <templateMain>
-    <router-view class="wrapper" />
+    <router-view />
   </templateMain>
 </template>
 

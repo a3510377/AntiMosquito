@@ -10,8 +10,7 @@ const toUrl = (url: string | undefined) =>
     : url;
 /**本站網址 */
 export const apiUrl =
-  toUrl(import.meta.env.VITE_API_URL) ||
-  "https://antimosquito.a102009102009.repl.co";
+  import.meta.env.VITE_API_URL || "https://antimosquito.a102009102009.repl.co";
 
 /**主流 API 版本 */
 export const apiVersion = "1";
