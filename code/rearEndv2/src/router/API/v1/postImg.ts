@@ -86,7 +86,6 @@ router
         data: { contours: filterListContours.length },
       };
       req.app.emit("addImg", id);
-      src.delete();
     };
 
     img.src = basImg;
