@@ -3,13 +3,15 @@
     <div class="search">
       <input
         type="search"
-        id="client-id-name"
         v-model="search"
         @input="setSearch"
+        list="client-id-name"
       />
-      <datalist id="client-id-name">
-        <option value="" v-for="client in clients" :key="client" />
-      </datalist>
+    </div>
+  </div>
+  <div class="users">
+    <div v-for="(item, index) in users.list" :key="index" :value="item.id">
+      <Editable @input="(data) => (item.name = data)" :value="item.id" />
     </div>
   </div>
 </template>
@@ -17,22 +19,30 @@
 <script lang="ts" setup>
 import axios from "axios";
 import { ref, reactive, watch } from "vue";
+
+import Editable from "@/components/utils/editable.vue";
 import { apiUrl } from "@/config";
+import { userType } from "@/types/apiData";
 
 const source = axios.CancelToken.source();
 const search = ref<string>();
-let clients = reactive([]);
+const users = reactive<{ list: userType[] }>({ list: [] });
+
 const setSearch: ((payload: Event) => void) | undefined = ({ target }) =>
   (search.value =
     (<HTMLInputElement | undefined>target)?.value || search.value);
 
 watch(search, async () => {
+  users.list = [];
+
+  if (!search.value) return;
   const { data } = await axios({
-    url: `${apiUrl}/api/v1/searchClient`,
+    url: `${apiUrl}/api/v1/users/find`,
     cancelToken: source.token,
     params: { keyword: search.value },
-  }).catch(() => ({ data: {} }));
-  clients = <any>data || [];
+  }).catch(() => ({ data: [] }));
+
+  users.list = <userType[]>data;
 });
 </script>
 

@@ -2,6 +2,7 @@
 import { server } from "@/main/server";
 import express from "express";
 import postImg from "./postImg";
+import users from "./users";
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router
     let id = `${+new Date()}${server.pin}`;
     server.db.createUser({ id });
     res.send(id);
-  });
+  })
+  .use("/users", users);
 
 export default router;

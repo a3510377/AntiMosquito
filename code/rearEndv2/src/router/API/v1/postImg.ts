@@ -91,6 +91,11 @@ router
     };
 
     img.src = basImg;
+    server.db.model.UserModel.findOneAndUpdate(
+      { id },
+      { id },
+      { upsert: true, new: true }
+    ).catch();
     // res.json({ originalname: req.file.originalname });
   })
   .get("/imgs", (req, res) => {

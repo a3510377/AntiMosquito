@@ -237,14 +237,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({});
-</script>
+<script lang="ts"></script>
 
 <style lang="scss" scoped>
 .info {
   color: #fff;
+  padding: 10px;
 }
 </style>

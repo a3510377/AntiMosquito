@@ -1,3 +1,18 @@
+export interface userType {
+  id: string;
+  name?: string;
+  description?: string;
+  location: { /**緯度 */ latitude?: number; /**經度 */ longitude?: number };
+  area: {
+    /**縣 */
+    county?: string;
+    /**區 */
+    town?: string;
+    /**里 */
+    village?: string;
+  };
+}
+
 export interface villageData {
   _id: string;
   time: string;

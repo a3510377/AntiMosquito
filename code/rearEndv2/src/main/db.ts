@@ -28,7 +28,7 @@ export class dbServer {
     update?: UpdateQuery<userType> | UpdateWithAggregationPipeline,
     options?: QueryOptions
   ): Promise<ReturnType<typeof UserModel.updateOne>> {
-    return await UserModel.updateOne(find, update, options);
+    return await UserModel.updateOne(find, update, options).catch();
   }
   /**創建資料 */
   public async createData(data: AnyObject | AnyKeys<dataType>) {

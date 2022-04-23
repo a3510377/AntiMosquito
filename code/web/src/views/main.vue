@@ -12,9 +12,7 @@ import HeaderMain from "@/components/main/headers/index.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  components: {
-    HeaderMain,
-  },
+  components: { HeaderMain },
 });
 </script>
 
