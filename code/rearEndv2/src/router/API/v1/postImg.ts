@@ -65,6 +65,7 @@ router
 
       clearTimeout(server.data.postImg[id]);
       server.data.postImg[id] = setTimeout(() => {
+        delete gImg[id];
         req.app.emit("deleteImg", id);
       }, 1e3 * 60 * 5);
       gImg[id] = {
