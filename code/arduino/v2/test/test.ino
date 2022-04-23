@@ -15,7 +15,7 @@ const String serverName = "192.168.137.1";
 const String serverPath = "/api/v1/postImg";
 const String getIdPath = "/api/v1/makeId";
 
-String id = "1";
+const String id = "4";
 
 void restart();
 void writeString(char add, String data);
@@ -106,7 +106,6 @@ void setup()
     restart();
   }
 
-  id = read_String(address);
   // writeString(address, "");
   sendPhoto();
 }
@@ -145,6 +144,8 @@ String sendPhoto()
     uint32_t extraLen = head.length() + tail.length();
     uint32_t totalLen = imageLen + extraLen;
 
+    Serial.println("?id=" + id);
+    Serial.println(id);
     client.print("POST " + serverPath);
     client.print("?id=" + id);
     client.println(" HTTP/1.1");

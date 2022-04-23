@@ -1,5 +1,6 @@
 import cv from "opencv.js";
 
+var DISABLE_EXCEPTION_CATCHING = 2;
 export const main = (
   src: cv.Mat,
   config?: {
