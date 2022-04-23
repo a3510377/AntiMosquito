@@ -59,8 +59,8 @@ export class server {
     this.init();
     await mongoose
       .connect(process.env.mongodbUri, {
-        server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 3e4 } },
-        replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 3e4 } }
+        server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 5e3 } },
+        replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 5e3 } }
       })
       .then(() => console.log("資料庫連接完成"))
       .catch(() => console.log("資料庫連接錯誤"));
