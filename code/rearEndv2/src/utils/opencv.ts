@@ -12,7 +12,7 @@ export const main = (
 ): { src?: cv.Mat; listContours: cv.Mat[]; filterListContours: cv.Mat[] } => {
   config = {
     max: [40, 40, 40],
-    min: [0, 0, 0],
+    min: [10, 10, 10],
     size: 100,
     rect: false,
     ...config,
