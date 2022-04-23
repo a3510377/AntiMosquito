@@ -64,10 +64,9 @@ router
       res.json({ contours: filterListContours.length });
 
       clearTimeout(server.data.postImg[id]);
-      server.data.postImg[id] = setTimeout(
-        () => req.app.emit("deleteImg", id),
-        1e3 * 60 * 5
-      );
+      server.data.postImg[id] = setTimeout(() => {
+        req.app.emit("deleteImg", id);
+      }, 1e3 * 60 * 5);
       gImg[id] = {
         img: basImg,
         type: req.file.mimetype,
@@ -87,6 +86,8 @@ router
         data: { contours: filterListContours.length },
       };
       req.app.emit("addImg", id);
+      src.delete();
+      _img.delete();
     };
 
     img.src = basImg;
