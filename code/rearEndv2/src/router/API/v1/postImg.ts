@@ -87,7 +87,6 @@ router
       };
       req.app.emit("addImg", id);
       src.delete();
-      _img.delete();
     };
 
     img.src = basImg;
