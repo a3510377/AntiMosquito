@@ -1,6 +1,8 @@
 <template>
-  <div class="chart" ref="DengueFeverCasesOverTheYearsHtml"></div>
-  <div class="chart" ref="NumberOfDengueFeverCasesHtml"></div>
+  <div class="charts">
+    <div class="chart" ref="DengueFeverCasesOverTheYearsHtml"></div>
+    <div class="chart" ref="NumberOfDengueFeverCasesHtml"></div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -8,7 +10,6 @@ import { defineComponent, ref, Ref } from "vue";
 
 import * as echarts from "echarts";
 import axios from "axios";
-import { ApiAgeCountyGender061 } from "@/types/apiData";
 import { apiUrl } from "@/config";
 
 export default defineComponent({
@@ -87,7 +88,7 @@ export default defineComponent({
     }) {
       this.DengueFeverCasesOverTheYearsChart?.setOption({
         title: { text: "歷年登革熱病例數", left: "center" },
-        legend: { orient: "vertical", left: "left", data: ["男", "女"] },
+        legend: { orient: "vertical", left: "right", data: ["男", "女"] },
       });
 
       this.DengueFeverCasesOverTheYearsChart?.setOption({
@@ -129,9 +130,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.chart {
-  width: 600px;
-  height: 400px;
-  background-color: white;
+.charts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .chart {
+    margin: 10px;
+    width: 600px;
+    height: 400px;
+    background-color: white;
+  }
 }
 </style>
