@@ -12,6 +12,7 @@ import { checkPort } from "../utils/string";
 import routers from "../router";
 import { setInterval } from "timers";
 import axios from "axios";
+import path from "path";
 
 config();
 
@@ -75,7 +76,7 @@ export class server {
     const { data } = <{ data: ApiAgeCountyGender061[] }>await axios({
       url: "https://od.cdc.gov.tw/eic/Age_County_Gender_061.json",
     });
-    let FMData: {
+    let dictData: {
       [yarn: string]: {
         F?: ApiAgeCountyGender061[];
         M?: ApiAgeCountyGender061[];
@@ -85,26 +86,27 @@ export class server {
       F: { [yarn: string]: number };
       M: { [yarn: string]: number };
     } = { F: {}, M: {} };
-    let dictData: { [year: string]: { [month: string]: number } } = {};
+    let FMData: { [year: string]: { [month: string]: number } } = {};
 
     data.forEach((v) => {
-      // ((FMData[v["發病年份"]] ||= {})[v["性別"]] ||= []).push({
-      //   發病日: v["發病日"],
-      //   性別: v["性別"],
-      //   確定病例數: v["確定病例數"],
-      // });
-      let _ = (dictData[v["發病年份"]] ||= {});
+      v["發病年份"] = v["發病年份"].toString().padStart(4, "0");
+      v["發病月份"] = v["發病月份"].toString().padStart(2, "0");
+      ((dictData[v["發病年份"]] ||= {})[v["性別"]] ||= []).push({
+        發病日: v["發病日"],
+        性別: v["性別"],
+        確定病例數: v["確定病例數"],
+      });
+      let _ = (FMData[v["發病年份"]] ||= {});
       _[v["發病月份"]] ||= 0;
       _[v["發病月份"]] += +v["確定病例數"];
     });
-    Object.entries(FMData).forEach(([key, value]) => {
+    Object.entries(dictData).forEach(([key, value]) => {
       seriesData.F[key] = value["F"].length;
       seriesData.M[key] = value["M"].length;
     });
 
     try {
-      // fs.writeFileSync("./data/FMData.json", JSON.stringify(FMData));
-      fs.writeFileSync("./data/dictData.json", JSON.stringify(dictData));
+      fs.writeFileSync("./data/FMData.json", JSON.stringify(FMData));
       fs.writeFileSync("./data/seriesData.json", JSON.stringify(seriesData));
     } catch (e) {
       console.error(e);
@@ -121,6 +123,7 @@ export class server {
       .use(express.json())
       .use(express.urlencoded({ extended: false }))
       .use(logger("dev"))
+      .use("/data", express.static(path.join(__dirname, "../../data")))
       .get("/uptimerobot", (_req, res) => {
         res.status(200).send();
         console.info("uptimerobot check");
