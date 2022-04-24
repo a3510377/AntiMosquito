@@ -35,4 +35,10 @@ const input = () => {
 watch(txt, (data) => emit("input", data));
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+p {
+  border-radius: 5px;
+  border: white solid 1px;
+  padding: 2px 10px;
+}
+</style>
