@@ -1,5 +1,7 @@
 import { Document, Schema, model } from "mongoose";
 
+import userModel from "./user";
+
 export interface dataType extends Document {
   userId: string;
   /**時間( timestamp ) */
@@ -13,11 +15,11 @@ export interface dataType extends Document {
 }
 
 export const dataSchema = new Schema<dataType>({
-  userId: { type: String, required: true },
+  userId: { type: String, required: true, ref: userModel },
   time: { type: Date, default: new Date() },
   mosquitos: { type: Number, default: 1 },
   humidity: Number,
   temperature: Number,
 });
 
-export default model<dataType>("data", dataSchema);
+export default model<dataType>("dataSchema", dataSchema);
