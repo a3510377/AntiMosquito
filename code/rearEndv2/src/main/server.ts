@@ -4,11 +4,14 @@ import { config } from "dotenv";
 import mongoose from "mongoose";
 import logger from "morgan";
 import cors from "cors";
+import fs from "fs";
 
 import { dbServer } from "./db";
 import { wsServer } from "./gateway";
 import { checkPort } from "../utils/string";
 import routers from "../router";
+import { setInterval } from "timers";
+import axios from "axios";
 
 config();
 
@@ -57,11 +60,55 @@ export class server {
   /**start */
   public async start() {
     this.init();
+
     await mongoose
       .connect(process.env.mongodbUri)
       .then(() => console.log("資料庫連接完成"))
       .catch(() => console.log("資料庫連接錯誤"));
+
     this.server.listen(process.env.PORT || 3500);
+
+    setInterval(this.getData.bind(this), 1e3 * 60 * 60);
+    this.getData();
+  }
+  public async getData() {
+    const { data } = <{ data: ApiAgeCountyGender061[] }>await axios({
+      url: "https://od.cdc.gov.tw/eic/Age_County_Gender_061.json",
+    });
+    let FMData: {
+      [yarn: string]: {
+        F?: ApiAgeCountyGender061[];
+        M?: ApiAgeCountyGender061[];
+      };
+    } = {};
+    let seriesData: {
+      F: { [yarn: string]: number };
+      M: { [yarn: string]: number };
+    } = { F: {}, M: {} };
+    let dictData: { [year: string]: { [month: string]: number } } = {};
+
+    data.forEach((v) => {
+      // ((FMData[v["發病年份"]] ||= {})[v["性別"]] ||= []).push({
+      //   發病日: v["發病日"],
+      //   性別: v["性別"],
+      //   確定病例數: v["確定病例數"],
+      // });
+      let _ = (dictData[v["發病年份"]] ||= {});
+      _[v["發病月份"]] ||= 0;
+      _[v["發病月份"]] += +v["確定病例數"];
+    });
+    Object.entries(FMData).forEach(([key, value]) => {
+      seriesData.F[key] = value["F"].length;
+      seriesData.M[key] = value["M"].length;
+    });
+
+    try {
+      // fs.writeFileSync("./data/FMData.json", JSON.stringify(FMData));
+      fs.writeFileSync("./data/dictData.json", JSON.stringify(dictData));
+      fs.writeFileSync("./data/seriesData.json", JSON.stringify(seriesData));
+    } catch (e) {
+      console.error(e);
+    }
   }
   public init() {
     this.app
@@ -89,4 +136,10 @@ export interface ErrnoException extends Error {
   path?: string;
   syscall?: string;
   stack?: string;
+}
+export interface ApiAgeCountyGender061 {
+  發病日: string;
+  性別: "F" | "M";
+  確定病例數: string;
+  [key: string]: string;
 }
