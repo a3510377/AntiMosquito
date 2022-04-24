@@ -8,16 +8,13 @@
       <p v-text="vReady" />
     </div>
 
-    <div v-else>
-      <div v-for="(_, index) in data" :key="index">
-        <img
-          :src="_.show ? _.fImg : _.img"
-          class="cam"
-          @click="_.show = !_.show"
-        />
+    <div v-else class="content">
+      <div v-for="(_, index) in data" :key="index" class="cam">
+        <img :src="_.show ? _.fImg : _.img" @click="_.show = !_.show" />
         <div>
-          <p v-text="`數量: ${_?.data?.contours || 0}`" />
           <p v-text="`ID: ${_.id || ''}`" />
+          <p v-text="`名稱: ${_.user.name || ''}`" />
+          <p v-text="`數量: ${_?.data?.contours || 0}`" />
         </div>
       </div>
     </div>
@@ -28,6 +25,7 @@
 import HeaderMain from "@/components/main/headers/index.vue";
 import { defineComponent } from "vue";
 import { apiUrl } from "@/config";
+import { userType } from "@/types/apiData";
 
 export default defineComponent({
   data() {
@@ -39,7 +37,7 @@ export default defineComponent({
           [id: string]: {
             id: string;
             img: string;
-            user: Object;
+            user: userType;
             fImg: string;
             show: boolean;
             data: { contours: number };
@@ -70,7 +68,7 @@ export default defineComponent({
         {
           id: string;
           img: string;
-          user: Object;
+          user: userType;
           fImg: string;
           data: { contours: number };
         }
@@ -105,9 +103,16 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
   }
-  .cam {
-    width: 10em;
-    cursor: pointer;
+  .content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    .cam {
+      margin: 10px 1em;
+      img {
+        cursor: pointer;
+      }
+    }
   }
 }
 </style>

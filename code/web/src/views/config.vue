@@ -90,8 +90,8 @@ watch(search, async () => {
 onMounted(() => {
   if (!usersEl.value) return;
 });
-watch(users.list, (list) =>
-  list.forEach((data) =>
+watch(users, (list) =>
+  list.list.forEach((data) =>
     axios({
       url: `${apiUrl}/api/v1/users/${data.id}/edit`,
       method: "patch",
@@ -115,6 +115,10 @@ watch(users.list, (list) =>
       width: 100%;
       display: flex;
       justify-content: space-evenly;
+      border: solid white 1px;
+      border-radius: 8px;
+      padding: 10px 0;
+      margin: 1em 0;
       .id {
         text-align: center;
         writing-mode: vertical-rl;
