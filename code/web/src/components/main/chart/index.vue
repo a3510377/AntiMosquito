@@ -139,6 +139,7 @@ export default defineComponent({
     margin: 10px;
     width: 600px;
     height: 400px;
+    border-radius: 10px;
     background-color: white;
   }
 }
