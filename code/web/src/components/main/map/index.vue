@@ -11,21 +11,20 @@
 <script lang="ts" setup>
 import { ref, onMounted, reactive } from "vue";
 
-import { dataTypes } from "./types";
 import { apiUrl } from "@/config";
-import map from "./map";
+
+import Map from "./utils/map";
+import { dataTypes } from "./utils/types";
 
 const mapEl = ref<HTMLElement>();
 const title = ref<string>();
-let dictRam = reactive<{}>({});
 
 // MAP
-onMounted(() => map(mapEl.value));
+onMounted(() => mapEl.value && new Map(mapEl.value));
 
 // connect
 onMounted(() => {
   let source = new EventSource(`${apiUrl}/map/data`);
-
   source.addEventListener("set", ({ data: _data }) => {
     let data = <dataTypes>_data;
     switch (data.type) {
@@ -40,10 +39,14 @@ onMounted(() => {
       case "count":
     }
   });
-
   source.addEventListener("open", () => {}, false);
   source.addEventListener("close", () => {}, false);
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.map {
+  height: 100%;
+  width: 100%;
+}
+</style>

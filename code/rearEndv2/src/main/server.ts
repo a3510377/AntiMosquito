@@ -7,7 +7,6 @@ import cors from "cors";
 import fs from "fs";
 
 import { dbServer } from "./db";
-import { wsServer } from "./gateway";
 import { checkPort } from "../utils/string";
 import routers from "../router";
 import { setInterval } from "timers";
@@ -20,7 +19,6 @@ export class server {
   public app: Express = express();
   public server: Server = createServer(this.app);
   public db: dbServer = new dbServer(this);
-  public ws: wsServer = new wsServer(this);
   public config = { db: { uri: process.env.dbUri } };
   public pin: number = 0;
   public port: number = checkPort(process.env.PORT);
@@ -116,7 +114,6 @@ export class server {
     this.app
       .set("view engine", "html")
       .set("db", this.db)
-      .set("ws", this.ws)
       .set("main", this)
       .set("port", this.port)
       .use(cors())

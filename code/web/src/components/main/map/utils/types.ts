@@ -1,15 +1,10 @@
-import { ApiMainData } from "@/types/apiData";
-
 /**server send datas type */
 export interface datasType {
   ram: {
     [county: string]: {
       main?: number;
       data?: {
-        [town: string]: {
-          main?: number;
-          data?: { [village: string]: number };
-        };
+        [town: string]: { main?: number; data?: { [village: string]: number } };
       };
     };
   };

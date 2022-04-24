@@ -3,6 +3,7 @@ import { server } from "@/main/server";
 import express from "express";
 import postImg from "./postImg";
 import users from "./users";
+import map from "./map";
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ router
     server.db.createUser({ id });
     res.send(id);
   })
-  .use("/users", users);
+  .use("/users", users)
+  .use("/map", map);
 
 export default router;

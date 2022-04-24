@@ -31,7 +31,6 @@ router
       __version__: config.version,
     });
   })
-  .get("/gateway", (_req, res) => res.json({ url: "" }))
   .use("/v1", v1);
 
 export default router;
