@@ -12,20 +12,11 @@ import { MapOptions } from "ol/PluggableMap";
 import { reactive } from "vue";
 
 import layers from "./layers";
+import { datasType } from "./types";
 
 export default class Map {
   map: OlMap;
-  rams = reactive<{
-    [county: string]: {
-      main?: number;
-      data?: {
-        [town: string]: {
-          main?: number;
-          data?: { [village: string]: number };
-        };
-      };
-    };
-  }>({});
+  rams = reactive<datasType["ram"]>({});
   constructor(mapEl: HTMLElement, options?: MapOptions) {
     const appView = new View({
       center: fromLonLat([120.221507, 23.000694]),
@@ -52,7 +43,7 @@ export default class Map {
       interactions: defaultsInteraction().extend([new DragRotateAndZoom()]),
       target: mapEl,
       layers: [
-        // new TileLayer({ source: new OSM(), zIndex: 1 }),
+        new TileLayer({ source: new OSM(), zIndex: 1 }),
         ...Object.values(layers(this)),
       ],
       view: appView,

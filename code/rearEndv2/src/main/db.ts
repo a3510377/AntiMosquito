@@ -32,6 +32,7 @@ export class dbServer {
   }
   /**創建資料 */
   public async createData(data: AnyObject | AnyKeys<dataType>) {
+    this.model.DataModel.emit("updata", data);
     return await (await DataModel.create(data).catch())?.save().catch();
   }
   /**尋找資料 */

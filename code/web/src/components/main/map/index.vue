@@ -14,29 +14,32 @@ import { ref, onMounted, reactive } from "vue";
 import { apiUrl } from "@/config";
 
 import Map from "./utils/map";
-import { dataTypes } from "./utils/types";
+import { datasType, dataTypes } from "./utils/types";
 
 const mapEl = ref<HTMLElement>();
 const title = ref<string>();
-
+let map: Map;
 // MAP
-onMounted(() => mapEl.value && new Map(mapEl.value));
+onMounted(() => mapEl.value && (map = new Map(mapEl.value)));
 
 // connect
 onMounted(() => {
-  let source = new EventSource(`${apiUrl}/map/data`);
+  let source = new EventSource(`${apiUrl}/api/v1/map/events`);
   source.addEventListener("set", ({ data: _data }) => {
-    let data = <dataTypes>_data;
+    let data = <dataTypes>JSON.parse(_data);
     switch (data.type) {
       case "ram":
-      case "count":
+        map.rams = <datasType["ram"]>data.data;
+        Object.values(map.map.getLayers()).forEach((v) =>
+          v.getSource().dispatchEvent("change")
+        );
+        break;
     }
   });
   source.addEventListener("add", ({ data: _data }) => {
     let data = <dataTypes>_data;
     switch (data.type) {
       case "ram":
-      case "count":
     }
   });
   source.addEventListener("open", () => {}, false);

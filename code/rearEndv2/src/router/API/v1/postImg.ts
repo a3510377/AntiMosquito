@@ -55,11 +55,12 @@ router
         rect: true,
       });
 
-      if (filterListContours.length)
+      if (filterListContours.length) {
         server.db.createData({
           userId: id,
           mosquitos: filterListContours.length,
         });
+      }
 
       res.json({ contours: filterListContours.length });
 

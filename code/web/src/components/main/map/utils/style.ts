@@ -65,7 +65,7 @@ export const villageStyle: layersStyleFuncType = (_, feature, resolution) => {
 /**鄉鎮 */
 export const townStyle: layersStyleFuncType = (_, feature, resolution) => {
   let mosquitos: number =
-    _.rams[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")].main ||
+    _.rams[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")]?.main ||
     0;
 
   if (resolution > 40 && resolution < 180)
