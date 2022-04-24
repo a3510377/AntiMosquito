@@ -1,21 +1,13 @@
 <template>
   <div class="home">
     <Map />
-    <chartMain />
+    <ChartMain />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import Map from "@/components/main/map/index.vue";
-import chartMain from "@/components/main/chart/index.vue";
-
-export default defineComponent({
-  components: {
-    Map,
-    chartMain,
-  },
-});
+import ChartMain from "@/components/main/chart/index.vue";
 </script>
 
 <style lang="scss" scoped>

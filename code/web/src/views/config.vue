@@ -41,7 +41,7 @@
 
 <script lang="ts" setup>
 import axios from "axios";
-import { ref, reactive, watch, onMounted, onBeforeUnmount } from "vue";
+import { ref, reactive, watch, onMounted } from "vue";
 
 import Editable from "@/components/utils/editable.vue";
 import { apiUrl } from "@/config";

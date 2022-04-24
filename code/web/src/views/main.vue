@@ -7,13 +7,8 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import HeaderMain from "@/components/main/headers/index.vue";
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  components: { HeaderMain },
-});
 </script>
 
 <style lang="scss" scoped></style>
