@@ -19,8 +19,8 @@ export default class Map {
   rams = reactive<datasType["ram"]>({});
   constructor(mapEl: HTMLElement, options?: MapOptions) {
     const appView = new View({
-      center: fromLonLat([120.221507, 23.000694]),
-      zoom: 12,
+      center: fromLonLat([120.32205, 23.04825]),
+      zoom: 6.5,
       maxResolution: 750,
       minResolution: 0.1,
     });
@@ -43,7 +43,7 @@ export default class Map {
       interactions: defaultsInteraction().extend([new DragRotateAndZoom()]),
       target: mapEl,
       layers: [
-        new TileLayer({ source: new OSM(), zIndex: 1 }),
+        // new TileLayer({ source: new OSM(), zIndex: 1 }),
         ...Object.values(layers(this)),
       ],
       view: appView,

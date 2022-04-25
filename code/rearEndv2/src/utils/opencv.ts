@@ -9,7 +9,7 @@ export const main = (
     size?: number;
     rect?: boolean;
   }
-): { src?: cv.Mat; listContours: cv.Mat[]; filterListContours: cv.Mat[] } => {
+): { src?: cv.Mat; filterListContoursLength: number } => {
   config = {
     max: [40, 40, 40],
     min: [10, 10, 10],
@@ -63,11 +63,13 @@ export const main = (
     });
     retData.src = src.clone();
   }
-
+  let filterListContoursLength = filterListContours.length;
   src.delete();
   mask.delete();
   mask1.delete();
   contours.delete();
   hierarchy.delete();
-  return { ...retData, listContours, filterListContours };
+  listContours.forEach((_) => _.delete());
+  // filterListContours.forEach((_) => _.delete());
+  return { ...retData, filterListContoursLength };
 };

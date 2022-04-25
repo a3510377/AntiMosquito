@@ -18,6 +18,18 @@ export type layersStyleFuncType = (
   arg1: number
 ) => void | Style | Style[];
 
+export const setFontColor = (color: string) =>
+  ({
+    "#fff": "#000",
+    "#470115": "#fff",
+    "#6f006d": "#fff",
+    "#a4005b": "#fff",
+    "#d00b33": "#fff",
+    "#e75033": "#fff",
+    "#ffa133": "#fff",
+    "#e3d738": "#fff",
+  }[color] || color);
+
 export const setFillColor = (num: number) => {
   let color = "#fff";
 
@@ -50,12 +62,13 @@ export const villageStyle: layersStyleFuncType = (_, feature, resolution) => {
       feature.get("VILLNAME")
     ] || 0;
 
+  let fillColor = setFillColor(~~(mosquitos / 10));
   return new Style({
     stroke: new Stroke({ color: "#000", width: 1 }),
-    fill: new Fill({ color: setFillColor(~~(mosquitos / 10)) }),
+    fill: new Fill({ color: fillColor }),
     text: new Text({
-      font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
-      fill: new Fill({ color: "#000" }),
+      font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+      fill: new Fill({ color: setFontColor(fillColor) }),
       text: `${feature.get("VILLNAME") || ""}\n${
         mosquitos > 0 ? mosquitos : ""
       }`,
@@ -68,14 +81,15 @@ export const townStyle: layersStyleFuncType = (_, feature, resolution) => {
     _.rams[feature.get("COUNTYNAME")]?.data?.[feature.get("TOWNNAME")]?.main ||
     0;
 
+  let fillColor = setFillColor(~~(mosquitos / 50));
+
   if (resolution > 40 && resolution < 180)
     return new Style({
       stroke: new Stroke({ color: "#ff0000", width: 1 }),
-      fill: new Fill({
-        color: setFillColor(~~(mosquitos / 50)),
-      }),
+      fill: new Fill({ color: fillColor }),
       text: new Text({
-        font: "14px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+        font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+        fill: new Fill({ color: setFontColor(fillColor) }),
         text: `${feature.get("TOWNNAME")}\n${mosquitos > 0 ? mosquitos : ""}`,
       }),
     });
@@ -91,12 +105,14 @@ export const townStyle: layersStyleFuncType = (_, feature, resolution) => {
 /**縣市 */
 export const countyStyle: layersStyleFuncType = (_, feature, resolution) => {
   let mosquitos: number = _.rams[feature.get("COUNTYNAME")]?.main || 0;
+  let fillColor = setFillColor(~~(mosquitos / 50));
   if (resolution >= 180)
     return new Style({
       stroke: new Stroke({ color: "#0000ff", width: 1 }),
-      fill: new Fill({ color: setFillColor(~~(mosquitos / 100)) }),
+      fill: new Fill({ color: fillColor }),
       text: new Text({
         font: "20px 'Open Sans', 'Arial Unicode MS', 'sans-serif'",
+        fill: new Fill({ color: setFontColor(fillColor) }),
         text: `${feature.get("COUNTYNAME")}\n${mosquitos > 0 ? mosquitos : ""}`,
       }),
     });

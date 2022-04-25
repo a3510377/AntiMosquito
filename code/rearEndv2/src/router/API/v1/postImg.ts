@@ -50,19 +50,19 @@ router
         ctx.getImageData(0, 0, canvas.width, canvas.height)
       );
 
-      let { filterListContours, src: _img } = main(src, {
+      let { filterListContoursLength, src: _img } = main(src, {
         size: 100,
         rect: true,
       });
 
-      if (filterListContours.length) {
+      if (filterListContoursLength) {
         server.db.createData({
           userId: id,
-          mosquitos: filterListContours.length,
+          mosquitos: filterListContoursLength,
         });
       }
 
-      res.json({ contours: filterListContours.length });
+      res.json({ contours: filterListContoursLength });
 
       clearTimeout(server.data.postImg[id]);
       server.data.postImg[id] = setTimeout(() => {
@@ -85,10 +85,11 @@ router
             )
             ?.data?.toString("base64")
         ),
-        data: { contours: filterListContours.length },
+        data: { contours: filterListContoursLength },
       };
       req.app.emit("addImg", id);
       _img.delete();
+      // src.delete();
     };
 
     img.src = basImg;

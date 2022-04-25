@@ -48,14 +48,18 @@ router.get("/events", async (req, res) => {
     `retry: 1500\nevent: set\ndata:${JSON.stringify({ type: "ram", data })}\n\n`
   );
 
-  server.db.model.DataModel.on("updata", async (data) => {
-    let _: userType | undefined = await server.db.model.UserModel.find({
-      id: data.userId,
-    })?.[0];
+  server.db.model.DataModel.on("updata", async (data: dataType) => {
+    let _: userType | undefined = (
+      await server.db.model.UserModel.find({
+        id: data.userId,
+      })
+    )?.[0];
     let area = _?.area;
+    console.log(_);
+
     if (!_ || !area?.county || !area?.town || !area?.village) return;
     res.write(
-      `type: add\ndata:${JSON.stringify({
+      `event: add\ndata:${JSON.stringify({
         type: "count",
         mosquitos: data.mosquitos,
         area,

@@ -30,31 +30,39 @@ onMounted(() => {
     switch (data.type) {
       case "ram":
         map.rams = <datasType["ram"]>data.data;
-        Object.values(map.map.getLayers()).forEach((v) =>
-          v.getSource().dispatchEvent("change")
-        );
+
+        Object.assign(window, { test: map.map.getLayers().getArray() });
+        Object.values(map.map.getLayers().getArray()).forEach((v) => {
+          v.changed();
+        });
         break;
     }
   });
   source.addEventListener("add", ({ data: _data }) => {
-    let data = <datasType["count"]>_data;
+    let data = <datasType["count"]>JSON.parse(_data);
+
     switch (data.type) {
       case "count":
         let area = data.area;
-        let rams = <any>map.rams;
         let mosquitos = data.mosquitos;
-        rams[area.county] ||= { main: 0, data: {} };
-        rams[area.county].main ||= 0;
-        rams[area.county].main += mosquitos;
-        rams[area.county].data[area.town] ||= { main: 0, data: {} };
-        rams[area.county].data[area.town].main += mosquitos;
-        rams[area.county].data[area.town].data ||= {};
-        rams[area.county].data[area.town].data[area.village] ||= 0;
-        rams[area.county].data[area.town].data[area.village] += mosquitos;
+
+        let countyData = (map.rams[area.county] ||= { main: 0, data: {} });
+        countyData.main ||= 0;
+        countyData.main += mosquitos;
+        countyData.data ||= {};
+
+        let townData = countyData.data[area.town];
+        townData.main ||= 0;
+        townData.main += mosquitos;
+        townData.data ||= {};
+        townData.data[area.village] ||= 0;
+        townData.data[area.village] += mosquitos;
+        break;
     }
-    Object.values(map.map.getLayers()).forEach((v) =>
-      v.getSource().dispatchEvent("change")
-    );
+
+    Object.values(map.map.getLayers().getArray()).forEach((v) => {
+      v.changed();
+    });
   });
   source.addEventListener("open", () => {}, false);
   source.addEventListener("close", () => {}, false);
