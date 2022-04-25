@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted } from "vue";
 
 import { apiUrl } from "@/config";
 
 import Map from "./utils/map";
-import { datasType, dataType, dataTypes } from "./utils/types";
+import { datasType, dataTypes } from "./utils/types";
 
 const mapEl = ref<HTMLElement>();
 const title = ref<string>();
@@ -70,8 +70,57 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.map {
+.maps {
+  width: 90%;
   height: 100%;
-  width: 100%;
+  padding: 10px 0;
+  .map {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    .info {
+      border-radius: 10px;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      z-index: 99;
+    }
+    :deep() {
+      canvas {
+        border-radius: 10px !important;
+        overflow: hidden !important;
+      }
+      .ol-attribution.ol-unselectable.ol-control.ol-uncollapsible {
+        display: none;
+      }
+      .ol-zoom.ol-unselectable.ol-control {
+        button {
+          background-color: rgba(0, 60, 136, 0.6) !important;
+        }
+        .split:not(.nTop) {
+          margin-top: 10px;
+        }
+        .off {
+          background-color: rgba(0, 60, 136, 0.3) !important;
+        }
+      }
+    }
+    &:-moz-full-screen,
+    &:-webkit-full-screen,
+    &:-ms-fullscreen,
+    &:fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+  @media all and (max-width: 930px) {
+    flex-direction: column;
+    .map {
+      width: 100%;
+    }
+  }
 }
 </style>
