@@ -58,7 +58,7 @@ router.get("/events", async (req, res) => {
       `type: add\ndata:${JSON.stringify({
         type: "count",
         mosquitos: data.mosquitos,
-        data: `${area.county}.${area.town}.${area.village}`,
+        area,
       })}\n\n`
     );
   });

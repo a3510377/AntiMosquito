@@ -14,7 +14,7 @@ import { ref, onMounted, reactive } from "vue";
 import { apiUrl } from "@/config";
 
 import Map from "./utils/map";
-import { datasType, dataTypes } from "./utils/types";
+import { datasType, dataType, dataTypes } from "./utils/types";
 
 const mapEl = ref<HTMLElement>();
 const title = ref<string>();
@@ -37,10 +37,24 @@ onMounted(() => {
     }
   });
   source.addEventListener("add", ({ data: _data }) => {
-    let data = <dataTypes>_data;
+    let data = <datasType["count"]>_data;
     switch (data.type) {
-      case "ram":
+      case "count":
+        let area = data.area;
+        let rams = <any>map.rams;
+        let mosquitos = data.mosquitos;
+        rams[area.county] ||= { main: 0, data: {} };
+        rams[area.county].main ||= 0;
+        rams[area.county].main += mosquitos;
+        rams[area.county].data[area.town] ||= { main: 0, data: {} };
+        rams[area.county].data[area.town].main += mosquitos;
+        rams[area.county].data[area.town].data ||= {};
+        rams[area.county].data[area.town].data[area.village] ||= 0;
+        rams[area.county].data[area.town].data[area.village] += mosquitos;
     }
+    Object.values(map.map.getLayers()).forEach((v) =>
+      v.getSource().dispatchEvent("change")
+    );
   });
   source.addEventListener("open", () => {}, false);
   source.addEventListener("close", () => {}, false);

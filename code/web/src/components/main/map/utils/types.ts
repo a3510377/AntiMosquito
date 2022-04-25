@@ -8,7 +8,15 @@ export interface datasType {
       };
     };
   };
-  count: { [key: `${string}.${string}.${string}`]: number };
+  count: {
+    type: string;
+    mosquitos: number;
+    area: {
+      county: string;
+      town: string;
+      village: string;
+    };
+  };
 }
 
 /**server send data type */
