@@ -10,9 +10,9 @@ export const main = (
   }
 ): { src?: cv.Mat; filterListContoursLength: number } => {
   config = {
-    max: [40, 40, 40],
-    min: [10, 10, 10],
-    size: 100,
+    max: [255, 255, 0],
+    min: [0, 0, 0],
+    size: 150,
     rect: false,
     ...config,
   };
