@@ -55,7 +55,6 @@ router.get("/events", async (req, res) => {
       })
     )?.[0];
     let area = _?.area;
-    console.log(_);
 
     if (!_ || !area?.county || !area?.town || !area?.village) return;
     res.write(

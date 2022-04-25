@@ -46,14 +46,15 @@ router
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
 
-      let src = cv.matFromImageData(
-        ctx.getImageData(0, 0, canvas.width, canvas.height)
+      let { filterListContoursLength, src: _img } = main(
+        cv.matFromImageData(
+          ctx.getImageData(0, 0, canvas.width, canvas.height)
+        ),
+        {
+          size: 100,
+          rect: true,
+        }
       );
-
-      let { filterListContoursLength, src: _img } = main(src, {
-        size: 100,
-        rect: true,
-      });
 
       if (filterListContoursLength) {
         server.db.createData({
@@ -89,7 +90,6 @@ router
       };
       req.app.emit("addImg", id);
       _img.delete();
-      // src.delete();
     };
 
     img.src = basImg;

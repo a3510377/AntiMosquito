@@ -1,6 +1,5 @@
 import cv from "opencv.js";
 
-var DISABLE_EXCEPTION_CATCHING = 2;
 export const main = (
   src: cv.Mat,
   config?: {
@@ -24,12 +23,10 @@ export const main = (
   let contours = new cv.MatVector();
   let THRESH_MIN = 120;
 
-  cv.inRange(
-    src,
-    new cv.Mat(src.rows, src.cols, src.type(), [...config.min, 0]),
-    new cv.Mat(src.rows, src.cols, src.type(), [...config.max, 255]),
-    mask1
-  );
+  let minMat = new cv.Mat(src.rows, src.cols, src.type(), [...config.min, 0]);
+  let maxMat = new cv.Mat(src.rows, src.cols, src.type(), [...config.max, 255]);
+
+  cv.inRange(src, minMat, maxMat, mask1);
 
   cv.threshold(mask1, mask, THRESH_MIN, 255, cv.THRESH_BINARY);
   cv.findContours(
@@ -67,9 +64,10 @@ export const main = (
   src.delete();
   mask.delete();
   mask1.delete();
+  minMat.delete();
+  maxMat.delete();
   contours.delete();
   hierarchy.delete();
   listContours.forEach((_) => _.delete());
-  // filterListContours.forEach((_) => _.delete());
   return { ...retData, filterListContoursLength };
 };
