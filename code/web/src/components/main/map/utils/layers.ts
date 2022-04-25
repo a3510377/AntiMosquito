@@ -52,6 +52,7 @@ export default (
   }),
   /**快篩試劑配置醫療院所 @url https://data.cdc.gov.tw/dataset/dengue-ns1 */
   NS1Test: new layerVector({
+    className: "NS1Test",
     source: new sourceVector({
       url: `${webURL}data/ns1hosp_20160603.json`,
       format: new GeoJSON(),

@@ -31,7 +31,6 @@ onMounted(() => {
       case "ram":
         map.rams = <datasType["ram"]>data.data;
 
-        Object.assign(window, { test: map.map.getLayers().getArray() });
         Object.values(map.map.getLayers().getArray()).forEach((v) => {
           v.changed();
         });
@@ -90,18 +89,31 @@ onMounted(() => {
         border-radius: 10px !important;
         overflow: hidden !important;
       }
-      .ol-attribution.ol-unselectable.ol-control.ol-uncollapsible {
-        display: none;
-      }
-      .ol-zoom.ol-unselectable.ol-control {
-        button {
-          background-color: rgba(0, 60, 136, 0.6) !important;
+      .ol-unselectable {
+        &.ol-zoom {
+          width: 1.5em;
+          margin: 5px;
+          div {
+            flex-direction: column;
+            display: flex;
+          }
+          button {
+            cursor: pointer;
+            width: 100%;
+            color: white;
+            background-color: #000;
+            border: none;
+            border-radius: 5px;
+            margin: 5px 1px;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
-        .split:not(.nTop) {
-          margin-top: 10px;
-        }
-        .off {
-          background-color: rgba(0, 60, 136, 0.3) !important;
+        &.ol-rotate,
+        &.ol-attribution {
+          display: none;
         }
       }
     }

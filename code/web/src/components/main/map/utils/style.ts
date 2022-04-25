@@ -46,7 +46,7 @@ export const setFillColor = (num: number) => {
 
 export const showLayer = (
   _: Map,
-  className: "village" | "town" | "county",
+  className: "village" | "town" | "county" | "NS1Test",
   start?: boolean
 ) =>
   _.map
@@ -118,6 +118,7 @@ export const countyStyle: layersStyleFuncType = (_, feature, resolution) => {
     });
 };
 export const setShow: layersStyleFuncType = (_, _$, resolution) => {
+  if (_.showToggle) return;
   /* 縣市 */
   if (resolution >= 180) showLayer(_, "county", true);
   else showLayer(_, "county", false);
