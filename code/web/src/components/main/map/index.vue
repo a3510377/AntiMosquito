@@ -1,15 +1,16 @@
 <template>
-  <div class="maps flex flex-item-center">
+  <div class="maps">
     <div class="map" ref="mapEl">
-      <div class="info" ref="info">
-        <h1 class="title" v-text="title" />
+      <div class="info" ref="alertEl" v-show="showInfo">
+        <div class="close" @click="showInfo = !showInfo">x</div>
+        <div class="content" v-text="alertText" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 import { apiUrl } from "@/config";
 
@@ -17,7 +18,10 @@ import Map from "./utils/map";
 import { datasType, dataTypes } from "./utils/types";
 
 const mapEl = ref<HTMLElement>();
-const title = ref<string>();
+const alertEl = ref<HTMLElement>();
+const showInfo = ref<boolean>();
+const alertText = ref<string>();
+
 let map: Map;
 // MAP
 onMounted(() => mapEl.value && (map = new Map(mapEl.value)));
@@ -63,8 +67,25 @@ onMounted(() => {
       v.changed();
     });
   });
-  source.addEventListener("open", () => {}, false);
-  source.addEventListener("close", () => {}, false);
+  source.addEventListener(
+    "open",
+    () => (alertText.value = "伺服器連線成功"),
+    false
+  );
+  source.addEventListener(
+    "close",
+    () => (alertText.value = "伺服器斷開連線"),
+    false
+  );
+});
+
+let alertTextTimeout: NodeJS.Timeout;
+watch(alertText, () => {
+  if (!!alertText.value) {
+    showInfo.value = true;
+    clearTimeout(alertTextTimeout);
+    alertTextTimeout = setTimeout(() => (alertText.value = ""), 2e3);
+  } else showInfo.value = false;
 });
 </script>
 
@@ -77,12 +98,29 @@ onMounted(() => {
     height: 100%;
     width: 100%;
     position: relative;
+
+    display: flex;
+    justify-content: center;
     .info {
-      border-radius: 10px;
       position: absolute;
-      right: 0;
-      bottom: 0;
-      z-index: 99;
+      top: 10px;
+      border-radius: 5px;
+
+      color: white;
+      background-color: #000;
+      padding: 1em;
+      z-index: 1;
+      .close {
+        cursor: pointer;
+        position: absolute;
+        right: 3px;
+        top: 0;
+      }
+      .content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
     :deep() {
       canvas {
