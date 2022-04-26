@@ -5,13 +5,13 @@ import mongoose from "mongoose";
 import logger from "morgan";
 import cors from "cors";
 import fs from "fs";
+import axios from "axios";
+import path from "path";
 
 import { dbServer } from "./db";
 import { checkPort } from "../utils/string";
 import routers from "../router";
-import { setInterval } from "timers";
-import axios from "axios";
-import path from "path";
+import { delay } from "../utils/time";
 
 config();
 
@@ -59,11 +59,18 @@ export class server {
   /**start */
   public async start() {
     this.init();
+    console.log("伺服器啟動中...");
 
-    await mongoose
-      .connect(process.env.mongodbUri)
-      .then(() => console.log("資料庫連接完成"))
-      .catch(() => console.log("資料庫連接錯誤"));
+    try {
+      await mongoose
+        .connect(process.env.mongodbUri)
+        .then(() => console.log("資料庫連接完成"));
+    } catch {
+      console.log("資料庫連接錯誤", "伺服器將於5秒後重啟...");
+      await delay(5e3);
+      console.log("嘗試重起...");
+      return this.start();
+    }
 
     this.server.listen(process.env.PORT || 3500);
 

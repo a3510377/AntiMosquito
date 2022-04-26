@@ -91,10 +91,9 @@ export default class Map {
             text: enlargeSvg,
             target: this.mapEl,
           },
-          () =>
-            toggleFullScreen(this.mapEl)
-              ? this.mapEl.classList.add("full")
-              : this.mapEl.classList.remove("full")
+          (_ev, el) => (
+            toggleFullScreen(this.mapEl), el.classList.toggle("full")
+          )
         ),
       ],
     });
@@ -108,8 +107,8 @@ export default class Map {
             text: mosquitoSvg,
             title: "蚊子數量",
           },
-          () => {
-            this.showToggle = this.mapEl.classList.toggle("off");
+          (_ev, el) => {
+            this.showToggle = el.classList.toggle("off");
             ["village", "town", "county"].forEach((_) =>
               showLayer(
                 this,
@@ -125,12 +124,7 @@ export default class Map {
             text: screeningHospitalSvg,
             title: "快篩院所",
           },
-          () =>
-            showLayer(
-              this,
-              "NS1Test",
-              !this.mapEl.classList.toggle("offNS1Test")
-            )
+          (_ev, el) => showLayer(this, "NS1Test", !el.classList.toggle("off"))
         ),
       ],
     });

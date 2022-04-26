@@ -1,5 +1,3 @@
-import Map from "./map";
-
 export class baseControl {
   constructor(
     private options: {
@@ -8,7 +6,11 @@ export class baseControl {
       target?: HTMLElement;
       show?: boolean;
     } = {},
-    private clickEvent?: (this: HTMLButtonElement, ev: MouseEvent) => any
+    private clickEvent?: (
+      this: HTMLButtonElement,
+      ev: MouseEvent,
+      el: HTMLButtonElement
+    ) => any
   ) {
     if (this.options.show === void 0) this.options.show = true;
   }
@@ -18,7 +20,13 @@ export class baseControl {
     button.innerHTML = this.options.text || "";
     button.title = this.options.title || "";
     button.type = "button";
-    button.addEventListener("click", this.clickEvent || (() => void 0), false);
+    button.addEventListener(
+      "click",
+      (ev) => {
+        this.clickEvent?.bind(button, ev, button)();
+      },
+      false
+    );
     return button;
   }
 }

@@ -109,6 +109,10 @@ onMounted(() => {
             display: flex;
             align-items: center;
             justify-content: center;
+            &.off,
+            &.full {
+              background-color: #00000080 !important;
+            }
           }
         }
         &.ol-rotate,
