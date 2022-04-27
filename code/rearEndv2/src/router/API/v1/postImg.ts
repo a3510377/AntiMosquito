@@ -50,10 +50,7 @@ router
         cv.matFromImageData(
           ctx.getImageData(0, 0, canvas.width, canvas.height)
         ),
-        {
-          size: 100,
-          rect: true,
-        }
+        { size: 100, rect: true }
       );
 
       if (filterListContoursLength) {
