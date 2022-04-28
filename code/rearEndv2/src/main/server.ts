@@ -26,9 +26,6 @@ export class server {
     postImg: {},
   };
   constructor() {
-    process.on("uncaughtException", (er: unknown) =>
-      console.error(er.toString().slice(0, 1e4 * 20))
-    );
     this.server
       .on("error", (error: ErrnoException) => {
         if (error.syscall !== "listen") throw error;
@@ -58,6 +55,14 @@ export class server {
   }
   /**start */
   public async start() {
+    process
+      .on("uncaughtException", (er: unknown) =>
+        console.error(er.toString().slice(0, 1e4 * 20))
+      )
+      .on("unhandledRejection", (er: unknown) =>
+        console.error(er.toString().slice(0, 1e4 * 20))
+      );
+
     this.init();
     console.log("伺服器啟動中...");
 
@@ -80,7 +85,10 @@ export class server {
   public async getData() {
     const { data } = <{ data: ApiAgeCountyGender061[] }>await axios({
       url: "https://od.cdc.gov.tw/eic/Age_County_Gender_061.json",
-    });
+    }).catch();
+
+    if (!data) return;
+
     let dictData: {
       [yarn: string]: {
         F?: ApiAgeCountyGender061[];

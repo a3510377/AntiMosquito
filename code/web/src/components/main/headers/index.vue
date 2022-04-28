@@ -1,6 +1,6 @@
 <template>
   <header id="header" class="flex flex-item-center">
-    <router-link to="/" class="title">蚊子</router-link>
+    <router-link to="/" class="title">蚊親更清晰</router-link>
     <div class="menu flex flex-item-center">
       <div class="list flex flex-center" ref="menuListEl">
         <div class="content">
@@ -66,7 +66,8 @@ export default defineComponent({
     font-weight: 900;
     padding: 0;
     font-size: 20pt;
-    min-width: 10%;
+    min-width: 14%;
+    margin: 0 10px;
     text-align: center;
   }
   .menu {

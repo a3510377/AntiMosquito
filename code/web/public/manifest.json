@@ -1,13 +1,14 @@
 {
-  "name": "拒絕蚊子霸道的「愛」",
-  "short_name": "拒絕蚊子霸道的「愛」",
-  "scope": ".",
-  "start_url": ".",
+  "name": "蚊親更清晰",
+  "short_name": "病媒蚊監測系統",
+  "start_url": "/",
+  "scope": "/",
   "lang": "zh-TW",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#fff",
   "theme_color": "#2d2b2b",
-  "description": "拒絕蚊子霸道的「愛」",
+  "description": "蚊親更清晰-病媒蚊監測系統模組之研究",
   "prefer_related_applications": false,
-  "related_applications": []
+  "related_applications": [],
+  "shortcuts": []
 }
